@@ -55,7 +55,7 @@ For additional details on the Data Scientist workflow, take a look at following 
     <span class="dropdown-caret"></span>
   </summary>
 
-<video src="https://user-images.githubusercontent.com/28580105/140426302-8135c859-f3af-4bc0-a8b1-486a786f5b3b.mp4"
+<video src="https://user-images.githubusercontent.com/28580105/140426302-8135c859-f3af-4bc0-a8b1-486a786f5b3b.mp4#t=0.5"
 poster="https://seeq12.github.io/seeq-azureml/_static/ds_workflow_poster.png"
 controls="controls" muted="muted" class="d-block rounded-bottom-2 width-fit" style="max-width:700px;
 background:transparent url('https://seeq12.github.io/seeq-azureml/_static/ds_workflow_poster.png') no-repeat 0 0;
@@ -74,7 +74,7 @@ For additional details on the Engineering workflow, take a look at the following
     <span class="dropdown-caret"></span>
   </summary>
 
-<video src="https://user-images.githubusercontent.com/28580105/140426286-1df1aa16-3782-4f22-9f26-ebd06a51e854.mp4"
+<video src="https://user-images.githubusercontent.com/28580105/140426286-1df1aa16-3782-4f22-9f26-ebd06a51e854.mp4#t=0.5"
 poster="https://seeq12.github.io/seeq-azureml/_static/sme_workflow.png"
 controls="controls" muted="muted" class="d-block rounded-bottom-2 width-fit" style="max-width:670px;
 background:transparent url('https://seeq12.github.io/seeq-azureml/_static/sme_workflow.png') no-repeat 0 0;
