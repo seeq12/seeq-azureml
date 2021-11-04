@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>seeq.addons.azureml._ui_selections &mdash; seeq-azureml 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/seeq-favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> seeq-azureml
+            <img src="../../../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guide/user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../code_documentation/index.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../license/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../citation/citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../view_on_github/github.html">View on GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">seeq-azureml</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>seeq.addons.azureml._ui_selections</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for seeq.addons.azureml._ui_selections</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">seeq</span> <span class="kn">import</span> <span class="n">spy</span>
+<span class="kn">from</span> <span class="nn">seeq.sdk</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">seeq.addons.azureml.backend</span> <span class="kn">import</span> <span class="n">AmlOnlineEndpointService</span><span class="p">,</span> <span class="n">OnlineEndpoint</span>
+<span class="kn">from</span> <span class="nn">seeq.addons.azureml.utils</span> <span class="kn">import</span> <span class="n">AzureMLException</span>
+<span class="kn">from</span> <span class="nn">seeq.addons.azureml</span> <span class="kn">import</span> <span class="n">_config</span>
+
+
+<div class="viewcode-block" id="UserSelections"><a class="viewcode-back" href="../../../../code_documentation/user_interface/addon_ui.html#seeq.addons.azureml._ui_selections.UserSelections">[docs]</a><span class="k">class</span> <span class="nc">UserSelections</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface between the UI selections and the AmlOnlineEndpointService</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    endpoint_svc: seeq.addons.azureml.backend.AmlOnlineEndpointService</span>
+<span class="sd">        An instance of the AmlOnlineEndpointService to make the necessary calls</span>
+<span class="sd">        to Azure ML services.</span>
+<span class="sd">    endpoints: dict</span>
+<span class="sd">        Dictionary with endpoint names as keys and OnlineEndpoint(s) as values.</span>
+<span class="sd">    deployment: seeq.addons.azureml.backend.OnlineDeployment</span>
+<span class="sd">        Deployment associated with the selected OnlineEndpoint.</span>
+<span class="sd">    asset_paths: dict</span>
+<span class="sd">        Dictionary containing the valid Seeq asset trees on which the model may</span>
+<span class="sd">        be applied. The name of the asset trees are the keys and asset tree IDs</span>
+<span class="sd">        are the values.</span>
+<span class="sd">    model_name: str</span>
+<span class="sd">        Name of the Azure ML model for the selected OnlineDeployment.</span>
+<span class="sd">    model_version: str</span>
+<span class="sd">        Version of the Azure ML model for the selected OnlineDeployment.</span>
+<span class="sd">    model_signal_inputs: dict</span>
+<span class="sd">        Dictionary with the input signals for the Azure ML model which are</span>
+<span class="sd">        pulled from Seeq. The name of the signals are the keys of the</span>
+<span class="sd">        dict and the IDs of the signals are the values.</span>
+<span class="sd">    model_sample_rate: str</span>
+<span class="sd">        The sampling rate required by the Azure ML model for the input signals.</span>
+<span class="sd">        For example, &#39;2 min&#39;.</span>
+<span class="sd">    model_endpoint_uri: str</span>
+<span class="sd">        The endpoint identifier of the AzureML model used to compute the result</span>
+<span class="sd">        signal.</span>
+<span class="sd">    asset_path_from_signals: dict</span>
+<span class="sd">        This attribute is determined when the Azure ML model specifies signal</span>
+<span class="sd">        IDs as inputs rather than asset path IDs. If the input signals belong</span>
+<span class="sd">        to the same asset tree, then the name and ID of the asset tree are</span>
+<span class="sd">        stored as a key-value pair, {name: ID}. Otherwise, this attribute will</span>
+<span class="sd">        default to None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">_config</span><span class="o">.</span><span class="n">validate_configuration_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">endpoint_svc</span> <span class="o">=</span> <span class="n">AmlOnlineEndpointService</span><span class="p">(</span><span class="n">tenant_id</span><span class="o">=</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;azure&#39;</span><span class="p">,</span> <span class="s1">&#39;TENANT_ID&#39;</span><span class="p">),</span>
+                                                     <span class="n">app_id</span><span class="o">=</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;azure&#39;</span><span class="p">,</span> <span class="s1">&#39;APP_ID&#39;</span><span class="p">),</span>
+                                                     <span class="n">app_secret</span><span class="o">=</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;azure&#39;</span><span class="p">,</span> <span class="s1">&#39;APP_SECRET&#39;</span><span class="p">),</span>
+                                                     <span class="n">subscription_id</span><span class="o">=</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;azure&#39;</span><span class="p">,</span> <span class="s1">&#39;SUBSCRIPTION_ID&#39;</span><span class="p">),</span>
+                                                     <span class="n">resource_group</span><span class="o">=</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;azure&#39;</span><span class="p">,</span> <span class="s1">&#39;RESOURCE_GROUP&#39;</span><span class="p">),</span>
+                                                     <span class="n">workspace_name</span><span class="o">=</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;azure&#39;</span><span class="p">,</span> <span class="s1">&#39;WORKSPACE_NAME&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">endpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_endpoints</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deployment</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asset_paths</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_version</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_signal_inputs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_sample_rate</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_endpoint_uri</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asset_path_from_signals</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_primary_key</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">get_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint_svc</span><span class="o">.</span><span class="n">list_online_endpoints</span><span class="p">()]</span>
+        <span class="n">renames</span> <span class="o">=</span> <span class="n">rename_duplicates</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">renames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint_svc</span><span class="o">.</span><span class="n">list_online_endpoints</span><span class="p">()))</span>
+
+    <span class="k">def</span> <span class="nf">get_deployment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">:</span> <span class="n">OnlineEndpoint</span><span class="p">):</span>
+        <span class="n">deployments</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">endpoint</span><span class="o">.</span><span class="n">deployment</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">deployments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Only one deployment per endpoint is allowed. Got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">deployments</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">deployments</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;There are no deployments associated with endpoint &quot;</span><span class="si">{</span><span class="n">endpoint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deployment</span> <span class="o">=</span> <span class="n">deployments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">version</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_sample_rate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">sample_rate</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_endpoint_uri</span> <span class="o">=</span> <span class="n">endpoint</span><span class="o">.</span><span class="n">scoringUri</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model_primary_key</span> <span class="o">=</span> <span class="n">endpoint</span><span class="o">.</span><span class="n">primaryKey</span>
+
+    <span class="k">def</span> <span class="nf">get_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">:</span> <span class="n">OnlineEndpoint</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asset_paths</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">trees_api</span> <span class="o">=</span> <span class="n">TreesApi</span><span class="p">(</span><span class="n">spy</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_deployment</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">asset_path_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">asset_input_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                       <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Path IDs were found in model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_version</span><span class="si">}</span><span class="s2">, &quot;</span>
+                                               <span class="sa">f</span><span class="s2">&quot;but the input signals for the model are not defined&quot;</span><span class="p">)</span>
+            <span class="n">asset_path_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">idd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">asset_path_ids</span><span class="p">:</span>
+                <span class="n">tree</span> <span class="o">=</span> <span class="n">trees_api</span><span class="o">.</span><span class="n">get_tree</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">idd</span><span class="p">)</span>
+                <span class="n">asset_path_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39; &gt;&gt; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">ancestors</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;Asset&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2"> &gt;&gt; &quot;</span>
+                                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">asset_path_names</span> <span class="o">=</span> <span class="n">rename_duplicates</span><span class="p">(</span><span class="n">asset_path_names</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">asset_paths</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">asset_path_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">asset_path_ids</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">get_signal_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">asset_path_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">trees_api</span> <span class="o">=</span> <span class="n">TreesApi</span><span class="p">(</span><span class="n">spy</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+        <span class="n">signals_api</span> <span class="o">=</span> <span class="n">SignalsApi</span><span class="p">(</span><span class="n">spy</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_deployment</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">input_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># if there are signals IDs for the model, then disregard assets</span>
+
+            <span class="c1"># check if the inputs belong to the same asset path</span>
+            <span class="n">asset_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">path_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">signal_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">ordered_input_ids</span> <span class="o">=</span> <span class="n">order_inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">input_ids</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">idd</span> <span class="ow">in</span> <span class="n">ordered_input_ids</span><span class="p">:</span>
+                <span class="n">tree</span> <span class="o">=</span> <span class="n">trees_api</span><span class="o">.</span><span class="n">get_tree</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">idd</span><span class="p">)</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot; &gt;&gt; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">ancestors</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;Asset&quot;</span><span class="p">])</span>
+                <span class="n">path_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">ancestors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="n">asset_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">signal_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">signals_api</span><span class="o">.</span><span class="n">get_signal</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">idd</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">asset_paths</span><span class="p">)))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">asset_path_from_signals</span> <span class="o">=</span> <span class="p">{</span><span class="n">asset_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">path_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">asset_path_from_signals</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">signal_names</span> <span class="o">=</span> <span class="n">rename_duplicates</span><span class="p">(</span><span class="n">signal_names</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_signal_inputs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">signal_names</span><span class="p">,</span> <span class="n">ordered_input_ids</span><span class="p">))</span>
+            <span class="k">return</span>
+
+        <span class="k">elif</span> <span class="n">asset_path_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ordered_input_names</span> <span class="o">=</span> <span class="n">order_inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">asset_input_names</span><span class="p">)</span>
+            <span class="n">tree</span> <span class="o">=</span> <span class="n">trees_api</span><span class="o">.</span><span class="n">get_tree</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">asset_path_id</span><span class="p">)</span>
+            <span class="n">signal_names</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">signal_ids</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">ordered_input_names</span><span class="p">:</span>
+                    <span class="n">signal_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">signal_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">signal_names</span> <span class="o">=</span> <span class="n">rename_duplicates</span><span class="p">(</span><span class="n">signal_names</span><span class="p">)</span>
+            <span class="n">model_signal_inputs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">signal_names</span><span class="p">,</span> <span class="n">signal_ids</span><span class="p">))</span>
+
+            <span class="c1"># AD-1076</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_signal_inputs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">model_signal_inputs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ordered_input_names</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;ui_selections.pk&#39;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">rename_duplicates</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">names</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">name</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span>
+            <span class="nb">enumerate</span><span class="p">(</span><span class="n">names</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">order_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="n">input_numbers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">item</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">input_numbers</span><span class="p">):</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;This model has an incomplete input signal specification. Expected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="si">}</span><span class="s1"> input signals &#39;</span> \
+                  <span class="sa">f</span><span class="s1">&#39;in sequential order but got inputs: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">inputs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">input_numbers</span><span class="p">]</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Seeq Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seeq Interactions &mdash; seeq-azureml 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/seeq-favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="User Interface" href="../user_interface/index.html" />
+    <link rel="prev" title="Interaction with Azure ML" href="aml_interaction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> seeq-azureml
+            <img src="../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../addon_installation/add_on_installation.html">Seeq Add-on Installation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Seeq-Azure Integration</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="aml_interaction.html">Azure ML Interactions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Seeq Interactions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user_interface/index.html">User Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/utilities.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation/citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../view_on_github/github.html">View on GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">seeq-azureml</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Code Documentation</a> &raquo;</li>
+          <li><a href="index.html">Seeq-Azure ML Integration</a> &raquo;</li>
+      <li>Seeq Interactions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/code_documentation/seeq_azureml_integration/seeq_server_interactions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-seeq.addons.azureml.backend._run_investigation">
+<span id="seeq-interactions"></span><h1>Seeq Interactions<a class="headerlink" href="#module-seeq.addons.azureml.backend._run_investigation" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml.backend._run_investigation.</span></span><span class="sig-name descname"><span class="pre">RunInvestigation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_signals</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">az_model_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">az_model_version</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas._libs.tslibs.timedeltas.Timedelta</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas._libs.tslibs.timedeltas.Timedelta</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'5</span> <span class="pre">min'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workbook</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Data</span> <span class="pre">Lab</span> <span class="pre">&gt;&gt;</span> <span class="pre">Azure</span> <span class="pre">ML</span> <span class="pre">Integration'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worksheet</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'From</span> <span class="pre">Azure</span> <span class="pre">ML</span> <span class="pre">Integration'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasource</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Azure</span> <span class="pre">ML'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint_uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aml_primary_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_signed_certificate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_run_investigation.html#RunInvestigation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Takes the input parameters supplied by the user (typically, via Azure ML
+Integration UI), posts a request to the Azure ML model, gets a result
+signal back from Azure ML nd pushes the result back to Seeq.</p>
+<p>This class assumes that the Azure ML model returns only ONE signal.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.input_signals">
+<span class="sig-name descname"><span class="pre">input_signals</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.input_signals" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary whose keys are the names of the input signals and whose
+values are the Seeq IDs of the input signals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.result_name">
+<span class="sig-name descname"><span class="pre">result_name</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.result_name" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the result signal that will be pushed to Seeq.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.az_model_name">
+<span class="sig-name descname"><span class="pre">az_model_name</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.az_model_name" title="Permalink to this definition"></a></dt>
+<dd><p>Name of the Azure ML model used to compute the result signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.az_model_version">
+<span class="sig-name descname"><span class="pre">az_model_version</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.az_model_version" title="Permalink to this definition"></a></dt>
+<dd><p>The version of the Azure ML model used to compute the result signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.start">
+<span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.start" title="Permalink to this definition"></a></dt>
+<dd><p>The starting time for which to pull data with spy.pull.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.end">
+<span class="sig-name descname"><span class="pre">end</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.end" title="Permalink to this definition"></a></dt>
+<dd><p>The end time for which to pull data with spy.pull.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.grid">
+<span class="sig-name descname"><span class="pre">grid</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.grid" title="Permalink to this definition"></a></dt>
+<dd><p>A period to use for interpolation in the spy.pull call, such that all
+returned samples have the same timestamps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.workbook">
+<span class="sig-name descname"><span class="pre">workbook</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.workbook" title="Permalink to this definition"></a></dt>
+<dd><p>The ID of the Seeq workbook that all pushed items will be ‘scoped to’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.worksheet">
+<span class="sig-name descname"><span class="pre">worksheet</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.worksheet" title="Permalink to this definition"></a></dt>
+<dd><p>The name of a worksheet within the workbook to create/update that will
+render the result signal that has been pushed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.datasource">
+<span class="sig-name descname"><span class="pre">datasource</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.datasource" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the datasource within which to contain all the pushed items.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.endpoint_uri">
+<span class="sig-name descname"><span class="pre">endpoint_uri</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.endpoint_uri" title="Permalink to this definition"></a></dt>
+<dd><p>The endpoint identifier of the AzureML model used to compute the result
+signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.aml_primary_key">
+<span class="sig-name descname"><span class="pre">aml_primary_key</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.aml_primary_key" title="Permalink to this definition"></a></dt>
+<dd><p>The primary key of the Azure ML endpoint</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.quiet">
+<span class="sig-name descname"><span class="pre">quiet</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.quiet" title="Permalink to this definition"></a></dt>
+<dd><p>If True, suppresses progress output. Note that when status is
+provided, the quiet setting of the Status object that is passed
+in takes precedence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.data">
+<span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.data" title="Permalink to this definition"></a></dt>
+<dd><p>A DataFrame with timestamps as Index and input signals data as
+columns. This dataset is passed in the request to the endpoint_uri to
+compute the resulting signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.result_signal">
+<span class="sig-name descname"><span class="pre">result_signal</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.result_signal" title="Permalink to this definition"></a></dt>
+<dd><p>A DataFrame with timestamps as Index and one column with the
+data of the result signal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.pushed_df">
+<span class="sig-name descname"><span class="pre">pushed_df</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.pushed_df" title="Permalink to this definition"></a></dt>
+<dd><p>A DataFrame with the metadata for the result signal pushed, along with
+any errors and statistics about the operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.error_info">
+<span class="sig-name descname"><span class="pre">error_info</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.error_info" title="Permalink to this definition"></a></dt>
+<dd><p>Information on the most recent error that has occurred.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.validate_inputs">
+<span class="sig-name descname"><span class="pre">validate_inputs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_run_investigation.html#RunInvestigation.validate_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.validate_inputs" title="Permalink to this definition"></a></dt>
+<dd><p>Validates the type of the input parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.allow_self_signed_https">
+<span class="sig-name descname"><span class="pre">allow_self_signed_https</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allowed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_run_investigation.html#RunInvestigation.allow_self_signed_https"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.allow_self_signed_https" title="Permalink to this definition"></a></dt>
+<dd><p>Checks whether to allow self-signed https certificates</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.get_seeq_data">
+<span class="sig-name descname"><span class="pre">get_seeq_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_run_investigation.html#RunInvestigation.get_seeq_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.get_seeq_data" title="Permalink to this definition"></a></dt>
+<dd><p>Pulls the input signals required for the Azure ML model from Seeq</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_run_investigation.html#RunInvestigation.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.run" title="Permalink to this definition"></a></dt>
+<dd><p>Posts a request to the Azure ML endpoint_uri with the input data and,
+if successful, retrieves the serialized result signal</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._run_investigation.RunInvestigation.push_to_seeq">
+<span class="sig-name descname"><span class="pre">push_to_seeq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_run_investigation.html#RunInvestigation.push_to_seeq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._run_investigation.RunInvestigation.push_to_seeq" title="Permalink to this definition"></a></dt>
+<dd><p>Pushes the result signal from Azure ML model to Seeq.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">allow_self_signed_https</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allowed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_run_investigation.html#RunInvestigation.allow_self_signed_https"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><p>Checks whether to allow self-signed https certificates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>allowed</strong> (<em>bool</em>) – If True, allows self-signed https certificates</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>-</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">get_seeq_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_run_investigation.html#RunInvestigation.get_seeq_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dd><p>Pulls the input signals required for the Azure ML model from Seeq</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>-</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">push_to_seeq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_run_investigation.html#RunInvestigation.push_to_seeq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Permalink to this definition"></a></dt>
+<dd><p>Pushes the result signal from Azure ML model to Seeq.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>-</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_run_investigation.html#RunInvestigation.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Permalink to this definition"></a></dt>
+<dd><p>Posts a request to the Azure ML endpoint_uri with the input data and,
+if successful, retrieves the serialized result signal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>-</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">validate_inputs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_run_investigation.html#RunInvestigation.validate_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Permalink to this definition"></a></dt>
+<dd><p>Validates the type of the input parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>-</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="aml_interaction.html" class="btn btn-neutral float-left" title="Interaction with Azure ML" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../user_interface/index.html" class="btn btn-neutral float-right" title="User Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Seeq Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

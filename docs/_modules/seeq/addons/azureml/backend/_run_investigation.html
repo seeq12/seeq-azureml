@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>seeq.addons.azureml.backend._run_investigation &mdash; seeq-azureml 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../../_static/seeq-favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> seeq-azureml
+            <img src="../../../../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guide/user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../code_documentation/index.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../changelog/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../license/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../citation/citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../view_on_github/github.html">View on GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">seeq-azureml</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>seeq.addons.azureml.backend._run_investigation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for seeq.addons.azureml.backend._run_investigation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">ssl</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">urllib.request</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">from</span> <span class="nn">urllib.error</span> <span class="kn">import</span> <span class="n">HTTPError</span>
+<span class="kn">from</span> <span class="nn">seeq</span> <span class="kn">import</span> <span class="n">spy</span>
+<span class="kn">from</span> <span class="nn">seeq.addons.azureml.utils</span> <span class="kn">import</span> <span class="n">AzureMLException</span>
+
+<span class="n">DEFAULT_DATASOURCE_NAME</span> <span class="o">=</span> <span class="s1">&#39;Azure ML&#39;</span>
+<span class="n">DEFAULT_WORKBOOK_PATH</span> <span class="o">=</span> <span class="s1">&#39;Data Lab &gt;&gt; Azure ML Integration&#39;</span>
+<span class="n">DEFAULT_WORKBOOK_NAME</span> <span class="o">=</span> <span class="n">DEFAULT_WORKBOOK_PATH</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&gt;&gt;&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="n">DEFAULT_WORKSHEET_NAME</span> <span class="o">=</span> <span class="s1">&#39;From Azure ML Integration&#39;</span>
+<span class="n">DEFAULT_RESULT_SIGNAL_NAME</span> <span class="o">=</span> <span class="s1">&#39;Prediction Azure ML&#39;</span>
+
+
+<div class="viewcode-block" id="RunInvestigation"><a class="viewcode-back" href="../../../../../code_documentation/seeq_azureml_integration/seeq_server_interactions.html#seeq.addons.azureml.backend._run_investigation.RunInvestigation">[docs]</a><span class="k">class</span> <span class="nc">RunInvestigation</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes the input parameters supplied by the user (typically, via Azure ML</span>
+<span class="sd">    Integration UI), posts a request to the Azure ML model, gets a result</span>
+<span class="sd">    signal back from Azure ML nd pushes the result back to Seeq.</span>
+
+<span class="sd">    This class assumes that the Azure ML model returns only ONE signal.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_signals: dict</span>
+<span class="sd">        A dictionary whose keys are the names of the input signals and whose</span>
+<span class="sd">        values are the Seeq IDs of the input signals.</span>
+<span class="sd">    result_name: str</span>
+<span class="sd">        The name of the result signal that will be pushed to Seeq.</span>
+<span class="sd">    az_model_name: str</span>
+<span class="sd">        Name of the Azure ML model used to compute the result signal.</span>
+<span class="sd">    az_model_version: str</span>
+<span class="sd">        The version of the Azure ML model used to compute the result signal.</span>
+<span class="sd">    start: str</span>
+<span class="sd">        The starting time for which to pull data with spy.pull.</span>
+<span class="sd">    end: str</span>
+<span class="sd">        The end time for which to pull data with spy.pull.</span>
+<span class="sd">    grid: str</span>
+<span class="sd">        A period to use for interpolation in the spy.pull call, such that all</span>
+<span class="sd">        returned samples have the same timestamps.</span>
+<span class="sd">    workbook: str</span>
+<span class="sd">        The ID of the Seeq workbook that all pushed items will be &#39;scoped to&#39;.</span>
+<span class="sd">    worksheet: str</span>
+<span class="sd">        The name of a worksheet within the workbook to create/update that will</span>
+<span class="sd">        render the result signal that has been pushed.</span>
+<span class="sd">    datasource: str</span>
+<span class="sd">        The name of the datasource within which to contain all the pushed items.</span>
+<span class="sd">    endpoint_uri: str</span>
+<span class="sd">        The endpoint identifier of the AzureML model used to compute the result</span>
+<span class="sd">        signal.</span>
+<span class="sd">    aml_primary_key: str</span>
+<span class="sd">        The primary key of the Azure ML endpoint</span>
+<span class="sd">    quiet: bool</span>
+<span class="sd">        If True, suppresses progress output. Note that when status is</span>
+<span class="sd">        provided, the quiet setting of the Status object that is passed</span>
+<span class="sd">        in takes precedence.</span>
+<span class="sd">    data: pd.DataFrame</span>
+<span class="sd">        A DataFrame with timestamps as Index and input signals data as</span>
+<span class="sd">        columns. This dataset is passed in the request to the endpoint_uri to</span>
+<span class="sd">        compute the resulting signal.</span>
+<span class="sd">    result_signal: pd.DataFrame</span>
+<span class="sd">        A DataFrame with timestamps as Index and one column with the</span>
+<span class="sd">        data of the result signal</span>
+<span class="sd">    pushed_df: pd.DataFrame</span>
+<span class="sd">        A DataFrame with the metadata for the result signal pushed, along with</span>
+<span class="sd">        any errors and statistics about the operation.</span>
+<span class="sd">    error_info: str</span>
+<span class="sd">        Information on the most recent error that has occurred.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    validate_inputs()</span>
+<span class="sd">        Validates the type of the input parameters</span>
+<span class="sd">    allow_self_signed_https(allowed)</span>
+<span class="sd">        Checks whether to allow self-signed https certificates</span>
+<span class="sd">    get_seeq_data()</span>
+<span class="sd">        Pulls the input signals required for the Azure ML model from Seeq</span>
+<span class="sd">    run()</span>
+<span class="sd">        Posts a request to the Azure ML endpoint_uri with the input data and,</span>
+<span class="sd">        if successful, retrieves the serialized result signal</span>
+<span class="sd">    push_to_seeq()</span>
+<span class="sd">        Pushes the result signal from Azure ML model to Seeq.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">input_signals</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                 <span class="n">result_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">az_model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">az_model_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">,</span> <span class="n">datetime</span><span class="p">],</span>
+                 <span class="n">end</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">,</span> <span class="n">datetime</span><span class="p">],</span>
+                 <span class="n">grid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;5 min&#39;</span><span class="p">,</span>
+                 <span class="n">workbook</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_WORKBOOK_PATH</span><span class="p">,</span>
+                 <span class="n">worksheet</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_WORKSHEET_NAME</span><span class="p">,</span>
+                 <span class="n">datasource</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_DATASOURCE_NAME</span><span class="p">,</span>
+                 <span class="n">endpoint_uri</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">aml_primary_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">self_signed_certificate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        input_signals: dict</span>
+<span class="sd">            A dictionary whose keys are the names of the input signals and whose</span>
+<span class="sd">            values are the Seeq IDs of the input signals.</span>
+<span class="sd">        result_name: str</span>
+<span class="sd">            The name of the result signal that will be pushed to Seeq.</span>
+<span class="sd">        az_model_name: str</span>
+<span class="sd">            Name of the Azure ML model used to compute the result signal.</span>
+<span class="sd">        az_model_version: str</span>
+<span class="sd">            The version of the Azure ML model used to compute the result signal.</span>
+<span class="sd">        start: str</span>
+<span class="sd">            The starting time for which to pull data with spy.pull.</span>
+<span class="sd">        end: str</span>
+<span class="sd">            The end time for which to pull data with spy.pull.</span>
+<span class="sd">        grid: str, default &#39;5 min&#39;</span>
+<span class="sd">            A period to use for interpolation in the spy.pull call, such that all</span>
+<span class="sd">            returned samples have the same timestamps.</span>
+<span class="sd">        workbook: str, default &#39;Data Lab &gt;&gt; Azure ML Integration&#39;</span>
+<span class="sd">            The ID of the Seeq workbook that all pushed items will be &#39;scoped to&#39;.</span>
+<span class="sd">        worksheet: str, default &#39;From Azure ML Integration&#39;</span>
+<span class="sd">            The name of a worksheet within the workbook to create/update that will</span>
+<span class="sd">            render the result signal that has been pushed.</span>
+<span class="sd">        datasource: str, default &#39;Azure ML&#39;</span>
+<span class="sd">            The name of the datasource within which to contain all the pushed items.</span>
+<span class="sd">        endpoint_uri: str</span>
+<span class="sd">            The endpoint identifier of the AzureML model used to compute the result</span>
+<span class="sd">            signal.</span>
+<span class="sd">        aml_primary_key: str</span>
+<span class="sd">            The primary key of the Azure ML endpoint</span>
+<span class="sd">        self_signed_certificate: bool, default True</span>
+<span class="sd">            If True, allows self-signed https certificates</span>
+<span class="sd">        quiet: bool</span>
+<span class="sd">            If True, suppresses progress output. Note that when status is</span>
+<span class="sd">            provided, the quiet setting of the Status object that is passed</span>
+<span class="sd">            in takes precedent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_signals</span> <span class="o">=</span> <span class="n">input_signals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_name</span> <span class="o">=</span> <span class="n">result_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">az_model_name</span> <span class="o">=</span> <span class="n">az_model_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">az_model_version</span> <span class="o">=</span> <span class="n">az_model_version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">end</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workbook</span> <span class="o">=</span> <span class="n">workbook</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">worksheet</span> <span class="o">=</span> <span class="n">worksheet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datasource</span> <span class="o">=</span> <span class="n">datasource</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">endpoint_uri</span> <span class="o">=</span> <span class="n">endpoint_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aml_primary_key</span> <span class="o">=</span> <span class="n">aml_primary_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quiet</span> <span class="o">=</span> <span class="n">quiet</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_inputs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allow_self_signed_https</span><span class="p">(</span><span class="n">self_signed_certificate</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_signal</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pushed_df</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_info</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="RunInvestigation.validate_inputs"><a class="viewcode-back" href="../../../../../code_documentation/seeq_azureml_integration/seeq_server_interactions.html#seeq.addons.azureml.backend._run_investigation.RunInvestigation.validate_inputs">[docs]</a>    <span class="k">def</span> <span class="nf">validate_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validates the type of the input parameters</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        -: None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">idd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_signals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">spy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">is_guid</span><span class="p">(</span><span class="n">idd</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The signal ID &quot;</span><span class="si">{</span><span class="n">idd</span><span class="si">}</span><span class="s1">&quot; of the signal &quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; is malformed&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The &#39;start&#39; argument must be of type pd.Timedelta or datetime.datetime. &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Got start: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The &#39;start&#39; argument must be of type pd.Timedelta or datetime.datetime. &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Got start: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;result_name&#39;</span><span class="p">,</span> <span class="s1">&#39;az_model_name&#39;</span><span class="p">,</span> <span class="s1">&#39;az_model_version&#39;</span><span class="p">,</span> <span class="s1">&#39;workbook&#39;</span><span class="p">,</span> <span class="s1">&#39;worksheet&#39;</span><span class="p">,</span> <span class="s1">&#39;datasource&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;endpoint_uri&#39;</span><span class="p">,</span> <span class="s1">&#39;aml_primary_key&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">prop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">),</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">prop</span><span class="si">}</span><span class="s2"> argument must be of type str. Got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint_uri</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Argument &#39;endpoint_uri&#39; must be a string&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span></div>
+
+<div class="viewcode-block" id="RunInvestigation.allow_self_signed_https"><a class="viewcode-back" href="../../../../../code_documentation/seeq_azureml_integration/seeq_server_interactions.html#seeq.addons.azureml.backend._run_investigation.RunInvestigation.allow_self_signed_https">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">allow_self_signed_https</span><span class="p">(</span><span class="n">allowed</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks whether to allow self-signed https certificates</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        allowed: bool</span>
+<span class="sd">            If True, allows self-signed https certificates</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        -: None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># bypass the server certificate verification on client side</span>
+        <span class="k">if</span> <span class="n">allowed</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PYTHONHTTPSVERIFY&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ssl</span><span class="p">,</span> <span class="s1">&#39;_create_unverified_context&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">ssl</span><span class="o">.</span><span class="n">_create_default_https_context</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">_create_unverified_context</span></div>
+
+<div class="viewcode-block" id="RunInvestigation.get_seeq_data"><a class="viewcode-back" href="../../../../../code_documentation/seeq_azureml_integration/seeq_server_interactions.html#seeq.addons.azureml.backend._run_investigation.RunInvestigation.get_seeq_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_seeq_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pulls the input signals required for the Azure ML model from Seeq</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        -: None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">signals</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_signals</span><span class="p">)</span>  <span class="c1"># spy.pull is modifying the input dict</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span><span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39;Type&#39;</span><span class="p">:</span> <span class="s1">&#39;Signal&#39;</span><span class="p">}</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">signals</span><span class="o">.</span><span class="n">values</span><span class="p">()]),</span>
+                        <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
+                        <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span>
+                        <span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span>
+                        <span class="n">header</span><span class="o">=</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span>
+                        <span class="n">quiet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quiet</span><span class="p">)</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_signals</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_signals</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There is no data available for these input signals during the selected time range&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+    <span class="k">def</span> <span class="nf">_prepare_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_seeq_data</span><span class="p">()</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;iso&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">aml_primary_key</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint_uri</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RunInvestigation.run"><a class="viewcode-back" href="../../../../../code_documentation/seeq_azureml_integration/seeq_server_interactions.html#seeq.addons.azureml.backend._run_investigation.RunInvestigation.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Posts a request to the Azure ML endpoint_uri with the input data and,</span>
+<span class="sd">        if successful, retrieves the serialized result signal</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        -: None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_request</span><span class="p">()</span>
+        <span class="c1"># Hit the endpoint with the data, get the response, and push into Seeq</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result_signal</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+
+        <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error_info</span> <span class="o">=</span> <span class="n">error</span>
+            <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Azure request failed&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RunInvestigation.push_to_seeq"><a class="viewcode-back" href="../../../../../code_documentation/seeq_azureml_integration/seeq_server_interactions.html#seeq.addons.azureml.backend._run_investigation.RunInvestigation.push_to_seeq">[docs]</a>    <span class="k">def</span> <span class="nf">push_to_seeq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pushes the result signal from Azure ML model to Seeq.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        -: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_signal</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;This implementation assumes a single signal resulting from &#39;</span>
+                                           <span class="sa">f</span><span class="s1">&#39;the Azure ML model&#39;</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_name</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">az_model_name</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">az_model_version</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_signals</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="n">hash_object</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_signal</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">hash_object</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()]</span>  <span class="c1"># Rename the name coming from Azure ML model</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pushed_df</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result_signal</span><span class="p">,</span>
+            <span class="n">workbook</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workbook</span><span class="p">,</span>
+            <span class="n">datasource</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">datasource</span><span class="p">,</span>
+            <span class="n">worksheet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">worksheet</span><span class="p">,</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">spy</span><span class="o">.</span><span class="n">Status</span><span class="p">(</span><span class="n">quiet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quiet</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">separator</span> <span class="o">=</span> <span class="s2">&quot;,</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Model Name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">az_model_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">Model Version: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">az_model_version</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                      <span class="sa">f</span><span class="s2">&quot;Inputs: </span><span class="se">\n</span><span class="s2">[</span><span class="si">{</span><span class="n">separator</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_signals</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">}</span><span class="s2">]&quot;</span>
+
+        <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pushed_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;Original Name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hash_object</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_name</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;Description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;Model Name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">az_model_name</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;Model Version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">az_model_version</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;Input Signals&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_signals</span><span class="o">.</span><span class="n">values</span><span class="p">()))),</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Signal&quot;</span>
+        <span class="n">spy</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quiet</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Seeq Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

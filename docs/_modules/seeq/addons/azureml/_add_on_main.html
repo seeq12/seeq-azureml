@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>seeq.addons.azureml._add_on_main &mdash; seeq-azureml 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/seeq-favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> seeq-azureml
+            <img src="../../../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guide/user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../code_documentation/index.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../license/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../citation/citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../view_on_github/github.html">View on GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">seeq-azureml</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>seeq.addons.azureml._add_on_main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for seeq.addons.azureml._add_on_main</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">tzlocal</span>
+<span class="kn">import</span> <span class="nn">ipyvuetify</span> <span class="k">as</span> <span class="nn">v</span>
+<span class="kn">from</span> <span class="nn">seeq</span> <span class="kn">import</span> <span class="n">spy</span>
+<span class="kn">from</span> <span class="nn">seeq.sdk.rest</span> <span class="kn">import</span> <span class="n">ApiException</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">Javascript</span><span class="p">,</span> <span class="n">clear_output</span><span class="p">,</span> <span class="n">HTML</span>
+<span class="kn">from</span> <span class="nn">seeq.addons.azureml.utils</span> <span class="kn">import</span> <span class="n">get_workbook_worksheet_workstep_ids</span><span class="p">,</span> <span class="n">AzureMLException</span>
+<span class="kn">from</span> <span class="nn">seeq.addons.azureml.backend</span> <span class="kn">import</span> <span class="n">RunInvestigation</span>
+<span class="kn">from</span> <span class="nn">seeq.addons.azureml</span> <span class="kn">import</span> <span class="n">UserSelections</span>
+<span class="kn">from</span> <span class="nn">seeq.addons.azureml</span> <span class="kn">import</span> <span class="n">ui_components</span>
+
+<span class="n">DEFAULT_WORKSHEET_NAME</span> <span class="o">=</span> <span class="s1">&#39;From Azure ML Integration&#39;</span>
+
+
+<div class="viewcode-block" id="MlOperate"><a class="viewcode-back" href="../../../../code_documentation/user_interface/addon_ui.html#seeq.addons.azureml._add_on_main.MlOperate">[docs]</a><span class="k">class</span> <span class="nc">MlOperate</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main class for the Seeq - Azure Ml integration Add-on. Creates an instance</span>
+<span class="sd">    of the Add-on UI and passes the callbacks for the different events.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    workbook_id: str</span>
+<span class="sd">        The ID of the Seeq workbook where the Add-on was instantiated</span>
+<span class="sd">    config_file: str</span>
+<span class="sd">        The configuration file with the necessary information to connect to the</span>
+<span class="sd">        Azure ML service. By default, the file is located in ~/.seeq/aml_config.ini</span>
+<span class="sd">    default_time_delta: str</span>
+<span class="sd">        Default time delta to populate the start time of the investigate range</span>
+<span class="sd">    deploy_frequency: pd.Timedelta</span>
+<span class="sd">        The schedule frequency for the &quot;deploy&quot; option as a pandas.Timedelta</span>
+<span class="sd">    user_selections: seeq.addons.azureml.UserSelections</span>
+<span class="sd">        An instance of the UserSelections object that serves as an interface</span>
+<span class="sd">        between the UI and the backend integration between Seeq and Azure ML.</span>
+<span class="sd">    app: seeq.addons.azureml.ui_components.AppLayout</span>
+<span class="sd">        An instance of the Add-on UI</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">v</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">light</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="s1">&#39;#007960&#39;</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">light</span><span class="o">.</span><span class="n">primary</span> <span class="o">=</span> <span class="s1">&#39;#007960&#39;</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">light</span><span class="o">.</span><span class="n">secondary</span> <span class="o">=</span> <span class="s1">&#39;#EEEEEE&#39;</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">dark</span><span class="o">.</span><span class="n">secondary</span> <span class="o">=</span> <span class="s1">&#39;#EEEEEE&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sdl_notebook_url</span><span class="p">,</span> <span class="n">config_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="s2">&quot;&lt;style&gt;#appmode-leave {display: none;}&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workbook_id</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span> <span class="o">=</span> <span class="n">get_workbook_worksheet_workstep_ids</span><span class="p">(</span><span class="n">sdl_notebook_url</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_file</span> <span class="o">=</span> <span class="n">config_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_time_delta</span> <span class="o">=</span> <span class="s1">&#39;1 hour&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deploy_frequency</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">ui_components</span><span class="o">.</span><span class="n">AppLayout</span><span class="p">(</span><span class="n">endpoint_on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_endpoint_dropdown_change</span><span class="p">,</span>
+                                           <span class="n">asset_on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_asset_dropdown_change</span><span class="p">,</span>
+                                           <span class="n">action_on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_action_dropdown_change</span><span class="p">,</span>
+                                           <span class="n">result_name_on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_result_name_change</span><span class="p">,</span>
+                                           <span class="n">start_on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_date_range_change</span><span class="p">,</span>
+                                           <span class="n">end_on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_date_range_change</span><span class="p">,</span>
+                                           <span class="n">jobname_on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_jobname_change</span><span class="p">,</span>
+                                           <span class="n">frequency_on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_frequency_change</span><span class="p">,</span>
+                                           <span class="n">button_on_click</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_submit_click</span>
+                                           <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_disable_value_for_all_components</span><span class="p">(</span><span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_disable_value_for_all_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_disabled</span> <span class="o">=</span> <span class="n">disabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">asset_disabled</span> <span class="o">=</span> <span class="n">disabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">action_disabled</span> <span class="o">=</span> <span class="n">disabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">result_name_disabled</span> <span class="o">=</span> <span class="n">disabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">start_range</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">disabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">end_range</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">disabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">deploy_input_form</span><span class="o">.</span><span class="n">jobname_disabled</span> <span class="o">=</span> <span class="n">disabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">deploy_input_form</span><span class="o">.</span><span class="n">frequency_disabled</span> <span class="o">=</span> <span class="n">disabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_disabled</span> <span class="o">=</span> <span class="n">disabled</span>
+
+    <span class="k">def</span> <span class="nf">set_cards_visible_spinner_invisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">model_inputs_visible</span> <span class="o">=</span> <span class="n">visible</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">model_action_visible</span> <span class="o">=</span> <span class="n">visible</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">model_summary_visible</span> <span class="o">=</span> <span class="n">visible</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">spinner_visible</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">visible</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">spinner_message_visible</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">visible</span>
+
+    <span class="k">def</span> <span class="nf">validate_forms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigation_form_valid</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_disabled</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">selection</span> <span class="o">==</span> <span class="s1">&#39;Deploy&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">deploy_input_form</span><span class="o">.</span><span class="n">deploy_form_valid</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_disabled</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">time_range_warning</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_disabled</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_disabled</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_available_aml_endpoints</span><span class="p">()</span>
+        <span class="n">clear_output</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span>
+
+    <span class="k">def</span> <span class="nf">set_error_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;ERROR&#39;</span><span class="p">,</span> <span class="n">disabled_submit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">message_type</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">error_title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">error_message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="k">if</span> <span class="n">disabled_submit</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_disabled</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">set_spinner_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;RUNNING&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">message_status</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">spinner_message_title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">spinner_message</span> <span class="o">=</span> <span class="n">message</span>
+
+    <span class="k">def</span> <span class="nf">populate_available_aml_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_cards_visible_spinner_invisible</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_spinner_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Connecting to Azure ML service&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span> <span class="o">=</span> <span class="n">UserSelections</span><span class="p">(</span><span class="n">config_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config_file</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">AzureMLException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_spinner_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Azure Exception&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">spinner_visible</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span>
+        <span class="c1"># populate dropdown with available model endpoints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">endpoints</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_disabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_cards_visible_spinner_invisible</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">populate_assets_dropdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">asset_items</span> <span class="o">=</span> <span class="n">items</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">asset_visible</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">items</span> <span class="k">else</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">asset_disabled</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">items</span> <span class="k">else</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">items</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">asset_info</span> <span class="o">=</span> <span class="s2">&quot;Not applicable&quot;</span>
+
+    <span class="k">def</span> <span class="nf">populate_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">validate_model_summary_properties</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">populate_investigate_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">current_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">current_time</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tzlocal</span><span class="o">.</span><span class="n">get_localzone</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">end_range</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">end_range</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">end_time</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">end_range</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">start_range</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_time_delta</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">end_range</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">end_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_disable_value_for_all_components</span><span class="p">(</span><span class="n">disabled</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_endpoint_dropdown_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_disable_value_for_all_components</span><span class="p">(</span><span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_disabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">disabled_submit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_loading</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">asset_visible</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">get_assets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">endpoints</span><span class="p">[</span><span class="n">data</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">AzureMLException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;AzureMLException: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="k">except</span> <span class="n">ApiException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;ApiException: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">asset_paths</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">get_signal_inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">endpoints</span><span class="p">[</span><span class="n">data</span><span class="p">])</span>
+            <span class="k">except</span> <span class="n">AzureMLException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;AzureMLException: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="k">except</span> <span class="n">ApiException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;ApiException: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">populate_investigate_range</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">endpoint_info</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                  <span class="n">asset_info</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">asset_path_from_signals</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">asset_path_from_signals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;NA&quot;</span><span class="p">,</span>
+                                  <span class="n">signals_info</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_action_dropdown_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">asset_paths</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">populate_assets_dropdown</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">endpoint_info</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">asset_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">signals_info</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">asset_selection</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>  <span class="c1"># if there is already an asset selection.</span>
+                <span class="c1"># Unfortunately, ipyvuetify assigns the value of the selection till the end of the callback</span>
+                <span class="c1"># then, we manually assign it to `endpoint_selection` before executing `on_asset_dropdown_change`</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_selection</span> <span class="o">=</span> <span class="n">data</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">on_asset_dropdown_change</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">asset_selection</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_loading</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_asset_dropdown_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">disabled_submit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">get_signal_inputs</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">endpoints</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_selection</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">asset_paths</span><span class="p">[</span><span class="n">data</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">AzureMLException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;AzureMLException: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="k">except</span> <span class="n">ApiException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;ApiException: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_investigate_range</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">asset_info</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                              <span class="n">signals_info</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_action_dropdown_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_action_dropdown_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">disabled_submit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;Investigate&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">jobname_info</span><span class="o">=</span><span class="s2">&quot;NA&quot;</span><span class="p">,</span> <span class="n">frequency_info</span><span class="o">=</span><span class="s2">&quot;NA&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_date_range_change</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;Deploy&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">start_info</span><span class="o">=</span><span class="s2">&quot;NA&quot;</span><span class="p">,</span> <span class="n">end_info</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_jobname_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">deploy_input_form</span><span class="o">.</span><span class="n">jobname</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_frequency_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">deploy_input_form</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_date_range_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">disabled_submit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">start_range</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">end_range</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">end</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">time_range_warning</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="s1">&#39;Invalid&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">start_info</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="n">end_info</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">time_range_warning</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">start_info</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="n">end_info</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_result_name_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">disabled_submit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">result_signal_info</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_jobname_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">disabled_submit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">jobname_info</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_frequency_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">disabled_submit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">frequency_info</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deploy_frequency</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">deploy_input_form</span><span class="o">.</span><span class="n">frequency</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                <span class="s1">&#39;every&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;ValueError: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="c1"># manually disabling the button since the check in the try block is not implemented in Rules of the Template</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_disabled</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">frequency_info</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_submit_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">disabled_submit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_disabled</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Incomplete form: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Complete all required fields&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Wrong input: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Could not find input signals for model endpoint &quot;&#39;</span>
+                                                                  <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_selection</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">selection</span> <span class="o">==</span> <span class="s1">&#39;Investigate&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_loading</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">investigation</span> <span class="o">=</span> <span class="n">RunInvestigation</span><span class="p">(</span><span class="n">input_signals</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="p">,</span>
+                                             <span class="n">result_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">result_name</span><span class="p">,</span>
+                                             <span class="n">az_model_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
+                                             <span class="n">az_model_version</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_version</span><span class="p">),</span>
+                                             <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">start_range</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                             <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">end_range</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                             <span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_sample_rate</span><span class="p">,</span>
+                                             <span class="n">workbook</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workbook_id</span><span class="p">,</span>
+                                             <span class="n">worksheet</span><span class="o">=</span><span class="n">DEFAULT_WORKSHEET_NAME</span><span class="p">,</span>
+                                             <span class="n">endpoint_uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_endpoint_uri</span><span class="p">,</span>
+                                             <span class="n">aml_primary_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">_model_primary_key</span><span class="p">,</span>
+                                             <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">investigation</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+                <span class="n">investigation</span><span class="o">.</span><span class="n">push_to_seeq</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">AzureMLException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;AzureMLException: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_loading</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">return</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Value Error: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_loading</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">return</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">wb</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">workbooks</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+                    <span class="p">{</span>
+                        <span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">workbook_id</span><span class="p">,</span>
+                        <span class="s1">&#39;Workbook Type&#39;</span><span class="p">:</span> <span class="s1">&#39;Analysis&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Type&#39;</span><span class="p">:</span> <span class="s1">&#39;Workbook&#39;</span>
+                    <span class="p">}</span>
+                <span class="p">]),</span> <span class="n">status</span><span class="o">=</span><span class="n">spy</span><span class="o">.</span><span class="n">Status</span><span class="p">(</span><span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span> <span class="n">ApiException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;ApiException: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_loading</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">return</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ws</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">wb</span><span class="o">.</span><span class="n">worksheets</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">DEFAULT_WORKSHEET_NAME</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;IndexError: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">return</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_loading</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">display</span><span class="p">(</span><span class="n">Javascript</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;window.open(&quot;</span><span class="si">{</span><span class="n">ws</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&quot;);&#39;</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">selection</span> <span class="o">==</span> <span class="s1">&#39;Deploy&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_loading</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">job_parameters</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;Schedule&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">deploy_input_form</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
+                <span class="s1">&#39;Frequency&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">deploy_frequency</span><span class="p">,</span>
+                <span class="s1">&#39;Input Signals&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="p">,</span>
+                <span class="s1">&#39;Result Name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">result_name</span><span class="p">,</span>
+                <span class="s1">&#39;AZ model name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
+                <span class="s1">&#39;AZ model version&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_version</span><span class="p">),</span>
+                <span class="s1">&#39;Grid&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_sample_rate</span><span class="p">,</span>
+                <span class="s1">&#39;Workbook&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">workbook_id</span><span class="p">,</span>
+                <span class="s1">&#39;Worksheet&#39;</span><span class="p">:</span> <span class="n">DEFAULT_WORKSHEET_NAME</span><span class="p">,</span>
+                <span class="s1">&#39;Endpoint&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_endpoint_uri</span><span class="p">,</span>
+                <span class="s1">&#39;aml_primary_key&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">_model_primary_key</span><span class="p">,</span>
+                <span class="s1">&#39;User&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">spy</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">first_name</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">spy</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">last_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Job Name&#39;</span><span class="p">:</span> <span class="s2">&quot;job name&quot;</span>
+            <span class="p">}</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_data_lab_project_url</span><span class="p">()</span><span class="si">}</span><span class="s2">/notebooks/deployment/azureml_integration_deploy_model.ipynb&quot;</span>
+
+            <span class="n">jobs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">job_parameters</span><span class="p">])</span>
+            <span class="n">spy</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">datalab_notebook_url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_loading</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;SUCCESS: &#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Job has been scheduled&#39;</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;SUCCESS&#39;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">validate_model_summary_properties</span><span class="p">(</span><span class="n">props</span><span class="p">):</span>
+    <span class="n">allowed_kwargs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;endpoint_info&#39;</span><span class="p">,</span> <span class="s1">&#39;asset_info&#39;</span><span class="p">,</span> <span class="s1">&#39;signals_info&#39;</span><span class="p">,</span> <span class="s1">&#39;start_info&#39;</span><span class="p">,</span> <span class="s1">&#39;end_info&#39;</span><span class="p">,</span> <span class="s1">&#39;jobname_info&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;frequency_info&#39;</span><span class="p">,</span> <span class="s1">&#39;result_signal_info&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">prop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_kwargs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Property &quot;</span><span class="si">{</span><span class="n">prop</span><span class="si">}</span><span class="s1">&quot; is not a recognized Model Summary property&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Seeq Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

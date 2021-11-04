@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UI Components &mdash; seeq-azureml 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/seeq-favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Seeq Add-on User Interface" href="addon_ui.html" />
+    <link rel="prev" title="User Interface" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> seeq-azureml
+            <img src="../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../addon_installation/add_on_installation.html">Seeq Add-on Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../seeq_azureml_integration/index.html">Seeq-Azure Integration</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">User Interface</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">UI Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="addon_ui.html">Seeq Add-on User Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/utilities.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation/citation.html">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../view_on_github/github.html">View on GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">seeq-azureml</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Code Documentation</a> &raquo;</li>
+          <li><a href="index.html">User Interface</a> &raquo;</li>
+      <li>UI Components</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/code_documentation/user_interface/ui_components.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-seeq.addons.azureml.ui_components._app_layout">
+<span id="ui-components"></span><h1>UI Components<a class="headerlink" href="#module-seeq.addons.azureml.ui_components._app_layout" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._app_layout.AppLayout">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml.ui_components._app_layout.</span></span><span class="sig-name descname"><span class="pre">AppLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/ui_components/_app_layout.html#AppLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.ui_components._app_layout.AppLayout" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ipyvuetify.VuetifyTemplate.VuetifyTemplate</span></code></p>
+<p>UI component - Layout of the Add-on</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._app_layout.AppLayout.template_file">
+<span class="sig-name descname"><span class="pre">template_file</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._app_layout.AppLayout.template_file" title="Permalink to this definition"></a></dt>
+<dd><p>Modifies the VueTemplate.template_file attribute with the
+seeq.addons.azureml.ui_components.templates._app_layout.vue template</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._app_layout.AppLayout.spinner_message_title">
+<span class="sig-name descname"><span class="pre">spinner_message_title</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._app_layout.AppLayout.spinner_message_title" title="Permalink to this definition"></a></dt>
+<dd><p>Title of the message to display just before the spinner_message</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str, default ‘’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._app_layout.AppLayout.spinner_message">
+<span class="sig-name descname"><span class="pre">spinner_message</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._app_layout.AppLayout.spinner_message" title="Permalink to this definition"></a></dt>
+<dd><p>Message to display below the progress spinner</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str, default ‘’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._app_layout.AppLayout.spinner_message_visible">
+<span class="sig-name descname"><span class="pre">spinner_message_visible</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._app_layout.AppLayout.spinner_message_visible" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the message below the progress spinner will be visible</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, default True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._app_layout.AppLayout.spinner_visible">
+<span class="sig-name descname"><span class="pre">spinner_visible</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._app_layout.AppLayout.spinner_visible" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the progress spinner will be visible</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, default False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._app_layout.AppLayout.message_status">
+<span class="sig-name descname"><span class="pre">message_status</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._app_layout.AppLayout.message_status" title="Permalink to this definition"></a></dt>
+<dd><p>Keyword describing the message type which allows to display the
+spinner_message with different colors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str, default ‘RUNNING’</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-seeq.addons.azureml.ui_components._hamburger_menu"></span><dl class="py class">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._hamburger_menu.HamburgerMenu">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml.ui_components._hamburger_menu.</span></span><span class="sig-name descname"><span class="pre">HamburgerMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/ui_components/_hamburger_menu.html#HamburgerMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.ui_components._hamburger_menu.HamburgerMenu" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ipyvuetify.VuetifyTemplate.VuetifyTemplate</span></code></p>
+<p>UI component - Hamburger menu of Add-on</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._hamburger_menu.HamburgerMenu.template_file">
+<span class="sig-name descname"><span class="pre">template_file</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._hamburger_menu.HamburgerMenu.template_file" title="Permalink to this definition"></a></dt>
+<dd><p>Modifies the VueTemplate.template_file attribute with the
+seeq.addons.azureml.ui_components.templates._hamburger_menu.vue template</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-seeq.addons.azureml.ui_components._investigate_range"></span><dl class="py class">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._investigate_range.InvestigateRange">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml.ui_components._investigate_range.</span></span><span class="sig-name descname"><span class="pre">InvestigateRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/ui_components/_investigate_range.html#InvestigateRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.ui_components._investigate_range.InvestigateRange" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ipyvuetify.VuetifyTemplate.VuetifyTemplate</span></code></p>
+<p>UI component - DatetimePicker for the start and end times of the
+investigation range</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._investigate_range.InvestigateRange.template_file">
+<span class="sig-name descname"><span class="pre">template_file</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._investigate_range.InvestigateRange.template_file" title="Permalink to this definition"></a></dt>
+<dd><p>Modifies the VueTemplate.template_file attribute with the
+seeq.addons.azureml.ui_components.templates._investigate_range.vue template</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._investigate_range.InvestigateRange.start_range">
+<span class="sig-name descname"><span class="pre">start_range</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._investigate_range.InvestigateRange.start_range" title="Permalink to this definition"></a></dt>
+<dd><p>DatetimePicker widget for the start time of the investigation range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>ipydatetime.DatetimePicker</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._investigate_range.InvestigateRange.end_range">
+<span class="sig-name descname"><span class="pre">end_range</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._investigate_range.InvestigateRange.end_range" title="Permalink to this definition"></a></dt>
+<dd><p>DatetimePicker widget for the end time of the investigation range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>ipydatetime.DatetimePicker</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._investigate_range.InvestigateRange.investigation_range_visible">
+<span class="sig-name descname"><span class="pre">investigation_range_visible</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._investigate_range.InvestigateRange.investigation_range_visible" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the two DatetimePicker for the start and end times of the
+investigation range will be visible</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, default True</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-seeq.addons.azureml.ui_components._schedule_inputs"></span><dl class="py class">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml.ui_components._schedule_inputs.</span></span><span class="sig-name descname"><span class="pre">ScheduleInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/ui_components/_schedule_inputs.html#ScheduleInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ipyvuetify.VuetifyTemplate.VuetifyTemplate</span></code></p>
+<p>UI component - Form used for the “deploy” option with text fields for the
+result signal, the jobname, and the frequency of the deployed schedule.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.template_file">
+<span class="sig-name descname"><span class="pre">template_file</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.template_file" title="Permalink to this definition"></a></dt>
+<dd><p>Modifies the VueTemplate.template_file attribute with the
+seeq.addons.azureml.ui_components.templates._schedule_inputs.vue template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.color">
+<span class="sig-name descname"><span class="pre">color</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.color" title="Permalink to this definition"></a></dt>
+<dd><p>Primary color of the text fields for the “deploy” option in the Model
+Action card.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.frequency">
+<span class="sig-name descname"><span class="pre">frequency</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.frequency" title="Permalink to this definition"></a></dt>
+<dd><p>A Cron expression with the frequency that the scheduled job will be run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str, default ‘’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.frequency_disabled">
+<span class="sig-name descname"><span class="pre">frequency_disabled</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.frequency_disabled" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the frequency text field is disabled. Otherwise, it is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.jobname">
+<span class="sig-name descname"><span class="pre">jobname</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.jobname" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the job to be deployed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str, default ‘’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.jobname_disabled">
+<span class="sig-name descname"><span class="pre">jobname_disabled</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.jobname_disabled" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the jobname text field is disabled. Otherwise, it is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.deploy_form_visible">
+<span class="sig-name descname"><span class="pre">deploy_form_visible</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.deploy_form_visible" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the jobname and frequency fields are visible. Otherwise, they
+are invisible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, default True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.deploy_form_valid">
+<span class="sig-name descname"><span class="pre">deploy_form_valid</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._schedule_inputs.ScheduleInputs.deploy_form_valid" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the form that wraps the jobname and frequency fields is marked
+as valid. Otherwise, the form is invalid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, default True</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-seeq.addons.azureml.ui_components._model_inputs"></span><dl class="py class">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml.ui_components._model_inputs.</span></span><span class="sig-name descname"><span class="pre">ModelInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/ui_components/_model_inputs.html#ModelInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ipyvuetify.VuetifyTemplate.VuetifyTemplate</span></code></p>
+<p>UI component - Model Inputs card with endpoints and assets dropdowns</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.template_file">
+<span class="sig-name descname"><span class="pre">template_file</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.template_file" title="Permalink to this definition"></a></dt>
+<dd><p>Modifies the VueTemplate.template_file attribute with the
+seeq.addons.azureml.ui_components.templates._model_inputs.vue template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.model_inputs_visible">
+<span class="sig-name descname"><span class="pre">model_inputs_visible</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.model_inputs_visible" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the entire Model Inputs card will be visible. Otherwise,
+the entire Model Inputs card will not be visible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, default True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.endpoint_disabled">
+<span class="sig-name descname"><span class="pre">endpoint_disabled</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.endpoint_disabled" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the endpoints dropdown is disabled. Otherwise, it is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.endpoint_color">
+<span class="sig-name descname"><span class="pre">endpoint_color</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.endpoint_color" title="Permalink to this definition"></a></dt>
+<dd><p>Primary color of the endpoints dropdown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.endpoint_items">
+<span class="sig-name descname"><span class="pre">endpoint_items</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.endpoint_items" title="Permalink to this definition"></a></dt>
+<dd><p>List of items of the endpoints dropdown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list, default []</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.endpoint_selection">
+<span class="sig-name descname"><span class="pre">endpoint_selection</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.endpoint_selection" title="Permalink to this definition"></a></dt>
+<dd><p>Selected value of the endpoints dropdown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.endpoint_loading">
+<span class="sig-name descname"><span class="pre">endpoint_loading</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.endpoint_loading" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the endpoints dropdown will show a progress loading bar.
+Otherwise, the progress loading bar is invisible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.asset_color">
+<span class="sig-name descname"><span class="pre">asset_color</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.asset_color" title="Permalink to this definition"></a></dt>
+<dd><p>Primary color of the assets dropdown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.asset_items">
+<span class="sig-name descname"><span class="pre">asset_items</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.asset_items" title="Permalink to this definition"></a></dt>
+<dd><p>List of items of the assets dropdown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list, default []</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.asset_selection">
+<span class="sig-name descname"><span class="pre">asset_selection</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.asset_selection" title="Permalink to this definition"></a></dt>
+<dd><p>Selected value of the assets dropdown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.asset_visible">
+<span class="sig-name descname"><span class="pre">asset_visible</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.asset_visible" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the assets dropdown is visible. Otherwise, it is invisible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_inputs.ModelInputs.asset_disabled">
+<span class="sig-name descname"><span class="pre">asset_disabled</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_inputs.ModelInputs.asset_disabled" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the assets dropdown is disabled. Otherwise, it is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-seeq.addons.azureml.ui_components._model_action"></span><dl class="py class">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_action.ModelAction">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml.ui_components._model_action.</span></span><span class="sig-name descname"><span class="pre">ModelAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/ui_components/_model_action.html#ModelAction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_action.ModelAction" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ipyvuetify.VuetifyTemplate.VuetifyTemplate</span></code></p>
+<p>UI component - Model Action card with action dropdown, investigation range
+component and schedule component</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_action.ModelAction.template_file">
+<span class="sig-name descname"><span class="pre">template_file</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_action.ModelAction.template_file" title="Permalink to this definition"></a></dt>
+<dd><p>Modifies the VueTemplate.template_file attribute with the
+seeq.addons.azureml.ui_components.templates._model_action.vue template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_action.ModelAction.components">
+<span class="sig-name descname"><span class="pre">components</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_action.ModelAction.components" title="Permalink to this definition"></a></dt>
+<dd><p>Modifies the VueTemplate.components attribute with a serialized
+instance of seeq.addons.ui_components.InvestigateRange and
+seeq.addons.ui_components.ScheduleInputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str, default {}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_action.ModelAction.model_action_visible">
+<span class="sig-name descname"><span class="pre">model_action_visible</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_action.ModelAction.model_action_visible" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the entire Model Action card will be visible. If false,
+the entire Model Action card will not be visible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, default True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_action.ModelAction.color">
+<span class="sig-name descname"><span class="pre">color</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_action.ModelAction.color" title="Permalink to this definition"></a></dt>
+<dd><p>Color of the dropdowns and text fields in the Model Action card.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_action.ModelAction.selection">
+<span class="sig-name descname"><span class="pre">selection</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_action.ModelAction.selection" title="Permalink to this definition"></a></dt>
+<dd><p>Options of the action dropdown. If ‘Investigate’, the Model Action
+card will show the InvestigateRange component. If ‘Deploy’, the Model
+Action card will show the ‘ScheduleInputs’ component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>{‘Investigate’, ‘Deploy’}, default ‘Investigate’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_action.ModelAction.action_disabled">
+<span class="sig-name descname"><span class="pre">action_disabled</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_action.ModelAction.action_disabled" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the action dropdown is disabled. Otherwise, it is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, default True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_action.ModelAction.result_name">
+<span class="sig-name descname"><span class="pre">result_name</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_action.ModelAction.result_name" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the result signal that will be pushed to Seeq.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str, default ‘’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_action.ModelAction.result_name_disabled">
+<span class="sig-name descname"><span class="pre">result_name_disabled</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_action.ModelAction.result_name_disabled" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the result_name field is disabled. Otherwise, it is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_action.ModelAction.investigation_form_valid">
+<span class="sig-name descname"><span class="pre">investigation_form_valid</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_action.ModelAction.investigation_form_valid" title="Permalink to this definition"></a></dt>
+<dd><p>If False, the result_name field will show an error message to hint the
+user. Otherwise, the field gets the default color and no error message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, default True</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-seeq.addons.azureml.ui_components._model_summary"></span><dl class="py class">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml.ui_components._model_summary.</span></span><span class="sig-name descname"><span class="pre">ModelSummary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/ui_components/_model_summary.html#ModelSummary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ipyvuetify.VuetifyTemplate.VuetifyTemplate</span></code></p>
+<p>UI component - Model Summary card</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.template_file">
+<span class="sig-name descname"><span class="pre">template_file</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.template_file" title="Permalink to this definition"></a></dt>
+<dd><p>Modifies the VueTemplate.template_file attribute with the
+seeq.addons.azureml.ui_components.templates._model_summary.vue template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.model_summary_visible">
+<span class="sig-name descname"><span class="pre">model_summary_visible</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.model_summary_visible" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the entire Model Summary card will be visible. Otherwise,
+the entire Model Inputs card will not be visible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, default True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.endpoint_info">
+<span class="sig-name descname"><span class="pre">endpoint_info</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.endpoint_info" title="Permalink to this definition"></a></dt>
+<dd><p>Displays the selected value of the endpoints dropdown of the Model
+Inputs card.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.asset_info">
+<span class="sig-name descname"><span class="pre">asset_info</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.asset_info" title="Permalink to this definition"></a></dt>
+<dd><p>Displays the selected value of the assets dropdown of the Model Inputs
+card.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.signals_info">
+<span class="sig-name descname"><span class="pre">signals_info</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.signals_info" title="Permalink to this definition"></a></dt>
+<dd><p>Displays the input signal names that will be send to the Azure ML model
+endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.start_info">
+<span class="sig-name descname"><span class="pre">start_info</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.start_info" title="Permalink to this definition"></a></dt>
+<dd><p>Displays the start time of the investigation range selected in the Model
+Action card if the “investigate” option is selected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.end_info">
+<span class="sig-name descname"><span class="pre">end_info</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.end_info" title="Permalink to this definition"></a></dt>
+<dd><p>Displays the end time of the investigation range selected in the Model
+Action card if the “investigate” option is selected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.result_signal_info">
+<span class="sig-name descname"><span class="pre">result_signal_info</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.result_signal_info" title="Permalink to this definition"></a></dt>
+<dd><p>Displays the name of the result signal supplied in the Model Actions
+card.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.time_range_warning">
+<span class="sig-name descname"><span class="pre">time_range_warning</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.time_range_warning" title="Permalink to this definition"></a></dt>
+<dd><p>Displays a warning in red color if the start time is greater than the
+end time in the investigation range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.jobname_info">
+<span class="sig-name descname"><span class="pre">jobname_info</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.jobname_info" title="Permalink to this definition"></a></dt>
+<dd><p>Displays the jobname supplied in the Model Actions if the “deploy”
+option is selected</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.frequency_info">
+<span class="sig-name descname"><span class="pre">frequency_info</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.frequency_info" title="Permalink to this definition"></a></dt>
+<dd><p>Displays the frequency supplied in the Model Actions if the “deploy”
+option is selected</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.button_disabled">
+<span class="sig-name descname"><span class="pre">button_disabled</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.button_disabled" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the submit button is disabled. Otherwise, it is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.button_loading">
+<span class="sig-name descname"><span class="pre">button_loading</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.button_loading" title="Permalink to this definition"></a></dt>
+<dd><p>If True, the submit button shows a loading spinner. Otherwise, it
+shows the name of the button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, default False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.error_title">
+<span class="sig-name descname"><span class="pre">error_title</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.error_title" title="Permalink to this definition"></a></dt>
+<dd><p>Title of the error_message displayed to the left of error_message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.error_message">
+<span class="sig-name descname"><span class="pre">error_message</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.error_message" title="Permalink to this definition"></a></dt>
+<dd><p>Message to be display at the bottom of the Model Summary card.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="seeq.addons.azureml.ui_components._model_summary.ModelSummary.message_type">
+<span class="sig-name descname"><span class="pre">message_type</span></span><a class="headerlink" href="#seeq.addons.azureml.ui_components._model_summary.ModelSummary.message_type" title="Permalink to this definition"></a></dt>
+<dd><p>Allows to color the message depending on the type selected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>{SUCCESS, ERROR}</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="User Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="addon_ui.html" class="btn btn-neutral float-right" title="Seeq Add-on User Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Seeq Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
