@@ -25,7 +25,7 @@ publisher.
 
 1. Create a **new** Seeq Data Lab project and open the **Terminal** window
 2. Run `pip install seeq-azureml`
-3. Run `python -m seeq.addons.azureml [--users <users_list> --groups<groups_list>]`
+3. Run `python -m seeq.addons.azureml [--users <users_list> --groups <groups_list>]`
 4. Create an `aml_config.ini` file in the `~/.seeq` folder of the Seeq Data Lab Project with the information required to
    connect to the Azure ML services. The file must contain the options specified
    in [here](https://github.com/seeq12/seeq-azureml/tree/master/aml_config.ini)

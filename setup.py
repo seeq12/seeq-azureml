@@ -8,7 +8,7 @@ import setuptools
 
 namespace = 'seeq.*'
 
-with open("docs_src/source/README_pypi.md", "r") as fh:
+with open("pypi/README_pypi.md", "r") as fh:
     long_description = fh.read()
 
 version_scope = {'__builtins__': None}
