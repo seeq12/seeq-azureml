@@ -178,8 +178,6 @@ Seeq Corporation, 2021
 https://github.com/seeq12/seeq-azureml
 ```
 
-----
-
 
 
 
