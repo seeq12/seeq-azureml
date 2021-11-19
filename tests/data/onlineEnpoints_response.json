@@ -1,0 +1,135 @@
+{
+  "value": [
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/onlineEndpoints/seeq-simple-demo-3",
+      "name": "seeq-simple-demo-3",
+      "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+      "properties": {
+        "description": "None",
+        "properties": {
+          "azureml.onlineendpointid": "/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.machinelearningservices/workspaces/<WORKSPACE_NAME>/onlineendpoints/seeq-simple-demo-3",
+          "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/providers/Microsoft.MachineLearningServices/locations/canadacentral/mfeOperationsStatus/oe:35965b03-a279-43b9-b7b2-951a3da7a672:d9559721-d58c-4b65-82af-856a8d50798b?api-version\u003d2021-03-01-preview"
+        },
+        "traffic": {
+          "green": 0,
+          "indigo": 100
+        },
+        "scoringUri": "https://seeq-simple-demo-3.canadacentral.inference.ml.azure.com/score",
+        "swaggerUri": "https://seeq-simple-demo-3.canadacentral.inference.ml.azure.com/swagger.json",
+        "authMode": "Key",
+        "provisioningState": "Succeeded",
+        "target": "None"
+      },
+      "systemData": {
+        "createdAt": "2021-10-22T15:49:25.0705009Z",
+        "createdBy": "Joseph Disantis",
+        "lastModifiedAt": "2021-10-26T16:10:32.506749Z"
+      },
+      "tags": {
+        "Seeq": "true"
+      },
+      "location": "canadacentral",
+      "kind": "Managed",
+      "identity": {
+        "type": "SystemAssigned",
+        "principalId": "c008f991-d173-46fa-86da-6d1caa30e22e",
+        "tenantId": "<TENANT_ID>"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/onlineEndpoints/seeq-simple-demo-2",
+      "name": "seeq-simple-demo-2",
+      "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+      "properties": {
+        "description": "None",
+        "properties": {
+          "azureml.onlineendpointid": "/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.machinelearningservices/workspaces/<WORKSPACE_NAME>/onlineendpoints/seeq-simple-demo-2",
+          "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/providers/Microsoft.MachineLearningServices/locations/canadacentral/mfeOperationsStatus/oe:35965b03-a279-43b9-b7b2-951a3da7a672:6d00e2dc-41e5-4d19-a735-4f439b45aef2?api-version\u003d2021-03-01-preview"
+        },
+        "traffic": {
+          "green": 0,
+          "blue": 100
+        },
+        "scoringUri": "https://seeq-simple-demo-2.canadacentral.inference.ml.azure.com/score",
+        "swaggerUri": "https://seeq-simple-demo-2.canadacentral.inference.ml.azure.com/swagger.json",
+        "authMode": "Key",
+        "provisioningState": "Succeeded",
+        "target": "None"
+      },
+      "systemData": {
+        "createdAt": "2021-09-24T18:00:52.3722625Z",
+        "createdBy": "Chris Herrera",
+        "lastModifiedAt": "2021-09-24T18:03:12.9988424Z"
+      },
+      "tags": {
+        "Seeq": "true"
+      },
+      "location": "canadacentral",
+      "kind": "Managed"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/onlineEndpoints/jrd-test",
+      "name": "jrd-test",
+      "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+      "properties": {
+        "description": "jrd-test",
+        "properties": {
+          "azureml.onlineendpointid": "/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.machinelearningservices/workspaces/<WORKSPACE_NAME>/onlineendpoints/jrd-test",
+          "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/providers/Microsoft.MachineLearningServices/locations/canadacentral/mfeOperationsStatus/oe:35965b03-a279-43b9-b7b2-951a3da7a672:923c6095-7f0b-41b6-ab9c-c9c0993ea35f?api-version\u003d2021-03-01-preview"
+        },
+        "traffic": {},
+        "scoringUri": "https://jrd-test.canadacentral.inference.ml.azure.com/score",
+        "swaggerUri": "https://jrd-test.canadacentral.inference.ml.azure.com/swagger.json",
+        "authMode": "Key",
+        "provisioningState": "Succeeded",
+        "target": "None"
+      },
+      "systemData": {
+        "createdAt": "2021-09-24T16:49:43.2260238Z",
+        "createdBy": "Joseph Disantis",
+        "lastModifiedAt": "2021-09-24T16:49:43.2260241Z"
+      },
+      "tags": {
+        "Seeq": "true"
+      },
+      "location": "canadacentral",
+      "kind": "Managed",
+      "identity": {
+        "type": "SystemAssigned",
+        "principalId": "d1d66a8f-a1e1-483a-b329-ef64a8d8c420",
+        "tenantId": "<TENANT_ID>"
+      }
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/onlineEndpoints/seeq-simple-demo",
+      "name": "seeq-simple-demo",
+      "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints",
+      "properties": {
+        "description": "None",
+        "properties": {
+          "azureml.onlineendpointid": "/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.machinelearningservices/workspaces/<WORKSPACE_NAME>/onlineendpoints/seeq-simple-demo",
+          "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/providers/Microsoft.MachineLearningServices/locations/canadacentral/mfeOperationsStatus/oe:35965b03-a279-43b9-b7b2-951a3da7a672:7c0bec52-9646-4383-bc7c-1c7285cd1ef8?api-version\u003d2021-03-01-preview"
+        },
+        "traffic": {
+          "green": 100,
+          "red": 0
+        },
+        "scoringUri": "https://seeq-simple-demo.canadacentral.inference.ml.azure.com/score",
+        "swaggerUri": "https://seeq-simple-demo.canadacentral.inference.ml.azure.com/swagger.json",
+        "authMode": "Key",
+        "provisioningState": "Succeeded",
+        "target": "None"
+      },
+      "systemData": {
+        "createdAt": "2021-09-24T16:10:48.6397396Z",
+        "createdBy": "Chris Herrera",
+        "lastModifiedAt": "2021-09-24T16:10:54.2261715Z"
+      },
+      "tags": {
+        "Seeq": "true"
+      },
+      "location": "canadacentral",
+      "kind": "Managed"
+    }
+  ]
+}

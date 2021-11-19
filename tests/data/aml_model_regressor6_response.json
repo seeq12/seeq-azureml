@@ -1,0 +1,77 @@
+{
+  "id": "regressor:6",
+  "name": "regressor",
+  "framework": "ScikitLearn",
+  "frameworkVersion": "0.24.2",
+  "version": 6,
+  "tags": [],
+  "datasets": [
+    {
+      "name": "training_inputs",
+      "id": "44c7d59e-3aee-4620-b0b6-a699b6811bf9"
+    },
+    {
+      "name": "training_target",
+      "id": "37441b2f-7010-4050-8b8c-4348b17ef225"
+    },
+    {
+      "name": "test_inputs",
+      "id": "8806a685-0e25-4f00-918e-b1b746382d6f"
+    },
+    {
+      "name": "test_target",
+      "id": "a788460b-1855-474c-a894-e5efb36ce22d"
+    }
+  ],
+  "url": "aml://asset/a81ee4810cd843a6b8edaef10ea6f8ef",
+  "mimeType": "application/json",
+  "description": "Seeq Azure integration demo model",
+  "createdTime": "2021-10-26T16:04:22.2737484Z",
+  "modifiedTime": "2021-11-05T02:13:06.5725142Z",
+  "unpack": false,
+  "parentModelId": "None",
+  "runId": "d7aff350-89b6-40c6-887d-3e7f7dfebd4c",
+  "experimentName": "Seeq_Integration_Demo_1",
+  "kvTags": {
+    "input2": "Optimizer",
+    "input3": "Wet Bulb",
+    "input4": "Temperature",
+    "Path1": "2407642C-0169-4ED0-A25C-321E29DC975B",
+    "Path2": "AA1E42AE-90BD-4CF7-9449-F8CC81625E8F",
+    "ResultName": "AzureML_Predicted_Compressor_Power",
+    "SampleRate": "2min",
+    "input1": "Relative Humidity"
+  },
+  "properties": {},
+  "derivedModelIds": [],
+  "inputsSchema": [],
+  "outputsSchema": [],
+  "sampleInputData": "None",
+  "sampleOutputData": "None",
+  "resourceRequirements": "None",
+  "createdBy": {
+    "userObjectId": "22944b10-92b0-4ad0-b704-b7aae135462b",
+    "userPuId": "10037FFEAE5C2019",
+    "userIdp": "None",
+    "userAltSecId": "None",
+    "userIss": "https://sts.windows.net/<TENANT_ID>/",
+    "userTenantId": "<TENANT_ID>",
+    "userName": "Joseph Disantis",
+    "upn": "joseph.disantis@seeq.com"
+  },
+  "modifiedBy": {
+    "userObjectId": "d38942a6-be8e-4576-bdb1-c810382010ec",
+    "userPuId": "10030000AD81E1D5",
+    "userIdp": "None",
+    "userAltSecId": "None",
+    "userIss": "https://sts.windows.net/<TENANT_ID>/",
+    "userTenantId": "<TENANT_ID>",
+    "userName": "Alberto Rivas",
+    "upn": "alberto.rivas@seeq.com"
+  },
+  "flavors": {},
+  "modelFormat": "CUSTOM",
+  "stage": "None",
+  "modelContainerId": "137038c415b74e74a3b308dba5c63ccb",
+  "mmsId": "ade35220d594453f87a56b9f678ec558"
+}
