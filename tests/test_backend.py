@@ -30,17 +30,23 @@ test_worksheet_url: Optional[str] = None
 #     C = azureml.MlOperate(config_file=test_common.TEST_CONFIG_FILE, sdl_notebook_url=notebook)  # sdl_notebook_url
 #     C.run()
 
-@pytest.mark.system
-def test_mock_test():
-    with open("data/onlineEnpoints_response.json") as f:
-        response = json.load(f)
 
-    with mock.patch.object(backend.AmlOnlineEndpointService, '_authorize',
-                           return_value="token"):
-        with mock.patch.object(requests, 'get',
-                               return_value=test_common.MockResponse(response, 200)):
-            instance_ = backend.AmlOnlineEndpointService("tenant_id", "app_id", "app_secret", "subscription_id",
-                                                         "resource_group",
-                                                         "workspace_name")
-            oes = instance_.list_online_endpoints()
-            print(oes)
+@pytest.mark.unit
+def test_list_online_endpoints():
+    with mock.patch.object(backend.AmlOnlineEndpointService, '_authorize', return_value="token"), \
+            mock.patch.object(requests, 'get', side_effect=test_common.mocked_response), \
+            mock.patch.object(requests, 'post', side_effect=test_common.mocked_response):
+        instance_ = backend.AmlOnlineEndpointService("tenant_id", "app_id", "app_secret", "subscription_id",
+                                                     "resource_group",
+                                                     "workspace_name")
+        oes = instance_.list_online_endpoints()
+
+    assert isinstance(oes, list)
+    assert len(oes) == 4
+    for endpoint in oes:
+        assert endpoint.type == 'Microsoft.MachineLearningServices/workspaces/onlineEndpoints'
+        assert endpoint.name in ['seeq-simple-demo', 'seeq-simple-demo-2', 'seeq-simple-demo-3', 'jrd-test']
+        if endpoint.name == 'jrd-test':
+            assert len(endpoint.deployment) == 0
+        else:
+            assert len(endpoint.deployment) == 1
