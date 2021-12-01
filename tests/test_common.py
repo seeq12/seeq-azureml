@@ -52,32 +52,55 @@ class MockResponse:
 
 
 def mocked_response(url: str, headers: str):
-    base_url = 'https://management.azure.com/subscriptions/subscription_id/resourceGroups/resource_group/providers' \
-               '/Microsoft.MachineLearningServices/workspaces/workspace_name/'
+    """
+    This is function to mock the responses from the Azure ML API calls.
+
+    Parameters
+    ----------
+    url: str
+        The URL of the management service
+    headers: str
+        The headers of the management service. See note below.
+
+    Returns
+    -------
+    response: MockResponse
+        The mocked response of the Azure ML API call.
+
+
+    Note
+    ----
+    The parameter `headers` is not used within this function but it is needed in
+    the signature of the function, since that's the signature of the actual
+    functions we are mocking. Those are `requests.get(url, headers)` and
+    `request.post(url, headers)` in `AmlOnlineEndpointService`
+
+    """
 
     if url.endswith("onlineEndpoints?api-version=2021-03-01-preview"):
-        with open("data/onlineEnpoints_response.json") as f:
+        with open(DATA_DIR.joinpath("onlineEndpoints_response.json")) as f:
             return MockResponse(json.load(f), 200)
     elif url.endswith("listKeys?api-version=2021-03-01-preview"):
         return MockResponse({"primaryKey": "p-key", "secondaryKey": "s-key"}, 200)
     elif '/seeq-simple-demo/' in url:
-        with open("data/deployment_seeq-simple-demo.json") as f:
+
+        with open(DATA_DIR.joinpath("deployment_seeq-simple-demo.json")) as f:
             return MockResponse(json.load(f), 200)
     elif '/seeq-simple-demo-2/' in url:
-        with open("data/deployment_seeq-simple-demo-2.json") as f:
+        with open(DATA_DIR.joinpath("deployment_seeq-simple-demo-2.json")) as f:
             return MockResponse(json.load(f), 200)
     elif '/seeq-simple-demo-3/' in url:
-        with open("data/deployment_seeq-simple-demo-3.json") as f:
+        with open(DATA_DIR.joinpath("deployment_seeq-simple-demo-3.json")) as f:
             return MockResponse(json.load(f), 200)
     elif url.endswith("/regressor:6"):
-        with open("data/aml_model_regressor6_response.json") as f:
+        with open(DATA_DIR.joinpath("aml_model_regressor6_response.json")) as f:
             return MockResponse(json.load(f), 200)
     elif url.endswith("/regressor:3"):
-        with open("data/aml_model_regressor3_response.json") as f:
+        with open(DATA_DIR.joinpath("aml_model_regressor3_response.json")) as f:
             return MockResponse(json.load(f), 200)
     elif url.endswith("/regressor:2"):
-        with open("data/aml_model_regressor2_response.json") as f:
+        with open(DATA_DIR.joinpath("aml_model_regressor2_response.json")) as f:
             return MockResponse(json.load(f), 200)
     else:
-        with open("data/deployment_null.json") as f:
+        with open(DATA_DIR.joinpath("deployment_null.json")) as f:
             return MockResponse(json.load(f), 200)

@@ -3,32 +3,83 @@ import mock
 import json
 import requests
 from typing import Optional
-from seeq import spy
-from seeq.addons import azureml
-from seeq.addons.azureml import _config
 from seeq.addons.azureml import backend
 from . import test_common
 
 test_worksheet_url: Optional[str] = None
 
 
-# @pytest.fixture(autouse=True, scope='session')
-# def setup_module():
-#     _config.validate_configuration_file(test_common.TEST_CONFIG_FILE)
-#     test_common.login(url=_config.get('seeq', 'seeq_url'),
-#                       credentials_file=_config.get('seeq', 'credentials_file'),
-#                       data_dir=_config.get('seeq', 'seeq_data_dir'))
-#     wb = test_common.create_worksheet_for_tests()
-#     global test_worksheet_url
-#     test_worksheet_url = wb.worksheets[0].url
-#
-#
-# @pytest.mark.system
-# def test_ui_instance():
-#     notebook = f'{spy.utils.get_data_lab_project_url()}/dummy.ipynb?workbookId=' \
-#                f'{spy.utils.get_workbook_id_from_url(test_worksheet_url)}'
-#     C = azureml.MlOperate(config_file=test_common.TEST_CONFIG_FILE, sdl_notebook_url=notebook)  # sdl_notebook_url
-#     C.run()
+@pytest.mark.unit
+def test_amlmodel_asset_paths():
+    with open(test_common.DATA_DIR.joinpath("aml_model_regressor6_response.json")) as f:
+        response = test_common.MockResponse(json.load(f), 200)
+    model = backend.AmlModel.deserialize_aml_model_response(response.json())
+    assert model.name == 'regressor'
+    assert model.id == 'regressor:6'
+    assert model.framework == 'ScikitLearn'
+    assert model.frameworkVersion == '0.24.2'
+    assert model.version == 6
+    assert model.input_ids == {}
+    assert model.asset_path_ids == ['2407642C-0169-4ED0-A25C-321E29DC975B',
+                                    'AA1E42AE-90BD-4CF7-9449-F8CC81625E8F']
+    assert model.asset_input_names == {
+        '2': 'Optimizer',
+        '3': 'Wet Bulb',
+        '4': 'Temperature',
+        '1': 'Relative Humidity'
+        }
+    assert model.sample_rate == '2min'
+
+
+@pytest.mark.unit
+def test_amlmodel_signal_ids():
+    with open(test_common.DATA_DIR.joinpath("aml_model_regressor3_response.json")) as f:
+        response = test_common.MockResponse(json.load(f), 200)
+    model = backend.AmlModel.deserialize_aml_model_response(response.json())
+    assert model.name == 'regressor'
+    assert model.id == 'regressor:3'
+    assert model.framework == 'ScikitLearn'
+    assert model.frameworkVersion == '0.24.2'
+    assert model.version == 3
+    assert model.input_ids == {
+        '2': '62E6F850-E523-408D-AD10-0C87E65F996B',
+        '4': 'F8E053D1-A4D5-4671-9969-1D5D7D4F27DD',
+        '1': '4E9416E8-9C75-426A-8E0A-4D07432CAC5D',
+        '3': 'CD732D0B-C3BA-496F-B69E-55543944B5F1'
+        }
+    assert model.asset_path_ids == []
+    assert model.asset_input_names == {}
+    assert model.sample_rate == '2min'
+
+
+@pytest.mark.unit
+def test_online_deployment():
+    with open(test_common.DATA_DIR.joinpath("deployment_seeq-simple-demo-3.json")) as f:
+        response = test_common.MockResponse(json.load(f), 200)
+    deployment = backend.OnlineDeployment.deserialize_aml_deployment_response(response.json())[0]
+    assert deployment.id == '/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft' \
+                            '.MachineLearningServices/workspaces/<WORKSPACE_NAME>/onlineEndpoints/seeq-simple-demo-3' \
+                            '/deployments/indigo'
+    assert deployment.name == 'indigo'
+    assert deployment.modelId == '/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers' \
+                                 '/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/models/regressor' \
+                                 '/versions/6'
+    assert deployment.traffic is None
+    assert deployment.model is None
+    assert deployment.location == 'canadacentral'
+
+
+@pytest.mark.unit
+def test_online_endpoint():
+    with open(test_common.DATA_DIR.joinpath("onlineEndpoints_response.json")) as f:
+        response = test_common.MockResponse(json.load(f), 200)
+    oes = backend.OnlineEndpoint.deserialize_aml_endpoint_response(response.json())
+    assert isinstance(oes, list)
+    assert len(oes) == 4
+    for endpoint in oes:
+        assert endpoint.type == 'Microsoft.MachineLearningServices/workspaces/onlineEndpoints'
+        assert endpoint.name in ['seeq-simple-demo', 'seeq-simple-demo-2', 'seeq-simple-demo-3', 'jrd-test']
+        assert len(endpoint.deployment) == 0
 
 
 @pytest.mark.unit
