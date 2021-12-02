@@ -51,7 +51,7 @@ class MockResponse:
         return self.json_data
 
 
-def mocked_response(url: str, headers: str):
+def mocked_aml_response(url: str, headers: str):
     """
     This is function to mock the responses from the Azure ML API calls.
 
@@ -104,3 +104,9 @@ def mocked_response(url: str, headers: str):
     else:
         with open(DATA_DIR.joinpath("deployment_null.json")) as f:
             return MockResponse(json.load(f), 200)
+
+
+def mocked_get_tree_api_response(idd=None):
+    # TODO: FIX THIS FUNCTION
+    if idd == '':
+        return "THE THREE"

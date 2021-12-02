@@ -85,8 +85,8 @@ def test_online_endpoint():
 @pytest.mark.unit
 def test_list_online_endpoints():
     with mock.patch.object(backend.AmlOnlineEndpointService, '_authorize', return_value="token"), \
-            mock.patch.object(requests, 'get', side_effect=test_common.mocked_response), \
-            mock.patch.object(requests, 'post', side_effect=test_common.mocked_response):
+            mock.patch.object(requests, 'get', side_effect=test_common.mocked_aml_response), \
+            mock.patch.object(requests, 'post', side_effect=test_common.mocked_aml_response):
         instance_ = backend.AmlOnlineEndpointService("tenant_id", "app_id", "app_secret", "subscription_id",
                                                      "resource_group",
                                                      "workspace_name")
