@@ -1,5 +1,7 @@
 import json
 from pathlib import Path
+
+import seeq.sdk
 from seeq.spy.workbooks import Analysis
 from seeq import spy
 
@@ -106,7 +108,14 @@ def mocked_aml_response(url: str, headers: str):
             return MockResponse(json.load(f), 200)
 
 
-def mocked_get_tree_api_response(idd=None):
-    # TODO: FIX THIS FUNCTION
-    if idd == '':
-        return "THE THREE"
+def mocked_get_tree_api_response(id):
+    with open(DATA_DIR.joinpath("seeq_asset_trees_seeq-simple-demo-3.json")) as f:
+        trees = json.load(f)
+    for tree in trees['trees']:
+        if tree['id'] == id:
+            tree['value']['children'] = [seeq.sdk.models.TreeItemOutputV1(**x) for x in
+                                         tree['value']['children']]
+            tree['value']['item']['ancestors'] = [seeq.sdk.models.ItemPreviewV1(**x) for x in
+                                                  tree['value']['item']['ancestors']]
+            tree['value']['item'] = seeq.sdk.models.ItemPreviewWithAssetsV1(**tree['value']['item'])
+            return seeq.sdk.models.asset_tree_output_v1.AssetTreeOutputV1(**tree['value'])

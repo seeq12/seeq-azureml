@@ -6,9 +6,10 @@ from seeq.addons.azureml.utils import AzureMLException
 from seeq.addons.azureml import _config
 
 
-class UserSelections:
+class ModelInputsProvider:
     """
-    Interface between the UI selections and the AmlOnlineEndpointService
+    Provides the Seeq and AmlOnlineEndpointService inputs to the Azure ML model
+    based upon user selections
 
     Attributes
     ----------

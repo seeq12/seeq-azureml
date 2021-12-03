@@ -5,8 +5,7 @@ from seeq import spy
 from seeq.sdk.rest import ApiException
 from IPython.display import display, Javascript, clear_output, HTML
 from seeq.addons.azureml.utils import get_workbook_worksheet_workstep_ids, AzureMLException
-from seeq.addons.azureml.backend import RunInvestigation
-from seeq.addons.azureml import UserSelections
+from seeq.addons.azureml.backend import RunInvestigation, ModelInputsProvider
 from seeq.addons.azureml import ui_components
 
 DEFAULT_WORKSHEET_NAME = 'From Azure ML Integration'
@@ -28,7 +27,7 @@ class MlOperate:
         Default time delta to populate the start time of the investigate range
     deploy_frequency: pd.Timedelta
         The schedule frequency for the "deploy" option as a pandas.Timedelta
-    user_selections: seeq.addons.azureml.UserSelections
+    user_selections: seeq.addons.azureml.backend.ModelInputsProvider
         An instance of the UserSelections object that serves as an interface
         between the UI and the backend integration between Seeq and Azure ML.
     app: seeq.addons.azureml.ui_components.AppLayout
@@ -114,7 +113,7 @@ class MlOperate:
         self.set_spinner_message(message="Connecting to Azure ML service")
 
         try:
-            self.user_selections = UserSelections(config_file=self.config_file)
+            self.user_selections = ModelInputsProvider(config_file=self.config_file)
         except AzureMLException as e:
             self.set_spinner_message(title="Azure Exception", message=str(e), status="ERROR")
             self.app.spinner_visible = False
