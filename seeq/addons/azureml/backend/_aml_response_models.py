@@ -90,6 +90,46 @@ class AmlModel:
             model.sample_rate = tags.get('SampleRate', )
         return model
 
+class AmlWorkspaceDetails:
+    """
+    Gets the serialized respoonse from the Azure ML workspace endpoint and 
+    deserailizes it
+    """
+
+    def __init__(self, region, discovery_url) -> None:
+        """
+        Parameters
+        ----------
+        region : str
+            Name of the region where the Azure ML workspace is located
+        discovery_url : str
+            URL for Azure ML regional API server locations
+        """
+        self.region = region
+        self.discovery_url = discovery_url
+        self.name = None
+    
+    @staticmethod
+    def deserialize_aml_workspace_response(json):
+        """
+        Gets a serialized response from a given workspace description in Azure ML and
+        deserializes it
+
+        Parameters
+        ----------
+        json: dict
+            Serialized response of the Azure ML deployment endpoint
+
+        Returns
+        -------
+        ods: list
+            List of deployments associated with the endpoint
+
+        """
+        workspaceDetails = AmlWorkspaceDetails(region=json['location'], discovery_url=json['properties']['discoveryUrl'])
+        workspaceDetails.name = json['properties']['friendlyName']
+        return workspaceDetails
+
 
 class OnlineDeployment:
     """
@@ -117,7 +157,7 @@ class OnlineDeployment:
         Deserializes the Azure ML response from the deployment endpoint
     """
 
-    def __init__(self, name, idd) -> None:
+    def __init__(self, name, idd, computeType) -> None:
         """
         Parameters
         ----------
@@ -128,13 +168,15 @@ class OnlineDeployment:
         """
         self.id = idd
         self.name = name
+        self.computeType = computeType
         self.modelId = None
         self.traffic = None
         self.model = None
+        self.model_version = None
         self.location = None
 
     @staticmethod
-    def deserialize_aml_deployment_response(json):
+    def deserialize_aml_deployment_response(json, computeType):
         """
         Gets a serialized response from a given online endpoint in Azure ML and
         deserializes each deployment associated with the endpoint.
@@ -143,6 +185,8 @@ class OnlineDeployment:
         ----------
         json: dict
             Serialized response of the Azure ML deployment endpoint
+        computeType: str
+            The type of compute: Managed, ACI, K8S
 
         Returns
         -------
@@ -152,7 +196,7 @@ class OnlineDeployment:
         """
         ods = list()
         for v in json['value']:
-            od = OnlineDeployment(name=v['name'], idd=v['id'])
+            od = OnlineDeployment(name=v['name'], idd=v['id'], computeType=computeType)
             od.modelId = v['properties']['model']['assetId']
             od.location = v['location']
             ods.append(od)
@@ -236,6 +280,46 @@ class OnlineEndpoint:
         self.deployment = list()
         self.primaryKey = None
         self.secondaryKey = None
+
+    @staticmethod
+    def deserialize_aml_services_response(json):
+        """
+        Deserializes the Azure ML response services response for ACI models
+
+        Parameters
+        ----------
+        json: dict
+            Serialized response of the Azure ML online endpoints
+
+        Returns
+        -------
+        oes: list
+            List of endpoints with `{'Seeq': true}` tag
+
+        """
+        oes = list()
+        for v in json['value']:
+            if 'Seeq' not in v['kvTags']:
+                continue
+            oe = OnlineEndpoint(name=v['name'], idd=v['id'])
+            oe.tags = v['kvTags']
+            oe.type = "Microsoft.MachineLearningServices/workspaces/onlineEndpoints"
+            oe.description = v['description']
+            oe.scoringUri = v['scoringUri']
+            oe.authMode = v['authEnabled']
+            oe.kind = 'ACI'
+            oe.createdBy = v['createdBy']['userName']
+            oe.lastModifiedAt = v['updatedTime']
+            oe.location = v['location']
+            od = OnlineDeployment(oe.name, None, oe.type)
+            od.location = oe.location
+            od.model = (v['environmentImageRequest']['modelIds'][0]).split(':')[0]
+            od.model_version = (v['environmentImageRequest']['modelIds'][0]).split(':')[1]
+            od.traffic = 100
+            oe.deployment.append(od)
+            oes.append(oe)
+        return oes
+
 
     @staticmethod
     def deserialize_aml_endpoint_response(json):
