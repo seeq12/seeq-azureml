@@ -3,7 +3,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util import Retry
 from datetime import datetime, timedelta
 from ._aml_response_models import OnlineDeployment, OnlineEndpoint, AmlModel, AmlWorkspaceDetails
-from _exceptions import AzureMLException
+from seeq.addons.azureml.utils import AzureMLException
 
 API_VERSION = "2021-03-01-preview"
 
@@ -106,9 +106,9 @@ class AmlOnlineEndpointService:
         if response.status_code != 200:
             raise AzureMLException(code=response.status_code, reason=response.reason, message="Error getting workspace details")
 
-        workspaceDetails = AmlWorkspaceDetails.deserialize_aml_workspace_response(response.json())
+        workspace_discovery_url = response.json()['properties']['discoveryUrl']
 
-        response = self._http.get(workspaceDetails.discovery_url)
+        response = self._http.get(workspace_discovery_url)
         if response.status_code != 200:
             raise AzureMLException(code=response.status_code, reason=response.reason, message="Error accessing workspace discovery")
         
@@ -207,7 +207,7 @@ class AmlOnlineEndpointService:
         endpoint.primaryKey = keys['primaryKey']
         endpoint.secondaryKey = keys['secondaryKey']
 
-    def _get_aci_online_endpoints(self):
+    def _get_unmanaged_online_endpoints(self):
         """
         Private method to get a list of endpoints that are deployed as an ACI
         compute type. This is a workaround due to the endpoints API not returing
@@ -226,7 +226,7 @@ class AmlOnlineEndpointService:
         if response.status_code != 200:
             raise AzureMLException(code=response.status_code, reason=response.reason, message="Error getting ACI endpoints")
 
-        oes = OnlineEndpoint.deserialize_aml_services_response(response.json())
+        oes = OnlineEndpoint.deserialize_unmanaged_endpoint_response(response.json())
         for oe in oes:
             self._add_keys_to_endpoint(oe)
             # unmanaged endpoints only have one deployment
@@ -235,7 +235,7 @@ class AmlOnlineEndpointService:
             self._get_models(oe.deployment[0])
         return oes
 
-    def _get_online_endpoints(self):
+    def _get_managed_online_endpoints(self):
         """
         Private method to get a list of endpoints tagged with `{Seeq: true}` in
         Azure ML Studio and attach the associated deployments and models in
@@ -254,7 +254,7 @@ class AmlOnlineEndpointService:
         if response.status_code != 200:
             raise AzureMLException(code=response.status_code, reason=response.reason, message="Error getting endpoints")
 
-        oes = OnlineEndpoint.deserialize_aml_endpoint_response(response.json())
+        oes = OnlineEndpoint.deserialize_managed_endpoint_response(response.json())
         for oe in oes:
             self._add_keys_to_endpoint(oe)
             self._add_deployments_to_endpoint(oe)
@@ -272,8 +272,8 @@ class AmlOnlineEndpointService:
             List of OnlineEndpoint objects with deployments and models attached
             to each object
         """
-        oes = self._get_aci_online_endpoints()
-        oes += self._get_online_endpoints()
+        oes = self._get_unmanaged_online_endpoints()
+        oes += self._get_managed_online_endpoints()
         return oes
 
 def exception_message(message, code, reason):

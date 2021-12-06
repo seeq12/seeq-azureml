@@ -90,47 +90,6 @@ class AmlModel:
             model.sample_rate = tags.get('SampleRate', )
         return model
 
-class AmlWorkspaceDetails:
-    """
-    Gets the serialized respoonse from the Azure ML workspace endpoint and 
-    deserailizes it
-    """
-
-    def __init__(self, region, discovery_url) -> None:
-        """
-        Parameters
-        ----------
-        region : str
-            Name of the region where the Azure ML workspace is located
-        discovery_url : str
-            URL for Azure ML regional API server locations
-        """
-        self.region = region
-        self.discovery_url = discovery_url
-        self.name = None
-    
-    @staticmethod
-    def deserialize_aml_workspace_response(json):
-        """
-        Gets a serialized response from a given workspace description in Azure ML and
-        deserializes it
-
-        Parameters
-        ----------
-        json: dict
-            Serialized response of the Azure ML deployment endpoint
-
-        Returns
-        -------
-        ods: list
-            List of deployments associated with the endpoint
-
-        """
-        workspaceDetails = AmlWorkspaceDetails(region=json['location'], discovery_url=json['properties']['discoveryUrl'])
-        workspaceDetails.name = json['properties']['friendlyName']
-        return workspaceDetails
-
-
 class OnlineDeployment:
     """
     Gets the serialized response from the Azure ML deployments endpoint and
