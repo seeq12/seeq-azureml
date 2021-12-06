@@ -2,6 +2,8 @@ import pytest
 import mock
 import json
 import requests
+import pandas as pd
+from seeq import spy
 from typing import Optional
 from seeq.addons.azureml import backend
 from seeq.addons.azureml import _config
@@ -15,8 +17,26 @@ def unit_test_config():
     _config.configuration_parser = None
 
 
+@pytest.fixture()
+def system_test_config():
+    # This fixture is needed if we add unit test to this file
+    _config.validate_configuration_file(test_common.TEST_CONFIG_FILE)
+
+
+@pytest.fixture(scope='session')
+def system_test_setup():
+    # This fixture is needed if we add unit test to this file
+    _config.validate_configuration_file(test_common.TEST_CONFIG_FILE)
+    test_common.login(url=_config.get('seeq', 'seeq_url'),
+                      credentials_file=_config.get('seeq', 'credentials_file'),
+                      data_dir=_config.get('seeq', 'seeq_data_dir'))
+    wb = test_common.create_worksheet_for_tests()
+    global test_worksheet_url
+    test_worksheet_url = wb.worksheets[0].url
+
+
 @pytest.mark.unit
-def test_amlmodel_asset_paths():
+def test_amlmodel_asset_paths(unit_test_config):
     with open(test_common.DATA_DIR.joinpath("aml_model_regressor6_response.json")) as f:
         response = test_common.MockResponse(json.load(f), 200)
     model = backend.AmlModel.deserialize_aml_model_response(response.json())
@@ -38,7 +58,7 @@ def test_amlmodel_asset_paths():
 
 
 @pytest.mark.unit
-def test_amlmodel_signal_ids():
+def test_amlmodel_signal_ids(unit_test_config):
     with open(test_common.DATA_DIR.joinpath("aml_model_regressor3_response.json")) as f:
         response = test_common.MockResponse(json.load(f), 200)
     model = backend.AmlModel.deserialize_aml_model_response(response.json())
@@ -59,7 +79,7 @@ def test_amlmodel_signal_ids():
 
 
 @pytest.mark.unit
-def test_online_deployment():
+def test_online_deployment(unit_test_config):
     with open(test_common.DATA_DIR.joinpath("deployment_seeq-simple-demo-3.json")) as f:
         response = test_common.MockResponse(json.load(f), 200)
     deployment = backend.OnlineDeployment.deserialize_aml_deployment_response(response.json())[0]
@@ -76,7 +96,7 @@ def test_online_deployment():
 
 
 @pytest.mark.unit
-def test_online_endpoint():
+def test_online_endpoint(unit_test_config):
     with open(test_common.DATA_DIR.joinpath("onlineEndpoints_response.json")) as f:
         response = test_common.MockResponse(json.load(f), 200)
     oes = backend.OnlineEndpoint.deserialize_aml_endpoint_response(response.json())
@@ -89,7 +109,7 @@ def test_online_endpoint():
 
 
 @pytest.mark.unit
-def test_list_online_endpoints():
+def test_list_online_endpoints(unit_test_config):
     with mock.patch.object(backend.AmlOnlineEndpointService, '_authorize', return_value="token"), \
             mock.patch.object(requests, 'get', side_effect=test_common.mocked_aml_response), \
             mock.patch.object(requests, 'post', side_effect=test_common.mocked_aml_response):
@@ -120,19 +140,19 @@ def test_model_inputs_provider_asset_path_ids(unit_test_config):
         selected_endpoint = 'seeq-simple-demo-3'
 
         assert _config.get('azure', 'TENANT_ID') is None
-        user_selections = backend.ModelInputsProvider()
-        assert user_selections.asset_paths is None
-        user_selections.get_assets(user_selections.endpoints[selected_endpoint])
-        assert user_selections.asset_paths == {
+        inputs_provider = backend.ModelInputsProvider()
+        assert inputs_provider.asset_paths is None
+        inputs_provider.get_assets(inputs_provider.endpoints[selected_endpoint])
+        assert inputs_provider.asset_paths == {
             'Example >> Cooling Tower 1 >> Area A': '2407642C-0169-4ED0-A25C-321E29DC975B',
             'Example >> Cooling Tower 1 >> Area B': 'AA1E42AE-90BD-4CF7-9449-F8CC81625E8F'
             }
 
-        user_selections.get_signal_inputs(
-            user_selections.endpoints[selected_endpoint],
-            user_selections.asset_paths['Example >> Cooling Tower 1 >> Area A'])
+        inputs_provider.get_signal_inputs(
+            inputs_provider.endpoints[selected_endpoint],
+            inputs_provider.asset_paths['Example >> Cooling Tower 1 >> Area A'])
 
-        assert user_selections.model_signal_inputs == {
+        assert inputs_provider.model_signal_inputs == {
             'Relative Humidity': '4E9416E8-9C75-426A-8E0A-4D07432CAC5D',
             'Optimizer': '62E6F850-E523-408D-AD10-0C87E65F996B',
             'Wet Bulb': 'CD732D0B-C3BA-496F-B69E-55543944B5F1',
@@ -147,22 +167,105 @@ def test_model_inputs_provider_signal_ids(unit_test_config):
             mock.patch.object(requests, 'post', side_effect=test_common.mocked_aml_response), \
             mock.patch.object(backend._seeq_inputs_provider.TreesApi, 'get_tree',
                               side_effect=test_common.mocked_get_tree_api_response), \
+            mock.patch.object(backend._seeq_inputs_provider.SignalsApi, 'get_signal',
+                              side_effect=test_common.mocked_get_signal_api_response), \
             mock.patch.object(_config, 'validate_configuration_file', return_value=None):
         selected_endpoint = 'seeq-simple-demo'
 
         assert _config.get('azure', 'TENANT_ID') is None
-        user_selections = backend.ModelInputsProvider()
-        assert user_selections.asset_paths is None
-        user_selections.get_assets(user_selections.endpoints[selected_endpoint])
-        assert user_selections.asset_paths is None
-        user_selections.get_signal_inputs(user_selections.endpoints[selected_endpoint])
-        assert user_selections.asset_path_from_signals == {
+        inputs_provider = backend.ModelInputsProvider()
+        assert inputs_provider.asset_paths is None
+        inputs_provider.get_assets(inputs_provider.endpoints[selected_endpoint])
+        assert inputs_provider.asset_paths is None
+        inputs_provider.get_signal_inputs(inputs_provider.endpoints[selected_endpoint])
+        assert inputs_provider.asset_path_from_signals == {
             'Example >> Cooling Tower 1 >> Area A': '2407642C-0169-4ED0-A25C-321E29DC975B'
             }
 
-        assert user_selections.model_signal_inputs == {
+        assert inputs_provider.model_signal_inputs == {
             'Relative Humidity': '4E9416E8-9C75-426A-8E0A-4D07432CAC5D',
             'Optimizer': '62E6F850-E523-408D-AD10-0C87E65F996B',
             'Wet Bulb': 'CD732D0B-C3BA-496F-B69E-55543944B5F1',
             'Temperature': 'F8E053D1-A4D5-4671-9969-1D5D7D4F27DD'
             }
+
+
+@pytest.mark.system
+def test_run_investigation(system_test_config, system_test_setup):
+    # This test mocks the Azure ML response but interacts with the Seeq server
+    relative_humidity_id = spy.search(
+        {
+            "Name": "Relative Humidity",
+            "Path": "Example >> Cooling Tower 1 >> Area A"
+            })['ID'][0]
+    optimizer_id = spy.search(
+        {
+            "Name": "Optimizer",
+            "Path": "Example >> Cooling Tower 1 >> Area A"
+            })['ID'][0]
+    wet_bulb_id = spy.search(
+        {
+            "Name": "Wet Bulb",
+            "Path": "Example >> Cooling Tower 1 >> Area A"
+            })['ID'][0]
+    temperature_id = spy.search(
+        {
+            "Name": "Temperature",
+            "Path": "Example >> Cooling Tower 1 >> Area A"
+            })['ID'][0]
+
+    backend._run_investigation.urllib.request.urlopen = mock.Mock(
+        spec=backend._run_investigation.urllib.request.urlopen)
+    response = backend._run_investigation.urllib.request.urlopen()
+    response.read.return_value = b'"{\\"Predicted_Compressor_Power\\":{\\"2021-12-06T20:14:00.000Z\\":10.2795732894,' \
+                                 b'\\"2021-12-06T20:16:00.000Z\\":9.9859015583,' \
+                                 b'\\"2021-12-06T20:18:00.000Z\\":10.6125521012,' \
+                                 b'\\"2021-12-06T20:20:00.000Z\\":10.054556658,' \
+                                 b'\\"2021-12-06T20:22:00.000Z\\":11.406334309,' \
+                                 b'\\"2021-12-06T20:24:00.000Z\\":11.4476420238,' \
+                                 b'\\"2021-12-06T20:26:00.000Z\\":10.8616664569,' \
+                                 b'\\"2021-12-06T20:28:00.000Z\\":10.5899078439,' \
+                                 b'\\"2021-12-06T20:30:00.000Z\\":11.0406563365,' \
+                                 b'\\"2021-12-06T20:32:00.000Z\\":9.5797677494,' \
+                                 b'\\"2021-12-06T20:34:00.000Z\\":8.5796331215,' \
+                                 b'\\"2021-12-06T20:36:00.000Z\\":10.8224287375,' \
+                                 b'\\"2021-12-06T20:38:00.000Z\\":12.7681512296,' \
+                                 b'\\"2021-12-06T20:40:00.000Z\\":11.7027756377,' \
+                                 b'\\"2021-12-06T20:42:00.000Z\\":10.8839378666,' \
+                                 b'\\"2021-12-06T20:44:00.000Z\\":11.8359484297,' \
+                                 b'\\"2021-12-06T20:46:00.000Z\\":14.8992703312,' \
+                                 b'\\"2021-12-06T20:48:00.000Z\\":13.4492002505,' \
+                                 b'\\"2021-12-06T20:50:00.000Z\\":14.5131224303,' \
+                                 b'\\"2021-12-06T20:52:00.000Z\\":10.6856899759,' \
+                                 b'\\"2021-12-06T20:54:00.000Z\\":10.0665961322,' \
+                                 b'\\"2021-12-06T20:56:00.000Z\\":8.2384170083,' \
+                                 b'\\"2021-12-06T20:58:00.000Z\\":9.6797227084,' \
+                                 b'\\"2021-12-06T21:00:00.000Z\\":11.8286076236,' \
+                                 b'\\"2021-12-06T21:02:00.000Z\\":11.3403269874,' \
+                                 b'\\"2021-12-06T21:04:00.000Z\\":12.0153475087,' \
+                                 b'\\"2021-12-06T21:06:00.000Z\\":12.519534538,' \
+                                 b'\\"2021-12-06T21:08:00.000Z\\":12.3288283771,' \
+                                 b'\\"2021-12-06T21:10:00.000Z\\":12.7558601744,' \
+                                 b'\\"2021-12-06T21:12:00.000Z\\":11.8204852874}}"'
+    investigation = backend.RunInvestigation(input_signals={
+        'Relative Humidity': relative_humidity_id,
+        'Optimizer': optimizer_id,
+        'Wet Bulb': wet_bulb_id,
+        'Temperature': temperature_id
+        },
+        result_name='result_signal',
+        az_model_name='regressor',
+        az_model_version='6',
+        start=pd.Timestamp('2021-12-06 14:13:46-0600', tz='America/Chicago'),
+        end=pd.Timestamp('2021-12-06 15:13:46-0600', tz='America/Chicago'),
+        grid='2min',
+        workbook='1EB101EE-189F-4D1F-BBAA-F6EDDE28BB99',
+        worksheet='test_worksheet',
+        endpoint_uri='https://<MODEL_NAME>.canadacentral.inference.ml.azure.com/score',
+        aml_primary_key='<PRIMARY_KEY>',
+        quiet=True)
+    investigation.run()
+    assert isinstance(investigation.result_signal, pd.DataFrame)
+    investigation.push_to_seeq()
+    assert isinstance(investigation.pushed_df, pd.DataFrame)
+    assert investigation.pushed_df['Push Result'][0] == "Success"

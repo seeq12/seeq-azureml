@@ -27,9 +27,9 @@ class MlOperate:
         Default time delta to populate the start time of the investigate range
     deploy_frequency: pd.Timedelta
         The schedule frequency for the "deploy" option as a pandas.Timedelta
-    user_selections: seeq.addons.azureml.backend.ModelInputsProvider
-        An instance of the UserSelections object that serves as an interface
-        between the UI and the backend integration between Seeq and Azure ML.
+    inputs_provider: seeq.addons.azureml.backend.ModelInputsProvider
+        An instance of the ModelInputsProvider object that gets the input signal
+        IDs from Seeq that are required by the Azure ML model.
     app: seeq.addons.azureml.ui_components.AppLayout
         An instance of the Add-on UI
     """
@@ -45,7 +45,7 @@ class MlOperate:
         self.config_file = config_file
         self.default_time_delta = '1 hour'
         self.deploy_frequency = None
-        self.user_selections = None
+        self.inputs_provider = None
 
         self.app = ui_components.AppLayout(endpoint_on_change=self.on_endpoint_dropdown_change,
                                            asset_on_change=self.on_asset_dropdown_change,
@@ -113,13 +113,13 @@ class MlOperate:
         self.set_spinner_message(message="Connecting to Azure ML service")
 
         try:
-            self.user_selections = ModelInputsProvider(config_file=self.config_file)
+            self.inputs_provider = ModelInputsProvider(config_file=self.config_file)
         except AzureMLException as e:
             self.set_spinner_message(title="Azure Exception", message=str(e), status="ERROR")
             self.app.spinner_visible = False
             return
         # populate dropdown with available model endpoints
-        self.app.model_inputs.endpoint_items = list(self.user_selections.endpoints.keys())
+        self.app.model_inputs.endpoint_items = list(self.inputs_provider.endpoints.keys())
         self.app.model_inputs.endpoint_disabled = False
         self.set_cards_visible_spinner_invisible()
 
@@ -159,7 +159,7 @@ class MlOperate:
         self.app.model_inputs.asset_visible = False
 
         try:
-            self.user_selections.get_assets(self.user_selections.endpoints[data])
+            self.inputs_provider.get_assets(self.inputs_provider.endpoints[data])
         except AzureMLException as e:
             self.set_error_message(title="AzureMLException: ", message=str(e))
             self.validate_forms()
@@ -169,9 +169,9 @@ class MlOperate:
             self.validate_forms()
             return
 
-        if self.user_selections.asset_paths is None:
+        if self.inputs_provider.asset_paths is None:
             try:
-                self.user_selections.get_signal_inputs(self.user_selections.endpoints[data])
+                self.inputs_provider.get_signal_inputs(self.inputs_provider.endpoints[data])
             except AzureMLException as e:
                 self.set_error_message(title="AzureMLException: ", message=str(e))
                 self.validate_forms()
@@ -182,12 +182,12 @@ class MlOperate:
                 return
             self.populate_investigate_range()
             self.populate_summary(endpoint_info=data,
-                                  asset_info=list(self.user_selections.asset_path_from_signals.keys())[0] if
-                                  self.user_selections.asset_path_from_signals is not None else "NA",
-                                  signals_info=", ".join(self.user_selections.model_signal_inputs.keys()))
+                                  asset_info=list(self.inputs_provider.asset_path_from_signals.keys())[0] if
+                                  self.inputs_provider.asset_path_from_signals is not None else "NA",
+                                  signals_info=", ".join(self.inputs_provider.model_signal_inputs.keys()))
             self.on_action_dropdown_change(self.app.model_action.selection)
         else:
-            items = list(self.user_selections.asset_paths.keys())
+            items = list(self.inputs_provider.asset_paths.keys())
             self.populate_assets_dropdown(items)
             self.populate_summary(endpoint_info=data, asset_info='', signals_info="")
             if self.app.model_inputs.asset_selection in items:  # if there is already an asset selection.
@@ -204,9 +204,9 @@ class MlOperate:
         if data is None:
             return
         try:
-            self.user_selections.get_signal_inputs(
-                self.user_selections.endpoints[self.app.model_inputs.endpoint_selection],
-                self.user_selections.asset_paths[data])
+            self.inputs_provider.get_signal_inputs(
+                self.inputs_provider.endpoints[self.app.model_inputs.endpoint_selection],
+                self.inputs_provider.asset_paths[data])
         except AzureMLException as e:
             self.set_error_message(title="AzureMLException: ", message=str(e))
             self.validate_forms()
@@ -217,7 +217,7 @@ class MlOperate:
             return
         self.populate_investigate_range()
         self.populate_summary(asset_info=data,
-                              signals_info=", ".join(self.user_selections.model_signal_inputs.keys()))
+                              signals_info=", ".join(self.inputs_provider.model_signal_inputs.keys()))
         self.on_action_dropdown_change(self.app.model_action.selection)
         self.validate_forms()
 
@@ -281,7 +281,7 @@ class MlOperate:
         if self.app.model_summary.button_disabled:
             self.set_error_message(title="Incomplete form: ", message=f'Complete all required fields')
             return
-        if not self.user_selections.model_signal_inputs:
+        if not self.inputs_provider.model_signal_inputs:
             self.set_error_message(title="Wrong input: ", message=f'Could not find input signals for model endpoint "'
                                                                   f'{self.app.model_inputs.endpoint_selection}"')
             return
@@ -289,17 +289,17 @@ class MlOperate:
         if self.app.model_action.selection == 'Investigate':
             self.app.model_summary.button_loading = True
 
-            investigation = RunInvestigation(input_signals=self.user_selections.model_signal_inputs,
+            investigation = RunInvestigation(input_signals=self.inputs_provider.model_signal_inputs,
                                              result_name=self.app.model_action.result_name,
-                                             az_model_name=self.user_selections.model_name,
-                                             az_model_version=str(self.user_selections.model_version),
+                                             az_model_name=self.inputs_provider.model_name,
+                                             az_model_version=str(self.inputs_provider.model_version),
                                              start=self.app.model_action.investigate_range.start_range.value,
                                              end=self.app.model_action.investigate_range.end_range.value,
-                                             grid=self.user_selections.model_sample_rate,
+                                             grid=self.inputs_provider.model_sample_rate,
                                              workbook=self.workbook_id,
                                              worksheet=DEFAULT_WORKSHEET_NAME,
-                                             endpoint_uri=self.user_selections.model_endpoint_uri,
-                                             aml_primary_key=self.user_selections._model_primary_key,
+                                             endpoint_uri=self.inputs_provider.model_endpoint_uri,
+                                             aml_primary_key=self.inputs_provider._model_primary_key,
                                              quiet=True)
 
             try:
@@ -341,18 +341,18 @@ class MlOperate:
             job_parameters = {
                 'Schedule': self.app.model_action.deploy_input_form.frequency,
                 'Frequency': self.deploy_frequency,
-                'Input Signals': self.user_selections.model_signal_inputs,
+                'Input Signals': self.inputs_provider.model_signal_inputs,
                 'Result Name': self.app.model_action.result_name,
-                'AZ model name': self.user_selections.model_name,
-                'AZ model version': str(self.user_selections.model_version),
-                'Grid': self.user_selections.model_sample_rate,
+                'AZ model name': self.inputs_provider.model_name,
+                'AZ model version': str(self.inputs_provider.model_version),
+                'Grid': self.inputs_provider.model_sample_rate,
                 'Workbook': self.workbook_id,
                 'Worksheet': DEFAULT_WORKSHEET_NAME,
-                'Endpoint': self.user_selections.model_endpoint_uri,
-                'aml_primary_key': self.user_selections._model_primary_key,
+                'Endpoint': self.inputs_provider.model_endpoint_uri,
+                'aml_primary_key': self.inputs_provider._model_primary_key,
                 'User': f'{spy.user.first_name} {spy.user.last_name}',
                 'Job Name': "job name"
-            }
+                }
             url = f"{spy.utils.get_data_lab_project_url()}/notebooks/deployment/azureml_integration_deploy_model.ipynb"
 
             jobs = pd.DataFrame([job_parameters])

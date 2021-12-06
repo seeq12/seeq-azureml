@@ -119,3 +119,11 @@ def mocked_get_tree_api_response(id):
                                                   tree['value']['item']['ancestors']]
             tree['value']['item'] = seeq.sdk.models.ItemPreviewWithAssetsV1(**tree['value']['item'])
             return seeq.sdk.models.asset_tree_output_v1.AssetTreeOutputV1(**tree['value'])
+
+
+def mocked_get_signal_api_response(id):
+    with open(DATA_DIR.joinpath("seeq_signals_seeq-simple-demo-3.json")) as f:
+        signals = json.load(f)
+    for signal in signals['signals']:
+        if signal['id'] == id:
+            return seeq.sdk.models.signal_output_v1.SignalOutputV1(**signal)

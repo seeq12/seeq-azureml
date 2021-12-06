@@ -5,7 +5,7 @@ from typing import Optional
 from seeq import spy
 from seeq.addons import azureml
 from seeq.addons.azureml import _config
-from seeq.addons.azureml import backend
+from seeq.addons.azureml import ui_components
 from . import test_common
 
 test_worksheet_url: Optional[str] = None
@@ -34,4 +34,5 @@ def test_ui_instance(system_test_config, system_test_setup):
     notebook = f'{spy.utils.get_data_lab_project_url()}/dummy.ipynb?workbookId=' \
                f'{spy.utils.get_workbook_id_from_url(test_worksheet_url)}'
     C = azureml.MlOperate(config_file=test_common.TEST_CONFIG_FILE, sdl_notebook_url=notebook)  # sdl_notebook_url
-    C.run()
+    app = C.run()
+    assert isinstance(app, ui_components.AppLayout)
