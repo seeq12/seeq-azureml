@@ -142,15 +142,15 @@ def test_model_inputs_provider_asset_path_ids(unit_test_config):
         assert _config.get('azure', 'TENANT_ID') is None
         inputs_provider = backend.ModelInputsProvider()
         assert inputs_provider.asset_paths is None
-        inputs_provider.get_assets(inputs_provider.endpoints[selected_endpoint])
+        inputs_provider.update_assets_from_endpoint(inputs_provider.endpoints[selected_endpoint])
         assert inputs_provider.asset_paths == {
             'Example >> Cooling Tower 1 >> Area A': '2407642C-0169-4ED0-A25C-321E29DC975B',
             'Example >> Cooling Tower 1 >> Area B': 'AA1E42AE-90BD-4CF7-9449-F8CC81625E8F'
             }
 
-        inputs_provider.get_signal_inputs(
-            inputs_provider.endpoints[selected_endpoint],
-            inputs_provider.asset_paths['Example >> Cooling Tower 1 >> Area A'])
+        inputs_provider.update_signal_inputs_from_endpoint(inputs_provider.endpoints[selected_endpoint],
+                                                           inputs_provider.asset_paths[
+                                                               'Example >> Cooling Tower 1 >> Area A'])
 
         assert inputs_provider.model_signal_inputs == {
             'Relative Humidity': '4E9416E8-9C75-426A-8E0A-4D07432CAC5D',
@@ -175,9 +175,9 @@ def test_model_inputs_provider_signal_ids(unit_test_config):
         assert _config.get('azure', 'TENANT_ID') is None
         inputs_provider = backend.ModelInputsProvider()
         assert inputs_provider.asset_paths is None
-        inputs_provider.get_assets(inputs_provider.endpoints[selected_endpoint])
+        inputs_provider.update_assets_from_endpoint(inputs_provider.endpoints[selected_endpoint])
         assert inputs_provider.asset_paths is None
-        inputs_provider.get_signal_inputs(inputs_provider.endpoints[selected_endpoint])
+        inputs_provider.update_signal_inputs_from_endpoint(inputs_provider.endpoints[selected_endpoint])
         assert inputs_provider.asset_path_from_signals == {
             'Example >> Cooling Tower 1 >> Area A': '2407642C-0169-4ED0-A25C-321E29DC975B'
             }

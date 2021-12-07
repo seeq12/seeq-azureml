@@ -56,8 +56,8 @@
     "userAltSecId": "None",
     "userIss": "https://sts.windows.net/<TENANT_ID>/",
     "userTenantId": "<TENANT_ID>",
-    "userName": "Joseph Disantis",
-    "upn": "joseph.disantis@seeq.com"
+    "userName": "Name Lastname",
+    "upn": "user@seeq.com"
   },
   "modifiedBy": {
     "userObjectId": "d38942a6-be8e-4576-bdb1-c810382010ec",
@@ -66,8 +66,8 @@
     "userAltSecId": "None",
     "userIss": "https://sts.windows.net/<TENANT_ID>/",
     "userTenantId": "<TENANT_ID>",
-    "userName": "Alberto Rivas",
-    "upn": "alberto.rivas@seeq.com"
+    "userName": "Name Lastname",
+    "upn": "user@seeq.com"
   },
   "flavors": {},
   "modelFormat": "CUSTOM",

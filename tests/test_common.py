@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from functools import partial
 
 import seeq.sdk
 from seeq.spy.workbooks import Analysis
@@ -53,6 +54,11 @@ class MockResponse:
         return self.json_data
 
 
+def mock_200_response_from_file(data_dir: Path, file: str):
+    with open(data_dir.joinpath(file)) as f:
+        return MockResponse(json.load(f), 200)
+
+
 def mocked_aml_response(url: str, headers: str):
     """
     This is function to mock the responses from the Azure ML API calls.
@@ -79,33 +85,26 @@ def mocked_aml_response(url: str, headers: str):
 
     """
 
+    mock_200_from_file = partial(mock_200_response_from_file, DATA_DIR)
+
     if url.endswith("onlineEndpoints?api-version=2021-03-01-preview"):
-        with open(DATA_DIR.joinpath("onlineEndpoints_response.json")) as f:
-            return MockResponse(json.load(f), 200)
+        return mock_200_from_file("onlineEndpoints_response.json")
     elif url.endswith("listKeys?api-version=2021-03-01-preview"):
         return MockResponse({"primaryKey": "p-key", "secondaryKey": "s-key"}, 200)
     elif '/seeq-simple-demo/' in url:
-
-        with open(DATA_DIR.joinpath("deployment_seeq-simple-demo.json")) as f:
-            return MockResponse(json.load(f), 200)
+        return mock_200_from_file("deployment_seeq-simple-demo.json")
     elif '/seeq-simple-demo-2/' in url:
-        with open(DATA_DIR.joinpath("deployment_seeq-simple-demo-2.json")) as f:
-            return MockResponse(json.load(f), 200)
+        return mock_200_from_file("deployment_seeq-simple-demo-2.json")
     elif '/seeq-simple-demo-3/' in url:
-        with open(DATA_DIR.joinpath("deployment_seeq-simple-demo-3.json")) as f:
-            return MockResponse(json.load(f), 200)
+        return mock_200_from_file("deployment_seeq-simple-demo-3.json")
     elif url.endswith("/regressor:6"):
-        with open(DATA_DIR.joinpath("aml_model_regressor6_response.json")) as f:
-            return MockResponse(json.load(f), 200)
+        return mock_200_from_file("aml_model_regressor6_response.json")
     elif url.endswith("/regressor:3"):
-        with open(DATA_DIR.joinpath("aml_model_regressor3_response.json")) as f:
-            return MockResponse(json.load(f), 200)
+        return mock_200_from_file("aml_model_regressor3_response.json")
     elif url.endswith("/regressor:2"):
-        with open(DATA_DIR.joinpath("aml_model_regressor2_response.json")) as f:
-            return MockResponse(json.load(f), 200)
+        return mock_200_from_file("aml_model_regressor2_response.json")
     else:
-        with open(DATA_DIR.joinpath("deployment_null.json")) as f:
-            return MockResponse(json.load(f), 200)
+        return mock_200_from_file("deployment_null.json")
 
 
 def mocked_get_tree_api_response(id):

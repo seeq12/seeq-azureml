@@ -159,7 +159,7 @@ class MlOperate:
         self.app.model_inputs.asset_visible = False
 
         try:
-            self.inputs_provider.get_assets(self.inputs_provider.endpoints[data])
+            self.inputs_provider.update_assets_from_endpoint(self.inputs_provider.endpoints[data])
         except AzureMLException as e:
             self.set_error_message(title="AzureMLException: ", message=str(e))
             self.validate_forms()
@@ -171,7 +171,7 @@ class MlOperate:
 
         if self.inputs_provider.asset_paths is None:
             try:
-                self.inputs_provider.get_signal_inputs(self.inputs_provider.endpoints[data])
+                self.inputs_provider.update_signal_inputs_from_endpoint(self.inputs_provider.endpoints[data])
             except AzureMLException as e:
                 self.set_error_message(title="AzureMLException: ", message=str(e))
                 self.validate_forms()
@@ -204,7 +204,7 @@ class MlOperate:
         if data is None:
             return
         try:
-            self.inputs_provider.get_signal_inputs(
+            self.inputs_provider.update_signal_inputs_from_endpoint(
                 self.inputs_provider.endpoints[self.app.model_inputs.endpoint_selection],
                 self.inputs_provider.asset_paths[data])
         except AzureMLException as e:
