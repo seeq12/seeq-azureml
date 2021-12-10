@@ -241,7 +241,7 @@ class OnlineEndpoint:
         self.secondaryKey = None
 
     @staticmethod
-    def deserialize_aml_services_response(json):
+    def deserialize_unmanaged_endpoint_response(json):
         """
         Deserializes the Azure ML response services response for ACI models
 
@@ -281,7 +281,7 @@ class OnlineEndpoint:
 
 
     @staticmethod
-    def deserialize_aml_endpoint_response(json):
+    def deserialize_managed_endpoint_response(json):
         """
         Deserializes the Azure ML response from the online endpoints endpoint
 

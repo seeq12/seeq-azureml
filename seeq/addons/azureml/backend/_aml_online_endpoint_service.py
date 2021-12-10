@@ -2,7 +2,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util import Retry
 from datetime import datetime, timedelta
-from ._aml_response_models import OnlineDeployment, OnlineEndpoint, AmlModel, AmlWorkspaceDetails
+from ._aml_response_models import OnlineDeployment, OnlineEndpoint, AmlModel
 from seeq.addons.azureml.utils import AzureMLException
 
 API_VERSION = "2021-03-01-preview"
@@ -37,8 +37,6 @@ class AmlOnlineEndpointService:
         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self._http = requests.Session()
-        self._http.mount("https://", adapter)
-        self._http.mount("http://", adapter)
 
     def _authorize(self):
 
