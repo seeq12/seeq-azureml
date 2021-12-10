@@ -33,7 +33,7 @@ class AmlOnlineEndpointService:
         retry_strategy = Retry(
             total=3,
             status_forcelist=[429, 500, 502, 503, 504],
-            method_whitelist=["POST", "GET"]
+            allowed_methods=["POST", "GET"]
         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self._http = requests.Session()
