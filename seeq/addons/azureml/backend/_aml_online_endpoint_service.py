@@ -7,8 +7,8 @@ from seeq.addons.azureml.utils import AzureMLException
 
 API_VERSION = "2021-03-01-preview"
 
-class AmlOnlineEndpointService:
 
+class AmlOnlineEndpointService:
     
     """
     Provides a service to connect to Azure ML Studio and get endpoints that are
@@ -34,9 +34,11 @@ class AmlOnlineEndpointService:
             total=3,
             status_forcelist=[429, 500, 502, 503, 504],
             allowed_methods=["POST", "GET"]
-        )
+            )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         self._http = requests.Session()
+        self._http.mount("https://", adapter)
+        self._http.mount("http://", adapter)
 
     def _authorize(self):
 
@@ -56,8 +58,8 @@ class AmlOnlineEndpointService:
                     return self._token
 
         url = f"https://login.microsoftonline.com/{self._tenant_id}/oauth2/token?api-version=1.0"
-        payload = f"client_secret={self._app_secret}&grant_type=client_credentials&resource=https%3A%2F%2Fmanagement." \
-                  f"core.windows.net%2F&client_id={self._app_id}"
+        payload = f"client_secret={self._app_secret}&grant_type=client_credentials&resource=https%3A%2F%2Fmanagement" \
+                  f".core.windows.net%2F&client_id={self._app_id}"
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
         response = self._http.post(url, headers=headers, data=payload)
@@ -99,23 +101,26 @@ class AmlOnlineEndpointService:
         url_base, headers = self._get_base_mgmt_url()
         url = f"{url_base}?api-version={API_VERSION}"
         headers = {'Authorization': f'Bearer {self._authorize()}'}
-        
+
         response = self._http.get(url, headers=headers)
         if response.status_code != 200:
-            raise AzureMLException(code=response.status_code, reason=response.reason, message="Error getting workspace details")
+            raise AzureMLException(code=response.status_code, reason=response.reason,
+                                   message="Error getting workspace details")
 
         workspace_discovery_url = response.json()['properties']['discoveryUrl']
 
         response = self._http.get(workspace_discovery_url)
         if response.status_code != 200:
-            raise AzureMLException(code=response.status_code, reason=response.reason, message="Error accessing workspace discovery")
-        
-        mgmt_url =  f"{response.json()['modelmanagement']}/modelmanagement/v1.0/subscriptions/{self._subscription_id}/resourceGroups/" \
-            f"{self._resource_group}/providers/Microsoft.MachineLearningServices/workspaces/{self._workspace_name}/services/"
+            raise AzureMLException(code=response.status_code, reason=response.reason,
+                                   message="Error accessing workspace discovery")
+
+        mgmt_url = f"{response.json()['modelmanagement']}/modelmanagement/v1.0/subscriptions/" \
+                   f"{self._subscription_id}/resourceGroups/" \
+                   f"{self._resource_group}/providers/Microsoft.MachineLearningServices/" \
+                   f"workspaces/{self._workspace_name}/services/"
         mgmt_headers = {'Authorization': f'Bearer {self._authorize()}'}
 
         return mgmt_url, mgmt_headers
-        
 
     def _get_models(self, deployment: OnlineDeployment):
         """
@@ -186,8 +191,6 @@ class AmlOnlineEndpointService:
         -: None
 
         """
-        url = ""
-        headers = {}
 
         if endpoint.kind == "Managed":
             base_url, headers = self._get_base_mgmt_url()
@@ -200,7 +203,7 @@ class AmlOnlineEndpointService:
 
         if response.status_code != 200:
             raise AzureMLException(code=response.status_code, reason=response.reason,
-                                message=f"Error listing keys for endpoint. Endpoint name: {endpoint.name}")
+                                   message=f"Error listing keys for endpoint. Endpoint name: {endpoint.name}")
         keys = response.json()
         endpoint.primaryKey = keys['primaryKey']
         endpoint.secondaryKey = keys['secondaryKey']
@@ -222,14 +225,18 @@ class AmlOnlineEndpointService:
         response = self._http.get(url, headers=headers)
 
         if response.status_code != 200:
-            raise AzureMLException(code=response.status_code, reason=response.reason, message="Error getting ACI endpoints")
+            raise AzureMLException(code=response.status_code, reason=response.reason,
+                                   message="Error getting ACI endpoints")
 
         oes = OnlineEndpoint.deserialize_unmanaged_endpoint_response(response.json())
         for oe in oes:
             self._add_keys_to_endpoint(oe)
             # unmanaged endpoints only have one deployment
-            oe.deployment[0].modelId = f"/subscriptions/{self._subscription_id}/resourceGroups/{self._resource_group}/" \
-                f"providers/Microsoft.MachineLearningServices/workspaces/{self._workspace_name}/models/{oe.deployment[0].model}/versions/{oe.deployment[0].model_version}"
+            oe.deployment[0].modelId = f"/subscriptions/{self._subscription_id}/resourceGroups/" \
+                                       f"{self._resource_group}/providers/Microsoft.MachineLearningService" \
+                                       f"s/workspaces/{self._workspace_name}/models/" \
+                                       f"{oe.deployment[0].model}/versions/" \
+                                       f"{oe.deployment[0].model_version}"
             self._get_models(oe.deployment[0])
         return oes
 
@@ -273,6 +280,7 @@ class AmlOnlineEndpointService:
         oes = self._get_unmanaged_online_endpoints()
         oes += self._get_managed_online_endpoints()
         return oes
+
 
 def exception_message(message, code, reason):
     return f'{message}. Return code: {str(code)} with reason: {str(reason)}'

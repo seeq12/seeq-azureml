@@ -90,6 +90,7 @@ class AmlModel:
             model.sample_rate = tags.get('SampleRate', )
         return model
 
+
 class OnlineDeployment:
     """
     Gets the serialized response from the Azure ML deployments endpoint and
@@ -122,7 +123,7 @@ class OnlineDeployment:
         ----------
         name : str
             Name of the Azure ML deployment
-        idd : str
+        idd : str or None
             ID of the Azure ML deployment
         """
         self.id = idd
