@@ -206,8 +206,11 @@ class OnlineEndpoint:
 
     Methods
     -------
-    deserialize_aml_endpoint_response(json)
-        Deserializes the Azure ML response from the online endpoints endpoint
+    deserialize_unmanaged_endpoint_response(json)
+        Deserializes the Azure ML response from the unmanaged online endpoints endpoint
+
+    deserialize_managed_endpoint_response
+        Deserializes the Azure ML response from the managed online endpoints endpoint
 
     add_deployment(seeq.addons.azureml.backend.OnlineDeployment)
         Adds an OnlineDeployment to the endpoint only if the traffic split
