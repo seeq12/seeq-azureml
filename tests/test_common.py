@@ -59,7 +59,7 @@ def mock_200_response_from_file(data_dir: Path, file: str):
         return MockResponse(json.load(f), 200)
 
 
-def mocked_aml_response(url: str, headers: str):
+def mocked_aml_response(url: str, **kwargs):
     """
     This is function to mock the responses from the Azure ML API calls.
 
@@ -67,8 +67,6 @@ def mocked_aml_response(url: str, headers: str):
     ----------
     url: str
         The URL of the management service
-    headers: str
-        The headers of the management service. See note below.
 
     Returns
     -------
@@ -89,7 +87,15 @@ def mocked_aml_response(url: str, headers: str):
 
     if url.endswith("onlineEndpoints?api-version=2021-03-01-preview"):
         return mock_200_from_file("onlineEndpoints_response.json")
+    elif url.endswith("/workspace_name/?api-version=2021-03-01-preview"):
+        return mock_200_from_file("aml_regional_model_mngt.json")
+    elif url == "https://canadacentral.api.azureml.ms/discovery":
+        return mock_200_from_file("aml_workspace_discovery.json")
+    elif url.endswith("/workspaces/workspace_name/services/"):
+        return mock_200_from_file("onlineEndpoints_aci_response.json")
     elif url.endswith("listKeys?api-version=2021-03-01-preview"):
+        return MockResponse({"primaryKey": "p-key", "secondaryKey": "s-key"}, 200)
+    elif url.endswith("/listKeys"):
         return MockResponse({"primaryKey": "p-key", "secondaryKey": "s-key"}, 200)
     elif '/seeq-simple-demo/' in url:
         return mock_200_from_file("deployment_seeq-simple-demo.json")

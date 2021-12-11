@@ -56,7 +56,7 @@ def test_amlmodel_signal_ids(unit_test_config):
 def test_online_deployment(unit_test_config):
     with open(test_common.DATA_DIR.joinpath("deployment_seeq-simple-demo-3.json")) as f:
         response = test_common.MockResponse(json.load(f), 200)
-    deployment = backend.OnlineDeployment.deserialize_aml_deployment_response(response.json())[0]
+    deployment = backend.OnlineDeployment.deserialize_aml_deployment_response(response.json(), "Managed")[0]
     assert deployment.id == '/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft' \
                             '.MachineLearningServices/workspaces/<WORKSPACE_NAME>/onlineEndpoints/seeq-simple-demo-3' \
                             '/deployments/indigo'
@@ -70,10 +70,10 @@ def test_online_deployment(unit_test_config):
 
 
 @pytest.mark.unit
-def test_online_endpoint(unit_test_config):
+def test_online_managed_endpoint(unit_test_config):
     with open(test_common.DATA_DIR.joinpath("onlineEndpoints_response.json")) as f:
         response = test_common.MockResponse(json.load(f), 200)
-    oes = backend.OnlineEndpoint.deserialize_aml_endpoint_response(response.json())
+    oes = backend.OnlineEndpoint.deserialize_managed_endpoint_response(response.json())
     assert isinstance(oes, list)
     assert len(oes) == 4
     for endpoint in oes:
@@ -83,20 +83,37 @@ def test_online_endpoint(unit_test_config):
 
 
 @pytest.mark.unit
+def test_online_unmanaged_endpoint(unit_test_config):
+    with open(test_common.DATA_DIR.joinpath("onlineEndpoints_aci_response.json")) as f:
+        response = test_common.MockResponse(json.load(f), 200)
+    oes = backend.OnlineEndpoint.deserialize_unmanaged_endpoint_response(response.json())
+    assert isinstance(oes, list)
+    assert len(oes) == 1
+    endpoint = oes[0]
+    assert endpoint.type == 'Microsoft.MachineLearningServices/workspaces/onlineEndpoints'
+    assert endpoint.name == 'regressor-v6-svc'
+    assert len(endpoint.deployment) == 1
+    assert endpoint.deployment[0].name == 'regressor-v6-svc'
+
+
+@pytest.mark.unit
 def test_list_online_endpoints(unit_test_config):
+    instance_ = backend.AmlOnlineEndpointService("tenant_id", "app_id", "app_secret", "subscription_id",
+                                                 "resource_group",
+                                                 "workspace_name")
+
     with mock.patch.object(backend.AmlOnlineEndpointService, '_authorize', return_value="token"), \
-            mock.patch.object(requests, 'get', side_effect=test_common.mocked_aml_response), \
-            mock.patch.object(requests, 'post', side_effect=test_common.mocked_aml_response):
-        instance_ = backend.AmlOnlineEndpointService("tenant_id", "app_id", "app_secret", "subscription_id",
-                                                     "resource_group",
-                                                     "workspace_name")
+            mock.patch.object(instance_._http, 'get', side_effect=test_common.mocked_aml_response), \
+            mock.patch.object(instance_._http, 'post', side_effect=test_common.mocked_aml_response):
+
         oes = instance_.list_online_endpoints()
 
     assert isinstance(oes, list)
-    assert len(oes) == 4
+    assert len(oes) == 5
     for endpoint in oes:
         assert endpoint.type == 'Microsoft.MachineLearningServices/workspaces/onlineEndpoints'
-        assert endpoint.name in ['seeq-simple-demo', 'seeq-simple-demo-2', 'seeq-simple-demo-3', 'jrd-test']
+        assert endpoint.name in ['seeq-simple-demo', 'seeq-simple-demo-2', 'seeq-simple-demo-3', 'regressor-v6-svc',
+                                 'jrd-test']
         if endpoint.name == 'jrd-test':
             assert len(endpoint.deployment) == 0
         else:
@@ -105,14 +122,15 @@ def test_list_online_endpoints(unit_test_config):
 
 @pytest.mark.unit
 def test_model_inputs_provider_asset_path_ids(unit_test_config):
+    selected_endpoint = 'seeq-simple-demo-3'
     with mock.patch.object(backend.AmlOnlineEndpointService, '_authorize', return_value="token"), \
-            mock.patch.object(requests, 'get', side_effect=test_common.mocked_aml_response), \
-            mock.patch.object(requests, 'post', side_effect=test_common.mocked_aml_response), \
+            mock.patch.object(backend._aml_online_endpoint_service.requests.Session, 'get',
+                              side_effect=test_common.mocked_aml_response), \
+            mock.patch.object(backend._aml_online_endpoint_service.requests.Session, 'post',
+                              side_effect=test_common.mocked_aml_response), \
             mock.patch.object(backend._seeq_inputs_provider.TreesApi, 'get_tree',
                               side_effect=test_common.mocked_get_tree_api_response), \
             mock.patch.object(_config, 'validate_configuration_file', return_value=None):
-        selected_endpoint = 'seeq-simple-demo-3'
-
         assert _config.get('azure', 'TENANT_ID') is None
         inputs_provider = backend.ModelInputsProvider()
         assert inputs_provider.asset_paths is None
