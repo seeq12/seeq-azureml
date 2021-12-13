@@ -73,21 +73,13 @@ def mocked_aml_response(url: str, **kwargs):
     response: MockResponse
         The mocked response of the Azure ML API call.
 
-
-    Note
-    ----
-    The parameter `headers` is not used within this function but it is needed in
-    the signature of the function, since that's the signature of the actual
-    functions we are mocking. Those are `requests.get(url, headers)` and
-    `request.post(url, headers)` in `AmlOnlineEndpointService`
-
     """
 
     mock_200_from_file = partial(mock_200_response_from_file, DATA_DIR)
 
     if url.endswith("onlineEndpoints?api-version=2021-03-01-preview"):
         return mock_200_from_file("onlineEndpoints_response.json")
-    elif url.endswith("/workspace_name/?api-version=2021-03-01-preview"):
+    elif url.endswith("/?api-version=2021-03-01-preview"):
         return mock_200_from_file("aml_regional_model_mngt.json")
     elif url == "https://canadacentral.api.azureml.ms/discovery":
         return mock_200_from_file("aml_workspace_discovery.json")

@@ -1,7 +1,6 @@
 import pytest
 import mock
 import json
-import requests
 import pandas as pd
 from seeq import spy
 from seeq.addons.azureml import backend
@@ -154,16 +153,17 @@ def test_model_inputs_provider_asset_path_ids(unit_test_config):
 
 @pytest.mark.unit
 def test_model_inputs_provider_signal_ids(unit_test_config):
+    selected_endpoint = 'seeq-simple-demo'
     with mock.patch.object(backend.AmlOnlineEndpointService, '_authorize', return_value="token"), \
-            mock.patch.object(requests, 'get', side_effect=test_common.mocked_aml_response), \
-            mock.patch.object(requests, 'post', side_effect=test_common.mocked_aml_response), \
+            mock.patch.object(backend._aml_online_endpoint_service.requests.Session, 'get',
+                              side_effect=test_common.mocked_aml_response), \
+            mock.patch.object(backend._aml_online_endpoint_service.requests.Session, 'post',
+                              side_effect=test_common.mocked_aml_response), \
             mock.patch.object(backend._seeq_inputs_provider.TreesApi, 'get_tree',
                               side_effect=test_common.mocked_get_tree_api_response), \
             mock.patch.object(backend._seeq_inputs_provider.SignalsApi, 'get_signal',
                               side_effect=test_common.mocked_get_signal_api_response), \
             mock.patch.object(_config, 'validate_configuration_file', return_value=None):
-        selected_endpoint = 'seeq-simple-demo'
-
         assert _config.get('azure', 'TENANT_ID') is None
         inputs_provider = backend.ModelInputsProvider()
         assert inputs_provider.asset_paths is None

@@ -10,13 +10,11 @@ def unit_test_config():
 
 @pytest.fixture()
 def system_test_config():
-    # This fixture is needed if we add unit test to this file
     _config.validate_configuration_file(test_common.TEST_CONFIG_FILE)
 
 
 @pytest.fixture(scope='session')
 def system_test_setup():
-    # This fixture is needed if we add unit test to this file
     _config.validate_configuration_file(test_common.TEST_CONFIG_FILE)
     test_common.login(url=_config.get('seeq', 'seeq_url'),
                       credentials_file=_config.get('seeq', 'credentials_file'),
