@@ -1,0 +1,64 @@
+{
+  "value": [
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/onlineEndpoints/seeq-simple-demo/deployments/green",
+      "name": "green",
+      "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments",
+      "properties": {
+        "description": "None",
+        "properties": {
+          "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/providers/Microsoft.MachineLearningServices/locations/canadacentral/mfeOperationsStatus/od:35965b03-a279-43b9-b7b2-951a3da7a672:0bdaf623-f369-4431-b17d-6644486aba05?api-version\u003d2021-03-01-preview"
+        },
+        "model": {
+          "referenceType": "Id",
+          "assetId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/models/regressor/versions/3"
+        },
+        "codeConfiguration": {
+          "codeId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/codes/4648fde4-3208-4e64-9bfb-1515b1470cb7/versions/1",
+          "scoringScript": "handler.py"
+        },
+        "environmentId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/environments/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference/versions/14",
+        "environmentVariables": {
+          "SCORING_TIMEOUT_MS": "60000"
+        },
+        "scaleSettings": {
+          "minInstances": 1,
+          "maxInstances": 2,
+          "scaleType": "Manual",
+          "instanceCount": 1
+        },
+        "requestSettings": {
+          "maxQueueWait": "None",
+          "requestTimeout": "PT1M",
+          "maxConcurrentRequestsPerInstance": 1
+        },
+        "appInsightsEnabled": false,
+        "livenessProbe": {
+          "failureThreshold": 30,
+          "successThreshold": 1,
+          "timeout": "PT2S",
+          "period": "PT10S",
+          "initialDelay": "PT10S"
+        },
+        "provisioningState": "Succeeded",
+        "endpointComputeType": "Managed",
+        "instanceType": "Standard_DS4_v2",
+        "readinessProbe": {
+          "failureThreshold": 30,
+          "successThreshold": 1,
+          "timeout": "PT2S",
+          "period": "PT10S",
+          "initialDelay": "PT10S"
+        }
+      },
+      "systemData": {
+        "createdAt": "2021-09-24T16:06:26.9470214Z",
+        "createdBy": "Chris Herrera",
+        "lastModifiedAt": "2021-09-24T16:06:26.9470214Z"
+      },
+      "tags": {},
+      "location": "canadacentral",
+      "kind": "Managed"
+    }
+  ]
+}

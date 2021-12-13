@@ -1,6 +1,6 @@
 import requests
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util import Retry
+from urllib3.util.retry import Retry
 from datetime import datetime, timedelta
 from ._aml_response_models import OnlineDeployment, OnlineEndpoint, AmlModel
 from seeq.addons.azureml.utils import AzureMLException

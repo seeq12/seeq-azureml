@@ -1,0 +1,249 @@
+{
+  "signals": [
+    {
+      "additional_properties": [
+        {
+          "name": "Source Value Unit Of Measure",
+          "unit_of_measure": "string",
+          "value": "%"
+        },
+        {
+          "name": "Enabled",
+          "unit_of_measure": null,
+          "value": false
+        },
+        {
+          "name": "Cache Enabled",
+          "unit_of_measure": null,
+          "value": false
+        },
+        {
+          "name": "Archived",
+          "unit_of_measure": null,
+          "value": false
+        },
+        {
+          "name": "Unsearchable",
+          "unit_of_measure": null,
+          "value": false
+        }
+      ],
+      "data_id": "Area A_Relative Humidity.sim.ts.csv",
+      "data_version_check": null,
+      "datasource_class": "Time Series CSV Files",
+      "datasource_id": "Example Data",
+      "description": null,
+      "effective_permissions": {
+        "manage": true,
+        "read": true,
+        "write": true
+      },
+      "formula": null,
+      "id": "4E9416E8-9C75-426A-8E0A-4D07432CAC5D",
+      "interpolation_method": "linear",
+      "is_archived": false,
+      "is_redacted": false,
+      "key_unit_of_measure": "ns",
+      "maximum_interpolation": "2min",
+      "name": "Relative Humidity",
+      "number_format": null,
+      "package_name": null,
+      "parameters": null,
+      "permissions_from_datasource": false,
+      "scoped_to": null,
+      "security_string": null,
+      "source_security_string": null,
+      "status_message": null,
+      "storage_location": null,
+      "sync_token": "2021-12-04T03:26:00.179546800Z",
+      "translation_key": null,
+      "type": "StoredSignal",
+      "value_unit_of_measure": "%"
+    },
+    {
+      "additional_properties": [
+        {
+          "name": "Source Value Unit Of Measure",
+          "unit_of_measure": "string",
+          "value": ""
+        },
+        {
+          "name": "Enabled",
+          "unit_of_measure": null,
+          "value": false
+        },
+        {
+          "name": "Cache Enabled",
+          "unit_of_measure": null,
+          "value": false
+        },
+        {
+          "name": "Archived",
+          "unit_of_measure": null,
+          "value": false
+        },
+        {
+          "name": "Unsearchable",
+          "unit_of_measure": null,
+          "value": false
+        }
+      ],
+      "data_id": "Area A_Optimizer.sim.ts.csv",
+      "data_version_check": null,
+      "datasource_class": "Time Series CSV Files",
+      "datasource_id": "Example Data",
+      "description": null,
+      "effective_permissions": {
+        "manage": true,
+        "read": true,
+        "write": true
+      },
+      "formula": null,
+      "id": "62E6F850-E523-408D-AD10-0C87E65F996B",
+      "interpolation_method": "linear",
+      "is_archived": false,
+      "is_redacted": false,
+      "key_unit_of_measure": "ns",
+      "maximum_interpolation": "2min",
+      "name": "Optimizer",
+      "number_format": "auto",
+      "package_name": null,
+      "parameters": null,
+      "permissions_from_datasource": false,
+      "scoped_to": null,
+      "security_string": null,
+      "source_security_string": null,
+      "status_message": null,
+      "storage_location": null,
+      "sync_token": "2021-12-04T03:26:00.179546800Z",
+      "translation_key": null,
+      "type": "StoredSignal",
+      "value_unit_of_measure": ""
+    },
+    {
+      "additional_properties": [
+        {
+          "name": "Source Value Unit Of Measure",
+          "unit_of_measure": "string",
+          "value": "\u00b0F"
+        },
+        {
+          "name": "Enabled",
+          "unit_of_measure": null,
+          "value": false
+        },
+        {
+          "name": "Cache Enabled",
+          "unit_of_measure": null,
+          "value": false
+        },
+        {
+          "name": "Archived",
+          "unit_of_measure": null,
+          "value": false
+        },
+        {
+          "name": "Unsearchable",
+          "unit_of_measure": null,
+          "value": false
+        }
+      ],
+      "data_id": "Area A_Wet Bulb.sim.ts.csv",
+      "data_version_check": null,
+      "datasource_class": "Time Series CSV Files",
+      "datasource_id": "Example Data",
+      "description": null,
+      "effective_permissions": {
+        "manage": true,
+        "read": true,
+        "write": true
+      },
+      "formula": null,
+      "id": "CD732D0B-C3BA-496F-B69E-55543944B5F1",
+      "interpolation_method": "linear",
+      "is_archived": false,
+      "is_redacted": false,
+      "key_unit_of_measure": "ns",
+      "maximum_interpolation": "2min",
+      "name": "Wet Bulb",
+      "number_format": null,
+      "package_name": null,
+      "parameters": null,
+      "permissions_from_datasource": false,
+      "scoped_to": null,
+      "security_string": null,
+      "source_security_string": null,
+      "status_message": null,
+      "storage_location": null,
+      "sync_token": "2021-12-04T03:26:00.179546800Z",
+      "translation_key": null,
+      "type": "StoredSignal",
+      "value_unit_of_measure": "\u00b0F"
+    },
+    {
+      "additional_properties": [
+        {
+          "name": "Source Value Unit Of Measure",
+          "unit_of_measure": "string",
+          "value": "\u00b0F"
+        },
+        {
+          "name": "Enabled",
+          "unit_of_measure": null,
+          "value": false
+        },
+        {
+          "name": "Datasource Name",
+          "unit_of_measure": "string",
+          "value": "Example Data"
+        },
+        {
+          "name": "Cache Enabled",
+          "unit_of_measure": null,
+          "value": true
+        },
+        {
+          "name": "Archived",
+          "unit_of_measure": null,
+          "value": false
+        },
+        {
+          "name": "Unsearchable",
+          "unit_of_measure": null,
+          "value": false
+        }
+      ],
+      "data_id": "Area A_Temperature.sim.ts.csv",
+      "data_version_check": null,
+      "datasource_class": "Time Series CSV Files",
+      "datasource_id": "Example Data",
+      "description": null,
+      "effective_permissions": {
+        "manage": true,
+        "read": true,
+        "write": true
+      },
+      "formula": null,
+      "id": "F8E053D1-A4D5-4671-9969-1D5D7D4F27DD",
+      "interpolation_method": "linear",
+      "is_archived": false,
+      "is_redacted": false,
+      "key_unit_of_measure": "ns",
+      "maximum_interpolation": "2min",
+      "name": "Temperature",
+      "number_format": "0.00",
+      "package_name": null,
+      "parameters": null,
+      "permissions_from_datasource": false,
+      "scoped_to": null,
+      "security_string": null,
+      "source_security_string": null,
+      "status_message": null,
+      "storage_location": null,
+      "sync_token": "2021-12-04T03:26:00.179546800Z",
+      "translation_key": null,
+      "type": "StoredSignal",
+      "value_unit_of_measure": "\u00b0F"
+    }
+  ]
+}

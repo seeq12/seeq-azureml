@@ -1,0 +1,12 @@
+{
+  "api": "https://canadacentral.api.azureml.ms",
+  "catalog": "https://catalog.cortanaanalytics.com",
+  "experimentation": "https://canadacentral.experiments.azureml.net",
+  "gallery": "https://gallery.cortanaintelligence.com/project",
+  "history": "https://canadacentral.experiments.azureml.net",
+  "hyperdrive": "https://canadacentral.experiments.azureml.net",
+  "labeling": "https://canadacentral.experiments.azureml.net",
+  "modelmanagement": "https://canadacentral.modelmanagement.azureml.net",
+  "pipelines": "https://canadacentral.aether.ms",
+  "studio": "https://ml.azure.com"
+}

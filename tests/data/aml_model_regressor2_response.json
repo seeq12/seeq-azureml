@@ -1,0 +1,77 @@
+{
+  "id": "regressor:2",
+  "name": "regressor",
+  "framework": "ScikitLearn",
+  "frameworkVersion": "0.24.2",
+  "version": 2,
+  "tags": [],
+  "datasets": [
+    {
+      "name": "training_inputs",
+      "id": "c0508427-d06e-41cd-93d5-4590d53a1790"
+    },
+    {
+      "name": "training_target",
+      "id": "eeac401c-2350-4858-a788-3fa5aaec19d2"
+    },
+    {
+      "name": "test_inputs",
+      "id": "b408361f-5f61-4ad4-8ae9-9e162df5f126"
+    },
+    {
+      "name": "test_target",
+      "id": "315de94e-0c3a-4f65-9b18-06bb2a7ae729"
+    }
+  ],
+  "url": "aml://asset/5751079c8c2740939cd522d9deb79a1b",
+  "mimeType": "application/json",
+  "description": "Seeq Azure integration demo model",
+  "createdTime": "2021-08-19T18:28:31.0599394Z",
+  "modifiedTime": "2021-10-26T21:43:33.8990551Z",
+  "unpack": false,
+  "parentModelId": "None",
+  "runId": "edd59c9d-9ddd-413d-b3b6-4daba71f9486",
+  "experimentName": "Seeq_Integration_Demo",
+  "kvTags": {
+    "SampleRate": "2min",
+    "ResultName": "AzureML_Predicted_Compressor_Power",
+    "input1": "Relative Humidity",
+    "input2": "Optimizer",
+    "input3": "Wet Bulb",
+    "input4": "Temperature",
+    "Path1": "2407642C-0169-4ED0-A25C-321E29DC975B",
+    "Path2": "AA1E42AE-90BD-4CF7-9449-F8CC81625E8F"
+  },
+  "properties": {},
+  "derivedModelIds": [],
+  "inputsSchema": [],
+  "outputsSchema": [],
+  "sampleInputData": "None",
+  "sampleOutputData": "None",
+  "resourceRequirements": "None",
+  "createdBy": {
+    "userObjectId": "22944b10-92b0-4ad0-b704-b7aae135462b",
+    "userPuId": "10037FFEAE5C2019",
+    "userIdp": "None",
+    "userAltSecId": "None",
+    "userIss": "https://sts.windows.net/<TENANT_ID>/",
+    "userTenantId": "<TENANT_ID>",
+    "userName": "Name Lastname",
+    "upn": "user@seeq.com"
+  },
+  "modifiedBy": {
+    "userObjectId": "d38942a6-be8e-4576-bdb1-c810382010ec",
+    "userPuId": "10030000AD81E1D5",
+    "userIdp": "None",
+    "userAltSecId": "None",
+    "userIss": "https://sts.windows.net/<TENANT_ID>/",
+    "userTenantId": "<TENANT_ID>",
+    "userName": "Name Lastname",
+    "upn": "user@seeq.com"
+  },
+  "flavors": {},
+  "modelFormat": "CUSTOM",
+  "stage": "None",
+  "modelContainerId": "137038c415b74e74a3b308dba5c63ccb",
+  "mmsId": "661f372905954d1b99d20756e4eb66d2"
+}

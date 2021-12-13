@@ -332,6 +332,6 @@ class OnlineEndpoint:
         -: None
 
         """
-        deployment.traffic = self.traffic.get(deployment.name, )
+        deployment.traffic = self.traffic.get(deployment.name)
         if deployment.traffic == TRAFFIC_SPLIT:
             self.deployment.append(deployment)
