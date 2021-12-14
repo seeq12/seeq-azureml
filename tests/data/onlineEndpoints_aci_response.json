@@ -116,7 +116,7 @@
         "userPuId": "10032000EDED15F4",
         "userIss": "https://sts.windows.net/<TENANT_ID>/",
         "userTenantId": "<TENANT_ID>",
-        "userName": "Chris Herrera",
+        "userName": "Name Lastname",
         "upn": "chris.herrera@seeq.com"
       }
     },
@@ -209,7 +209,7 @@
         "userPuId": "10037FFEAE5C2019",
         "userIss": "https://sts.windows.net/<TENANT_ID>/",
         "userTenantId": "<TENANT_ID>",
-        "userName": "Joseph Disantis"
+        "userName": "Name Lastname"
       },
       "endpointName": "seeq-simple-demo-3"
     },
@@ -304,7 +304,7 @@
         "userPuId": "10032000EDED15F4",
         "userIss": "https://sts.windows.net/<TENANT_ID>/",
         "userTenantId": "<TENANT_ID>",
-        "userName": "Chris Herrera"
+        "userName": "Name Lastname"
       },
       "endpointName": "seeq-simple-demo-2"
     },
@@ -399,7 +399,7 @@
         "userPuId": "10032000EDED15F4",
         "userIss": "https://sts.windows.net/<TENANT_ID>/",
         "userTenantId": "<TENANT_ID>",
-        "userName": "Chris Herrera"
+        "userName": "Name Lastname"
       },
       "endpointName": "seeq-simple-demo-2"
     },
@@ -494,7 +494,7 @@
         "userPuId": "10032000EDED15F4",
         "userIss": "https://sts.windows.net/<TENANT_ID>/",
         "userTenantId": "<TENANT_ID>",
-        "userName": "Chris Herrera"
+        "userName": "Name Lastname"
       },
       "endpointName": "seeq-simple-demo"
     }
