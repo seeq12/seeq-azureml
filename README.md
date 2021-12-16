@@ -112,14 +112,17 @@ publisher.
 
 ### Pre-requisites
 
-Before installing the **seeq-azureml** Seeq Add-on, you will have to create an Azure application and service principal.
-Follow the steps
+Before installing the **seeq-azureml** Seeq Add-on, you will have to create an **Azure application** and **service
+principal**. Follow the steps
 in [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal) to
-create your application.
-Choose [Option 2](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret)
+create your application, and
+choose [Option 2](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret)
 for the `Authentication` method.
 
 ### Seeq Add-on Installation
+
+Once the **Azure application** and **service principal** have been created. Follow these steps to install the Seeq
+Add-on:
 
 1. Create a **new** Seeq Data Lab project and open the **Terminal** window
 2. Run `pip install seeq-azureml`
@@ -139,6 +142,7 @@ for the `Authentication` method.
       2. The `TENANT_ID`, `APP_ID`, and `APP_SECRET` are obtained when creating the Azure application in the
          section [Get tenant and app ID values for signing in](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in)
          , [Option 2](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret)
+         .
       3. Save the `aml_config.ini` file.
    4. Back to the **Terminal** window from Steps 1 and 2, run the command `mv aml_config.ini .seeq/` to move
       the `aml_config.ini` file to the appropriate folder.
