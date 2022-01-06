@@ -67,10 +67,25 @@ matches your Seeq server. For more information on the `seeq` module see [seeq at
 
 If you want to install **seeq-azureml** as a Seeq Add-on Tool, you will need:
 
-- Seeq Data Lab (> R50.5.0, >R51.1.0, or >R52.1.0)
+- Seeq Data Lab (> R50.5.0, >R51.1.0, >R52.1.0, or >=R53)
 - `seeq` module whose version matches the Seeq server version, and the version of SPy >= 182.25
 - Seeq server admin access
 - Enable Add-on Tools in the Seeq server
+
+## User Installation (Seeq Data Lab)
+
+The latest build of the project can be found [here](https://pypi.org/project/seeq-azureml/)
+as a wheel file. The file is published as a courtesy and does not imply any guarantee or obligation for support from the
+publisher.
+
+### Pre-requisites
+
+Before installing the **seeq-azureml** Seeq Add-on, you will have to create an **Azure application** and **service
+principal**. Follow the steps
+in [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal) to
+create your application, and
+choose [Option 2](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret)
+for the `Authentication` method.
 
 ### Seeq Add-on Installation
 
@@ -104,7 +119,6 @@ Add-on:
 
 Note: If Step 3 gives an error make sure that the seeq module is >= a.b.c.182.**25** where a.b.c are explained
 [here](https://pypi.org/project/seeq/#description)
-
 ----
 
 # Development
