@@ -100,11 +100,11 @@ Add-on:
    correct Seeq Data Lab location and where to get the values required for the configuration.
    1. Download the `aml_config.ini` configuration file
       from [here](https://github.com/seeq12/seeq-azureml/tree/master/aml_config.ini)
-   2. Upload the file to the Seeq Data Lab project using the `Upload` button located in the top-right corner of the
-      home page of the project.
+   2. Upload the file to the Seeq Data Lab project using the `Upload` button located in the top-right corner of the home
+      page of the project.
    3. From the Seeq Data Lab project home page, open the uploaded file and modify the fields appropriately:
-      1. The `SUBSCRIPTION_ID`, `RESOURCE_GROUP`, and `WORKSPACE_NAME` can be obtained by logging into the Azure
-         portal and clicking on
+      1. The `SUBSCRIPTION_ID`, `RESOURCE_GROUP`, and `WORKSPACE_NAME` can be obtained by logging into the Azure portal
+         and clicking on
          the [Machine Learning service](https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.MachineLearningServices%2Fworkspaces)
          . Once in the Machine Learning service, click on the desired `WORKSPACE_NAME` from the list. The `Overview`
          tab will show a list of `Essentials` from which you can take the values for `SUBSCRIPTION_ID`
@@ -119,6 +119,7 @@ Add-on:
 
 Note: If Step 3 gives an error make sure that the seeq module is >= a.b.c.182.**25** where a.b.c are explained
 [here](https://pypi.org/project/seeq/#description)
+
 ----
 
 # Development
@@ -149,6 +150,56 @@ Once your virtual environment is activated, you can install **seeq-azureml** fro
 ```shell
 python setup.py install
 ```
+
+## Testing
+
+There are two main ways to test **seeq-azureml**:  *automatic testing* mainly for the backend, and *user interface
+testing*.
+
+### Automatic Testing
+
+After installing from source, you can launch the test suite from the root directory of the project (i.e. `seeq-azureml`
+directory). There are two types of automatic tests set up: 1) *unit test* and *system test*. The system and unit tests
+can be run at the same time or independently. Use the pytest markers defined in `pytest.ini` to run only one set of
+tests at a time.
+
+For example, to run only the unit tests:
+
+```shell
+pytest -v -m unit
+```
+
+The system tests require a connection to both a Seeq server and Azure ML Studio. Before running system tests, you will
+have to provide the required variables in `tests/test_config.ini`. **Please be careful not to commit your credentials in
+the configuration file back into the repository**. To avoid committing changes in the configuration file, run the
+following command in the root directory of the project before modifying the configuration file.
+
+```sheel
+git update-index --assume-unchanged tests/test_config.ini
+```
+
+Then, you can fill out the configuration file and use it for the tests. Lastly, make sure that the `seeq` module version
+in your local environment should match the Seeq server version.
+
+To run only the system tests (after modifying tests/test_config.ini):
+
+```shell
+pytest -v -m system
+```
+
+To run all tests (both unit and system tests):
+
+```shell
+pytest -v
+```
+
+### User Interface Testing
+
+To test the UI, use the `developer_notebook.ipynb` in the `development` folder of the project. This notebook can also be
+used while debugging from your IDE. You can also create a whl first, install it on your virtual environment, and then
+run `developer_notebook.ipynb` notebook there.
+
+
 
 ----
 
