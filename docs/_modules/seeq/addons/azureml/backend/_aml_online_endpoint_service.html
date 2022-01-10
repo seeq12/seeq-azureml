@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>seeq.addons.azureml.backend._aml_online_endpoint_service &mdash; seeq-azureml 0.1.0 documentation</title>
+  <title>seeq.addons.azureml.backend._aml_online_endpoint_service &mdash; seeq-azureml 0.1.1 documentation</title>
       <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../../../../_static/seeq-favicon.ico"/>
@@ -29,7 +29,7 @@
             <img src="../../../../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.1.0
+                0.1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
@@ -77,12 +77,17 @@
              
   <h1>Source code for seeq.addons.azureml.backend._aml_online_endpoint_service</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">requests.adapters</span> <span class="kn">import</span> <span class="n">HTTPAdapter</span>
+<span class="kn">from</span> <span class="nn">urllib3.util.retry</span> <span class="kn">import</span> <span class="n">Retry</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">from</span> <span class="nn">._aml_response_models</span> <span class="kn">import</span> <span class="n">OnlineDeployment</span><span class="p">,</span> <span class="n">OnlineEndpoint</span><span class="p">,</span> <span class="n">AmlModel</span>
 <span class="kn">from</span> <span class="nn">seeq.addons.azureml.utils</span> <span class="kn">import</span> <span class="n">AzureMLException</span>
 
+<span class="n">API_VERSION</span> <span class="o">=</span> <span class="s2">&quot;2021-03-01-preview&quot;</span>
+
 
 <div class="viewcode-block" id="AmlOnlineEndpointService"><a class="viewcode-back" href="../../../../../code_documentation/seeq_azureml_integration/aml_interaction.html#seeq.addons.azureml.backend._aml_online_endpoint_service.AmlOnlineEndpointService">[docs]</a><span class="k">class</span> <span class="nc">AmlOnlineEndpointService</span><span class="p">:</span>
+    
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides a service to connect to Azure ML Studio and get endpoints that are</span>
 <span class="sd">    tagged with `{Seeq: true}` and their associated deployments and models.</span>
@@ -103,6 +108,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_name</span> <span class="o">=</span> <span class="n">workspace_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token_expires_on</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">retry_strategy</span> <span class="o">=</span> <span class="n">Retry</span><span class="p">(</span>
+            <span class="n">total</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">status_forcelist</span><span class="o">=</span><span class="p">[</span><span class="mi">429</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">502</span><span class="p">,</span> <span class="mi">503</span><span class="p">,</span> <span class="mi">504</span><span class="p">],</span>
+            <span class="n">allowed_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="n">adapter</span> <span class="o">=</span> <span class="n">HTTPAdapter</span><span class="p">(</span><span class="n">max_retries</span><span class="o">=</span><span class="n">retry_strategy</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_http</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_http</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s2">&quot;https://&quot;</span><span class="p">,</span> <span class="n">adapter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_http</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s2">&quot;http://&quot;</span><span class="p">,</span> <span class="n">adapter</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_authorize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -122,11 +136,11 @@
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://login.microsoftonline.com/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_tenant_id</span><span class="si">}</span><span class="s2">/oauth2/token?api-version=1.0&quot;</span>
-        <span class="n">payload</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;client_secret=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_app_secret</span><span class="si">}</span><span class="s2">&amp;grant_type=client_credentials&amp;resource=https%3A%2F%2Fmanagement.&quot;</span> \
-                  <span class="sa">f</span><span class="s2">&quot;core.windows.net%2F&amp;client_id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_app_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;client_secret=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_app_secret</span><span class="si">}</span><span class="s2">&amp;grant_type=client_credentials&amp;resource=https%3A%2F%2Fmanagement&quot;</span> \
+                  <span class="sa">f</span><span class="s2">&quot;.core.windows.net%2F&amp;client_id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_app_id</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">}</span>
 
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Azure Login Failed&quot;</span><span class="p">)</span>
@@ -151,6 +165,41 @@
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_authorize</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span>
 
+    <span class="k">def</span> <span class="nf">_get_regional_model_mgmt_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Private method to get the region management URL</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        url, headers: tuple (str, str)</span>
+<span class="sd">            URL and headers of the management service</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url_base</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_mgmt_url</span><span class="p">()</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url_base</span><span class="si">}</span><span class="s2">?api-version=</span><span class="si">{</span><span class="n">API_VERSION</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_authorize</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span>
+                                   <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Error getting workspace details&quot;</span><span class="p">)</span>
+
+        <span class="n">workspace_discovery_url</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;discoveryUrl&#39;</span><span class="p">]</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">workspace_discovery_url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span>
+                                   <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Error accessing workspace discovery&quot;</span><span class="p">)</span>
+
+        <span class="n">mgmt_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;modelmanagement&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/modelmanagement/v1.0/subscriptions/&quot;</span> \
+                   <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_subscription_id</span><span class="si">}</span><span class="s2">/resourceGroups/&quot;</span> \
+                   <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_resource_group</span><span class="si">}</span><span class="s2">/providers/Microsoft.MachineLearningServices/&quot;</span> \
+                   <span class="sa">f</span><span class="s2">&quot;workspaces/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_workspace_name</span><span class="si">}</span><span class="s2">/services/&quot;</span>
+        <span class="n">mgmt_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_authorize</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">mgmt_url</span><span class="p">,</span> <span class="n">mgmt_headers</span>
+
     <span class="k">def</span> <span class="nf">_get_models</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deployment</span><span class="p">:</span> <span class="n">OnlineDeployment</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Private method to get models associated with a given deployment</span>
@@ -169,7 +218,7 @@
         <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://ml.azure.com/api/</span><span class="si">{</span><span class="n">deployment</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">/modelmanagement/v1.0</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_authorize</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
 
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Error getting models&quot;</span><span class="p">)</span>
 
@@ -193,13 +242,13 @@
 
         <span class="n">url_base</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_mgmt_url</span><span class="p">()</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url_base</span><span class="si">}</span><span class="s2">onlineEndpoints/</span><span class="si">{</span><span class="n">endpoint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/deployments?api-version=2021-03-01-preview&quot;</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url_base</span><span class="si">}</span><span class="s2">onlineEndpoints/</span><span class="si">{</span><span class="n">endpoint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/deployments?api-version=</span><span class="si">{</span><span class="n">API_VERSION</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span>
                                    <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Error getting deployments&quot;</span><span class="p">)</span>
 
-        <span class="n">deployments</span> <span class="o">=</span> <span class="n">OnlineDeployment</span><span class="o">.</span><span class="n">deserialize_aml_deployment_response</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+        <span class="n">deployments</span> <span class="o">=</span> <span class="n">OnlineDeployment</span><span class="o">.</span><span class="n">deserialize_aml_deployment_response</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span> <span class="s2">&quot;Managed&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">deployments</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_get_models</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
@@ -221,11 +270,14 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">base_url</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_mgmt_url</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">endpoint</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;Managed&quot;</span><span class="p">:</span>
+            <span class="n">base_url</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_mgmt_url</span><span class="p">()</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">onlineEndpoints/</span><span class="si">{</span><span class="n">endpoint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/listKeys?api-version=</span><span class="si">{</span><span class="n">API_VERSION</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">base_url</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_regional_model_mgmt_url</span><span class="p">()</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}{</span><span class="n">endpoint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/listKeys&quot;</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">onlineEndpoints/</span><span class="si">{</span><span class="n">endpoint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/listKeys?api-version=2021-03-01-preview&quot;</span>
-
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span>
@@ -234,7 +286,39 @@
         <span class="n">endpoint</span><span class="o">.</span><span class="n">primaryKey</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="s1">&#39;primaryKey&#39;</span><span class="p">]</span>
         <span class="n">endpoint</span><span class="o">.</span><span class="n">secondaryKey</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="s1">&#39;secondaryKey&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_get_online_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_unmanaged_online_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Private method to get a list of endpoints that are deployed as an ACI</span>
+<span class="sd">        compute type. This is a workaround due to the endpoints API not returing</span>
+<span class="sd">        endpoints that have a compute type of ACI.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        oes: list</span>
+<span class="sd">            List of OnlineEndpoint objects with deployments and models attached </span>
+<span class="sd">            to each object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_regional_model_mgmt_url</span><span class="p">()</span>
+        <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;computeType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ACI&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span>
+                                   <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Error getting ACI endpoints&quot;</span><span class="p">)</span>
+
+        <span class="n">oes</span> <span class="o">=</span> <span class="n">OnlineEndpoint</span><span class="o">.</span><span class="n">deserialize_unmanaged_endpoint_response</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">oe</span> <span class="ow">in</span> <span class="n">oes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_keys_to_endpoint</span><span class="p">(</span><span class="n">oe</span><span class="p">)</span>
+            <span class="c1"># unmanaged endpoints only have one deployment</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">deployment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">modelId</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/subscriptions/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_subscription_id</span><span class="si">}</span><span class="s2">/resourceGroups/&quot;</span> \
+                                       <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_resource_group</span><span class="si">}</span><span class="s2">/providers/Microsoft.MachineLearningService&quot;</span> \
+                                       <span class="sa">f</span><span class="s2">&quot;s/workspaces/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_workspace_name</span><span class="si">}</span><span class="s2">/models/&quot;</span> \
+                                       <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">oe</span><span class="o">.</span><span class="n">deployment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">/versions/&quot;</span> \
+                                       <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">oe</span><span class="o">.</span><span class="n">deployment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">model_version</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_models</span><span class="p">(</span><span class="n">oe</span><span class="o">.</span><span class="n">deployment</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">oes</span>
+
+    <span class="k">def</span> <span class="nf">_get_managed_online_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Private method to get a list of endpoints tagged with `{Seeq: true}` in</span>
 <span class="sd">        Azure ML Studio and attach the associated deployments and models in</span>
@@ -248,12 +332,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">url_base</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_mgmt_url</span><span class="p">()</span>
         <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url_base</span><span class="si">}</span><span class="s2">onlineEndpoints?api-version=2021-03-01-preview&quot;</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">AzureMLException</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Error getting endpoints&quot;</span><span class="p">)</span>
 
-        <span class="n">oes</span> <span class="o">=</span> <span class="n">OnlineEndpoint</span><span class="o">.</span><span class="n">deserialize_aml_endpoint_response</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+        <span class="n">oes</span> <span class="o">=</span> <span class="n">OnlineEndpoint</span><span class="o">.</span><span class="n">deserialize_managed_endpoint_response</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">oe</span> <span class="ow">in</span> <span class="n">oes</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_keys_to_endpoint</span><span class="p">(</span><span class="n">oe</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_deployments_to_endpoint</span><span class="p">(</span><span class="n">oe</span><span class="p">)</span>
@@ -271,7 +355,9 @@
 <span class="sd">            List of OnlineEndpoint objects with deployments and models attached</span>
 <span class="sd">            to each object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_online_endpoints</span><span class="p">()</span></div></div>
+        <span class="n">oes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_unmanaged_online_endpoints</span><span class="p">()</span>
+        <span class="n">oes</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_managed_online_endpoints</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">oes</span></div></div>
 
 
 <span class="k">def</span> <span class="nf">exception_message</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>

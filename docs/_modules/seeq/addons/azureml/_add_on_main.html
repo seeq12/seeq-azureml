@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>seeq.addons.azureml._add_on_main &mdash; seeq-azureml 0.1.0 documentation</title>
+  <title>seeq.addons.azureml._add_on_main &mdash; seeq-azureml 0.1.1 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../../../_static/seeq-favicon.ico"/>
@@ -29,7 +29,7 @@
             <img src="../../../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.1.0
+                0.1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -83,8 +83,7 @@
 <span class="kn">from</span> <span class="nn">seeq.sdk.rest</span> <span class="kn">import</span> <span class="n">ApiException</span>
 <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">Javascript</span><span class="p">,</span> <span class="n">clear_output</span><span class="p">,</span> <span class="n">HTML</span>
 <span class="kn">from</span> <span class="nn">seeq.addons.azureml.utils</span> <span class="kn">import</span> <span class="n">get_workbook_worksheet_workstep_ids</span><span class="p">,</span> <span class="n">AzureMLException</span>
-<span class="kn">from</span> <span class="nn">seeq.addons.azureml.backend</span> <span class="kn">import</span> <span class="n">RunInvestigation</span>
-<span class="kn">from</span> <span class="nn">seeq.addons.azureml</span> <span class="kn">import</span> <span class="n">UserSelections</span>
+<span class="kn">from</span> <span class="nn">seeq.addons.azureml.backend</span> <span class="kn">import</span> <span class="n">RunInvestigation</span><span class="p">,</span> <span class="n">ModelInputsProvider</span>
 <span class="kn">from</span> <span class="nn">seeq.addons.azureml</span> <span class="kn">import</span> <span class="n">ui_components</span>
 
 <span class="n">DEFAULT_WORKSHEET_NAME</span> <span class="o">=</span> <span class="s1">&#39;From Azure ML Integration&#39;</span>
@@ -106,9 +105,9 @@
 <span class="sd">        Default time delta to populate the start time of the investigate range</span>
 <span class="sd">    deploy_frequency: pd.Timedelta</span>
 <span class="sd">        The schedule frequency for the &quot;deploy&quot; option as a pandas.Timedelta</span>
-<span class="sd">    user_selections: seeq.addons.azureml.UserSelections</span>
-<span class="sd">        An instance of the UserSelections object that serves as an interface</span>
-<span class="sd">        between the UI and the backend integration between Seeq and Azure ML.</span>
+<span class="sd">    inputs_provider: seeq.addons.azureml.backend.ModelInputsProvider</span>
+<span class="sd">        An instance of the ModelInputsProvider object that gets the input signal</span>
+<span class="sd">        IDs from Seeq that are required by the Azure ML model.</span>
 <span class="sd">    app: seeq.addons.azureml.ui_components.AppLayout</span>
 <span class="sd">        An instance of the Add-on UI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -124,7 +123,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">config_file</span> <span class="o">=</span> <span class="n">config_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_time_delta</span> <span class="o">=</span> <span class="s1">&#39;1 hour&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deploy_frequency</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">ui_components</span><span class="o">.</span><span class="n">AppLayout</span><span class="p">(</span><span class="n">endpoint_on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_endpoint_dropdown_change</span><span class="p">,</span>
                                            <span class="n">asset_on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_asset_dropdown_change</span><span class="p">,</span>
@@ -192,13 +191,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_spinner_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Connecting to Azure ML service&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span> <span class="o">=</span> <span class="n">UserSelections</span><span class="p">(</span><span class="n">config_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config_file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span> <span class="o">=</span> <span class="n">ModelInputsProvider</span><span class="p">(</span><span class="n">config_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config_file</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">AzureMLException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_spinner_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Azure Exception&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">spinner_visible</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">return</span>
         <span class="c1"># populate dropdown with available model endpoints</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">endpoints</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">endpoints</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_disabled</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_cards_visible_spinner_invisible</span><span class="p">()</span>
 
@@ -238,7 +237,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">asset_visible</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">get_assets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">endpoints</span><span class="p">[</span><span class="n">data</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">update_assets_from_endpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">endpoints</span><span class="p">[</span><span class="n">data</span><span class="p">])</span>
         <span class="k">except</span> <span class="n">AzureMLException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;AzureMLException: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
@@ -248,9 +247,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
             <span class="k">return</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">asset_paths</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">asset_paths</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">get_signal_inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">endpoints</span><span class="p">[</span><span class="n">data</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">update_signal_inputs_from_endpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">endpoints</span><span class="p">[</span><span class="n">data</span><span class="p">])</span>
             <span class="k">except</span> <span class="n">AzureMLException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;AzureMLException: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
@@ -261,12 +260,12 @@
                 <span class="k">return</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">populate_investigate_range</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">endpoint_info</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-                                  <span class="n">asset_info</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">asset_path_from_signals</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span>
-                                  <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">asset_path_from_signals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;NA&quot;</span><span class="p">,</span>
-                                  <span class="n">signals_info</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                                  <span class="n">asset_info</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">asset_path_from_signals</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">asset_path_from_signals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;NA&quot;</span><span class="p">,</span>
+                                  <span class="n">signals_info</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_action_dropdown_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">asset_paths</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">asset_paths</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">populate_assets_dropdown</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">endpoint_info</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">asset_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">signals_info</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">asset_selection</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>  <span class="c1"># if there is already an asset selection.</span>
@@ -283,9 +282,9 @@
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">get_signal_inputs</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">endpoints</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_selection</span><span class="p">],</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">asset_paths</span><span class="p">[</span><span class="n">data</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">update_signal_inputs_from_endpoint</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">endpoints</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_selection</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">asset_paths</span><span class="p">[</span><span class="n">data</span><span class="p">])</span>
         <span class="k">except</span> <span class="n">AzureMLException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;AzureMLException: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
@@ -296,7 +295,7 @@
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">populate_investigate_range</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">populate_summary</span><span class="p">(</span><span class="n">asset_info</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-                              <span class="n">signals_info</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                              <span class="n">signals_info</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_action_dropdown_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validate_forms</span><span class="p">()</span>
 
@@ -360,7 +359,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_disabled</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Incomplete form: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Complete all required fields&#39;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_error_message</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Wrong input: &quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Could not find input signals for model endpoint &quot;&#39;</span>
                                                                   <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_inputs</span><span class="o">.</span><span class="n">endpoint_selection</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
             <span class="k">return</span>
@@ -368,17 +367,17 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">selection</span> <span class="o">==</span> <span class="s1">&#39;Investigate&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_summary</span><span class="o">.</span><span class="n">button_loading</span> <span class="o">=</span> <span class="kc">True</span>
 
-            <span class="n">investigation</span> <span class="o">=</span> <span class="n">RunInvestigation</span><span class="p">(</span><span class="n">input_signals</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="p">,</span>
+            <span class="n">investigation</span> <span class="o">=</span> <span class="n">RunInvestigation</span><span class="p">(</span><span class="n">input_signals</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="p">,</span>
                                              <span class="n">result_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">result_name</span><span class="p">,</span>
-                                             <span class="n">az_model_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
-                                             <span class="n">az_model_version</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_version</span><span class="p">),</span>
+                                             <span class="n">az_model_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
+                                             <span class="n">az_model_version</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_version</span><span class="p">),</span>
                                              <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">start_range</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                              <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">investigate_range</span><span class="o">.</span><span class="n">end_range</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                                             <span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_sample_rate</span><span class="p">,</span>
+                                             <span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_sample_rate</span><span class="p">,</span>
                                              <span class="n">workbook</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workbook_id</span><span class="p">,</span>
                                              <span class="n">worksheet</span><span class="o">=</span><span class="n">DEFAULT_WORKSHEET_NAME</span><span class="p">,</span>
-                                             <span class="n">endpoint_uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_endpoint_uri</span><span class="p">,</span>
-                                             <span class="n">aml_primary_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">_model_primary_key</span><span class="p">,</span>
+                                             <span class="n">endpoint_uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_endpoint_uri</span><span class="p">,</span>
+                                             <span class="n">aml_primary_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">_model_primary_key</span><span class="p">,</span>
                                              <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="k">try</span><span class="p">:</span>
@@ -420,18 +419,18 @@
             <span class="n">job_parameters</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;Schedule&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">deploy_input_form</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
                 <span class="s1">&#39;Frequency&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">deploy_frequency</span><span class="p">,</span>
-                <span class="s1">&#39;Input Signals&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="p">,</span>
+                <span class="s1">&#39;Input Signals&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_signal_inputs</span><span class="p">,</span>
                 <span class="s1">&#39;Result Name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">model_action</span><span class="o">.</span><span class="n">result_name</span><span class="p">,</span>
-                <span class="s1">&#39;AZ model name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
-                <span class="s1">&#39;AZ model version&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_version</span><span class="p">),</span>
-                <span class="s1">&#39;Grid&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_sample_rate</span><span class="p">,</span>
+                <span class="s1">&#39;AZ model name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
+                <span class="s1">&#39;AZ model version&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_version</span><span class="p">),</span>
+                <span class="s1">&#39;Grid&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_sample_rate</span><span class="p">,</span>
                 <span class="s1">&#39;Workbook&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">workbook_id</span><span class="p">,</span>
                 <span class="s1">&#39;Worksheet&#39;</span><span class="p">:</span> <span class="n">DEFAULT_WORKSHEET_NAME</span><span class="p">,</span>
-                <span class="s1">&#39;Endpoint&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">model_endpoint_uri</span><span class="p">,</span>
-                <span class="s1">&#39;aml_primary_key&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_selections</span><span class="o">.</span><span class="n">_model_primary_key</span><span class="p">,</span>
+                <span class="s1">&#39;Endpoint&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">model_endpoint_uri</span><span class="p">,</span>
+                <span class="s1">&#39;aml_primary_key&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs_provider</span><span class="o">.</span><span class="n">_model_primary_key</span><span class="p">,</span>
                 <span class="s1">&#39;User&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">spy</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">first_name</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">spy</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">last_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;Job Name&#39;</span><span class="p">:</span> <span class="s2">&quot;job name&quot;</span>
-            <span class="p">}</span>
+                <span class="p">}</span>
             <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_data_lab_project_url</span><span class="p">()</span><span class="si">}</span><span class="s2">/notebooks/deployment/azureml_integration_deploy_model.ipynb&quot;</span>
 
             <span class="n">jobs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">job_parameters</span><span class="p">])</span>

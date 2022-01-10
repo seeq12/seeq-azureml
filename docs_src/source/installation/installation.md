@@ -64,3 +64,4 @@ Add-on:
 
 Note: If Step 3 gives an error make sure that the seeq module is >= a.b.c.182.**25** where a.b.c are explained
 [here](https://pypi.org/project/seeq/#description)
+
