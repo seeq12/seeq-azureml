@@ -22,7 +22,7 @@ class RunInvestigation:
     """
     Takes the input parameters supplied by the user (typically, via Azure ML
     Integration UI), posts a request to the Azure ML model, gets a result
-    signal back from Azure ML nd pushes the result back to Seeq.
+    signal back from Azure ML and pushes the result back to Seeq.
 
     This class assumes that the Azure ML model returns only ONE signal.
 

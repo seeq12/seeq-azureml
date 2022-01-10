@@ -12,7 +12,7 @@ def validate_configuration_file(configfile=None):
 
     Parameters
     ----------
-    configfile: str
+    configfile: str or Path
         Full path to the configuration file. If None, the parser will to read
         the file ~/.seeq.aml_config.ini provided it exists.
 

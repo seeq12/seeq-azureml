@@ -1,0 +1,502 @@
+{
+  "value": [
+    {
+      "containerResourceRequirements": {
+        "cpu": 2.0,
+        "memoryInGB": 7.0
+      },
+      "scoringUri": "http://regressor-v6.canadacentral.azurecontainer.io/score",
+      "location": "canadacentral",
+      "authEnabled": true,
+      "sslEnabled": false,
+      "appInsightsEnabled": false,
+      "dataCollection": {
+        "eventHubEnabled": false,
+        "storageEnabled": false
+      },
+      "sslCertificate": "",
+      "sslKey": "",
+      "publicIp": "20.104.41.102",
+      "publicFqdn": "regressor-v6.canadacentral.azurecontainer.io",
+      "environment": {
+        "name": "AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference",
+        "version": "18",
+        "python": {
+          "interpreterPath": "python",
+          "userManagedDependencies": true
+        },
+        "environmentVariables": {
+          "EXAMPLE_ENV_VAR": "EXAMPLE_VALUE"
+        },
+        "docker": {
+          "platform": {
+            "os": "Linux",
+            "architecture": "amd64"
+          },
+          "baseDockerfile": "FROM mcr.microsoft.com/azureml/sklearn-0.24.1-ubuntu18.04-py37-cpu-inference:20211018.v1",
+          "baseImageRegistry": {},
+          "enabled": false,
+          "arguments": []
+        },
+        "spark": {
+          "repositories": [],
+          "packages": [],
+          "precachePackages": true
+        }
+      },
+      "environmentImageRequest": {
+        "driverProgram": "tmp9o25sd19.py",
+        "assets": [
+          {
+            "id": "tmp9o25sd19.py",
+            "mimeType": "application/x-python",
+            "url": "aml://artifact/LocalUpload/c92adf88/tmp9o25sd19.py",
+            "unpack": false
+          },
+          {
+            "id": "handler.py",
+            "mimeType": "application/octet-stream",
+            "url": "aml://artifact/LocalUpload/6bf45e5f/handler.py",
+            "unpack": false
+          }
+        ],
+        "modelIds": [
+          "regressor:6"
+        ],
+        "environment": {
+          "name": "AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference",
+          "version": "18",
+          "python": {
+            "interpreterPath": "python",
+            "userManagedDependencies": true
+          },
+          "environmentVariables": {
+            "EXAMPLE_ENV_VAR": "EXAMPLE_VALUE"
+          },
+          "docker": {
+            "platform": {
+              "os": "Linux",
+              "architecture": "amd64"
+            },
+            "baseDockerfile": "FROM mcr.microsoft.com/azureml/sklearn-0.24.1-ubuntu18.04-py37-cpu-inference:20211018.v1",
+            "baseImageRegistry": {},
+            "enabled": false,
+            "arguments": []
+          },
+          "spark": {
+            "repositories": [],
+            "packages": [],
+            "precachePackages": true
+          }
+        }
+      },
+      "id": "regressor-v6-svc",
+      "name": "regressor-v6-svc",
+      "description": "ACI Test",
+      "kvTags": {
+        "Seeq": "true"
+      },
+      "properties": {
+        "azureml.git.repository_uri": "git@bitbucket.org:seeq12/solution-architecture.git",
+        "mlflow.source.git.repoURL": "git@bitbucket.org:seeq12/solution-architecture.git",
+        "azureml.git.branch": "master",
+        "mlflow.source.git.branch": "master",
+        "azureml.git.commit": "1bb70f56ebe89c0c415eff4d7d7aaf82c1687d51",
+        "mlflow.source.git.commit": "1bb70f56ebe89c0c415eff4d7d7aaf82c1687d51",
+        "azureml.git.dirty": "True",
+        "hasInferenceSchema": "False",
+        "hasHttps": "False"
+      },
+      "operationId": "1d63ddd6-a74e-4fad-b7c6-271c479a99e3",
+      "createdTime": "2021-12-02T18:33:46.4261062Z",
+      "updatedTime": "2021-12-02T18:33:46.4261062Z",
+      "computeType": "ACI",
+      "createdBy": {
+        "userObjectId": "a65c359d-5a19-4b3f-9658-d91a1ac71070",
+        "userPuId": "10032000EDED15F4",
+        "userIss": "https://sts.windows.net/<TENANT_ID>/",
+        "userTenantId": "<TENANT_ID>",
+        "userName": "Name Lastname",
+        "upn": "chris.herrera@seeq.com"
+      }
+    },
+    {
+      "numReplicas": 1,
+      "autoScaler": {
+        "autoscaleEnabled": false,
+        "minReplicas": 1,
+        "maxReplicas": 2,
+        "targetUtilization": 70,
+        "refreshPeriodInSeconds": 1
+      },
+      "maxConcurrentRequestsPerContainer": 1,
+      "scoringTimeoutMs": 60000,
+      "sku": "Standard_DS2_v2",
+      "osType": "Linux",
+      "applicationInsightsEnabled": false,
+      "livenessProbeRequirements": {
+        "failureThreshold": 30,
+        "successThreshold": 1,
+        "timeoutSeconds": 2,
+        "periodSeconds": 10,
+        "initialDelaySeconds": 10
+      },
+      "readinessProbeRequirements": {
+        "failureThreshold": 30,
+        "successThreshold": 1,
+        "timeoutSeconds": 2,
+        "periodSeconds": 10,
+        "initialDelaySeconds": 10
+      },
+      "environmentImageRequest": {
+        "driverProgram": "handler.py",
+        "assets": [
+          {
+            "id": "handler.py",
+            "url": "aml://storage/azureml/WebUpload/211026110544-377156767",
+            "unpack": false
+          }
+        ],
+        "modelIds": [
+          "regressor:6"
+        ],
+        "environment": {
+          "name": "AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference",
+          "version": "18",
+          "python": {
+            "interpreterPath": "python",
+            "userManagedDependencies": true
+          },
+          "environmentVariables": {
+            "EXAMPLE_ENV_VAR": "EXAMPLE_VALUE"
+          },
+          "docker": {
+            "platform": {
+              "os": "Linux",
+              "architecture": "amd64"
+            },
+            "baseDockerfile": "FROM mcr.microsoft.com/azureml/sklearn-0.24.1-ubuntu18.04-py37-cpu-inference:20211018.v1",
+            "baseImageRegistry": {},
+            "enabled": false,
+            "arguments": []
+          },
+          "spark": {
+            "repositories": [],
+            "packages": [],
+            "precachePackages": true
+          }
+        }
+      },
+      "containerResourceRequirements": {
+        "cpu": 0.1,
+        "memoryInGB": 0.5
+      },
+      "environmentVariables": {},
+      "id": "indigo-seeq-simple-demo-3",
+      "name": "indigo-seeq-simple-demo-3",
+      "kvTags": {},
+      "properties": {
+        "isByoc": "False",
+        "azureml.onlineendpointid": "/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.machinelearningservices/workspaces/<WORKSPACE_NAME>/onlineendpoints/seeq-simple-demo-3",
+        "azureml.codeartifactid": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/codes/92ac6f22-ce85-440e-80c5-a65cafd71fef/versions/1"
+      },
+      "operationId": "fde09a59-049d-4a24-bfd8-efb91011d4fc",
+      "createdTime": "2021-10-26T16:06:09.4627855Z",
+      "updatedTime": "2021-10-26T16:06:09.4627855Z",
+      "computeType": "MIRAMLCOMPUTE",
+      "createdBy": {
+        "userObjectId": "22944b10-92b0-4ad0-b704-b7aae135462b",
+        "userPuId": "10037FFEAE5C2019",
+        "userIss": "https://sts.windows.net/<TENANT_ID>/",
+        "userTenantId": "<TENANT_ID>",
+        "userName": "Name Lastname"
+      },
+      "endpointName": "seeq-simple-demo-3"
+    },
+    {
+      "numReplicas": 1,
+      "autoScaler": {
+        "autoscaleEnabled": false,
+        "minReplicas": 1,
+        "maxReplicas": 1,
+        "targetUtilization": 70,
+        "refreshPeriodInSeconds": 1
+      },
+      "maxConcurrentRequestsPerContainer": 1,
+      "scoringTimeoutMs": 60000,
+      "sku": "Standard_DS2_v2",
+      "osType": "Linux",
+      "applicationInsightsEnabled": false,
+      "livenessProbeRequirements": {
+        "failureThreshold": 30,
+        "successThreshold": 1,
+        "timeoutSeconds": 2,
+        "periodSeconds": 10,
+        "initialDelaySeconds": 10
+      },
+      "readinessProbeRequirements": {
+        "failureThreshold": 30,
+        "successThreshold": 1,
+        "timeoutSeconds": 2,
+        "periodSeconds": 10,
+        "initialDelaySeconds": 10
+      },
+      "environmentImageRequest": {
+        "driverProgram": "handler.py",
+        "assets": [
+          {
+            "id": "handler.py",
+            "url": "aml://storage/azureml/WebUpload/210924124332-3162562780",
+            "unpack": false
+          }
+        ],
+        "modelIds": [
+          "regressor:2"
+        ],
+        "environment": {
+          "name": "AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference",
+          "version": "14",
+          "python": {
+            "interpreterPath": "python",
+            "userManagedDependencies": true
+          },
+          "environmentVariables": {
+            "EXAMPLE_ENV_VAR": "EXAMPLE_VALUE"
+          },
+          "docker": {
+            "platform": {
+              "os": "Linux",
+              "architecture": "amd64"
+            },
+            "baseDockerfile": "FROM mcr.microsoft.com/azureml/sklearn-0.24.1-ubuntu18.04-py37-cpu-inference:20210920.v1",
+            "baseImageRegistry": {},
+            "enabled": false,
+            "arguments": []
+          },
+          "spark": {
+            "repositories": [],
+            "packages": [],
+            "precachePackages": true
+          }
+        }
+      },
+      "containerResourceRequirements": {
+        "cpu": 0.1,
+        "memoryInGB": 0.5
+      },
+      "environmentVariables": {
+        "SCORING_TIMEOUT_MS": "60000"
+      },
+      "id": "blue-seeq-simple-demo-2",
+      "name": "blue-seeq-simple-demo-2",
+      "kvTags": {},
+      "properties": {
+        "isByoc": "False",
+        "azureml.onlineendpointid": "/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.machinelearningservices/workspaces/<WORKSPACE_NAME>/onlineendpoints/seeq-simple-demo-2",
+        "azureml.codeartifactid": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/codes/27db0e04-2ac0-4d60-a7d1-c2cedd80f850/versions/1"
+      },
+      "operationId": "e9ab8950-ee04-4d6b-9b6c-2802c5ca6824",
+      "createdTime": "2021-09-24T17:56:00.6814313Z",
+      "updatedTime": "2021-09-24T17:56:00.6814313Z",
+      "computeType": "MIRAMLCOMPUTE",
+      "createdBy": {
+        "userObjectId": "a65c359d-5a19-4b3f-9658-d91a1ac71070",
+        "userPuId": "10032000EDED15F4",
+        "userIss": "https://sts.windows.net/<TENANT_ID>/",
+        "userTenantId": "<TENANT_ID>",
+        "userName": "Name Lastname"
+      },
+      "endpointName": "seeq-simple-demo-2"
+    },
+    {
+      "numReplicas": 1,
+      "autoScaler": {
+        "autoscaleEnabled": false,
+        "minReplicas": 1,
+        "maxReplicas": 1,
+        "targetUtilization": 70,
+        "refreshPeriodInSeconds": 1
+      },
+      "maxConcurrentRequestsPerContainer": 1,
+      "scoringTimeoutMs": 60000,
+      "sku": "Standard_F4s_v2",
+      "osType": "Linux",
+      "applicationInsightsEnabled": false,
+      "livenessProbeRequirements": {
+        "failureThreshold": 30,
+        "successThreshold": 1,
+        "timeoutSeconds": 2,
+        "periodSeconds": 10,
+        "initialDelaySeconds": 10
+      },
+      "readinessProbeRequirements": {
+        "failureThreshold": 30,
+        "successThreshold": 1,
+        "timeoutSeconds": 2,
+        "periodSeconds": 10,
+        "initialDelaySeconds": 10
+      },
+      "environmentImageRequest": {
+        "driverProgram": "handler.py",
+        "assets": [
+          {
+            "id": "handler.py",
+            "url": "aml://storage/azureml/WebUpload/210924123029-1975737802",
+            "unpack": false
+          }
+        ],
+        "modelIds": [
+          "regressor:3"
+        ],
+        "environment": {
+          "name": "AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference",
+          "version": "14",
+          "python": {
+            "interpreterPath": "python",
+            "userManagedDependencies": true
+          },
+          "environmentVariables": {
+            "EXAMPLE_ENV_VAR": "EXAMPLE_VALUE"
+          },
+          "docker": {
+            "platform": {
+              "os": "Linux",
+              "architecture": "amd64"
+            },
+            "baseDockerfile": "FROM mcr.microsoft.com/azureml/sklearn-0.24.1-ubuntu18.04-py37-cpu-inference:20210920.v1",
+            "baseImageRegistry": {},
+            "enabled": false,
+            "arguments": []
+          },
+          "spark": {
+            "repositories": [],
+            "packages": [],
+            "precachePackages": true
+          }
+        }
+      },
+      "containerResourceRequirements": {
+        "cpu": 0.1,
+        "memoryInGB": 0.5
+      },
+      "environmentVariables": {
+        "SCORING_TIMEOUT_MS": "60000"
+      },
+      "id": "green-seeq-simple-demo-2",
+      "name": "green-seeq-simple-demo-2",
+      "kvTags": {},
+      "properties": {
+        "isByoc": "False",
+        "azureml.onlineendpointid": "/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.machinelearningservices/workspaces/<WORKSPACE_NAME>/onlineendpoints/seeq-simple-demo-2",
+        "azureml.codeartifactid": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/codes/d85b0d5c-754a-4244-9ad6-51cbca2a93b8/versions/1"
+      },
+      "operationId": "34fba491-c129-4278-ade5-4381c403d59b",
+      "createdTime": "2021-09-24T17:36:20.6144426Z",
+      "updatedTime": "2021-09-24T17:36:20.6144426Z",
+      "computeType": "MIRAMLCOMPUTE",
+      "createdBy": {
+        "userObjectId": "a65c359d-5a19-4b3f-9658-d91a1ac71070",
+        "userPuId": "10032000EDED15F4",
+        "userIss": "https://sts.windows.net/<TENANT_ID>/",
+        "userTenantId": "<TENANT_ID>",
+        "userName": "Name Lastname"
+      },
+      "endpointName": "seeq-simple-demo-2"
+    },
+    {
+      "numReplicas": 1,
+      "autoScaler": {
+        "autoscaleEnabled": false,
+        "minReplicas": 1,
+        "maxReplicas": 2,
+        "targetUtilization": 70,
+        "refreshPeriodInSeconds": 1
+      },
+      "maxConcurrentRequestsPerContainer": 1,
+      "scoringTimeoutMs": 60000,
+      "sku": "Standard_DS4_v2",
+      "osType": "Linux",
+      "applicationInsightsEnabled": false,
+      "livenessProbeRequirements": {
+        "failureThreshold": 30,
+        "successThreshold": 1,
+        "timeoutSeconds": 2,
+        "periodSeconds": 10,
+        "initialDelaySeconds": 10
+      },
+      "readinessProbeRequirements": {
+        "failureThreshold": 30,
+        "successThreshold": 1,
+        "timeoutSeconds": 2,
+        "periodSeconds": 10,
+        "initialDelaySeconds": 10
+      },
+      "environmentImageRequest": {
+        "driverProgram": "handler.py",
+        "assets": [
+          {
+            "id": "handler.py",
+            "url": "aml://storage/azureml/WebUpload/210924110600-3125521738",
+            "unpack": false
+          }
+        ],
+        "modelIds": [
+          "regressor:3"
+        ],
+        "environment": {
+          "name": "AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference",
+          "version": "14",
+          "python": {
+            "interpreterPath": "python",
+            "userManagedDependencies": true
+          },
+          "environmentVariables": {
+            "EXAMPLE_ENV_VAR": "EXAMPLE_VALUE"
+          },
+          "docker": {
+            "platform": {
+              "os": "Linux",
+              "architecture": "amd64"
+            },
+            "baseDockerfile": "FROM mcr.microsoft.com/azureml/sklearn-0.24.1-ubuntu18.04-py37-cpu-inference:20210920.v1",
+            "baseImageRegistry": {},
+            "enabled": false,
+            "arguments": []
+          },
+          "spark": {
+            "repositories": [],
+            "packages": [],
+            "precachePackages": true
+          }
+        }
+      },
+      "containerResourceRequirements": {
+        "cpu": 0.1,
+        "memoryInGB": 0.5
+      },
+      "environmentVariables": {
+        "SCORING_TIMEOUT_MS": "60000"
+      },
+      "id": "green-seeq-simple-demo",
+      "name": "green-seeq-simple-demo",
+      "kvTags": {},
+      "properties": {
+        "isByoc": "False",
+        "azureml.onlineendpointid": "/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.machinelearningservices/workspaces/<WORKSPACE_NAME>/onlineendpoints/seeq-simple-demo",
+        "azureml.codeartifactid": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/codes/4648fde4-3208-4e64-9bfb-1515b1470cb7/versions/1"
+      },
+      "operationId": "0bdaf623-f369-4431-b17d-6644486aba05",
+      "createdTime": "2021-09-24T16:06:26.9470214Z",
+      "updatedTime": "2021-09-24T16:06:26.9470214Z",
+      "computeType": "MIRAMLCOMPUTE",
+      "createdBy": {
+        "userObjectId": "a65c359d-5a19-4b3f-9658-d91a1ac71070",
+        "userPuId": "10032000EDED15F4",
+        "userIss": "https://sts.windows.net/<TENANT_ID>/",
+        "userTenantId": "<TENANT_ID>",
+        "userName": "Name Lastname"
+      },
+      "endpointName": "seeq-simple-demo"
+    }
+  ]
+}

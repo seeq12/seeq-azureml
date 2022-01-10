@@ -5,6 +5,6 @@ Seeq Add-on User Interface
    :members:
    :show-inheritance:
 
-.. automodule:: seeq.addons.azureml._ui_selections
+.. automodule:: seeq.addons.azureml.backend._seeq_inputs_provider
    :members:
    :show-inheritance:

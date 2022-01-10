@@ -1,0 +1,124 @@
+{
+  "value": [
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/onlineEndpoints/seeq-simple-demo-2/deployments/blue",
+      "name": "blue",
+      "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments",
+      "properties": {
+        "description": "None",
+        "properties": {
+          "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/providers/Microsoft.MachineLearningServices/locations/canadacentral/mfeOperationsStatus/od:35965b03-a279-43b9-b7b2-951a3da7a672:e9ab8950-ee04-4d6b-9b6c-2802c5ca6824?api-version\u003d2021-03-01-preview"
+        },
+        "model": {
+          "referenceType": "Id",
+          "assetId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/models/regressor/versions/2"
+        },
+        "codeConfiguration": {
+          "codeId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/codes/27db0e04-2ac0-4d60-a7d1-c2cedd80f850/versions/1",
+          "scoringScript": "handler.py"
+        },
+        "environmentId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/environments/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference/versions/14",
+        "environmentVariables": {
+          "SCORING_TIMEOUT_MS": "60000"
+        },
+        "scaleSettings": {
+          "minInstances": 1,
+          "maxInstances": 1,
+          "scaleType": "Manual",
+          "instanceCount": 1
+        },
+        "requestSettings": {
+          "maxQueueWait": "None",
+          "requestTimeout": "PT1M",
+          "maxConcurrentRequestsPerInstance": 1
+        },
+        "appInsightsEnabled": false,
+        "livenessProbe": {
+          "failureThreshold": 30,
+          "successThreshold": 1,
+          "timeout": "PT2S",
+          "period": "PT10S",
+          "initialDelay": "PT10S"
+        },
+        "provisioningState": "Succeeded",
+        "endpointComputeType": "Managed",
+        "instanceType": "Standard_DS2_v2",
+        "readinessProbe": {
+          "failureThreshold": 30,
+          "successThreshold": 1,
+          "timeout": "PT2S",
+          "period": "PT10S",
+          "initialDelay": "PT10S"
+        }
+      },
+      "systemData": {
+        "createdAt": "2021-09-24T17:56:00.6814313Z",
+        "createdBy": "Name Lastname",
+        "lastModifiedAt": "2021-09-24T17:56:00.6814313Z"
+      },
+      "tags": {},
+      "location": "canadacentral",
+      "kind": "Managed"
+    },
+    {
+      "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/onlineEndpoints/seeq-simple-demo-2/deployments/green",
+      "name": "green",
+      "type": "Microsoft.MachineLearningServices/workspaces/onlineEndpoints/deployments",
+      "properties": {
+        "description": "None",
+        "properties": {
+          "AzureAsyncOperationUri": "https://management.azure.com/subscriptions/<SUBSCRIPTION_ID>/providers/Microsoft.MachineLearningServices/locations/canadacentral/mfeOperationsStatus/od:35965b03-a279-43b9-b7b2-951a3da7a672:34fba491-c129-4278-ade5-4381c403d59b?api-version\u003d2021-03-01-preview"
+        },
+        "model": {
+          "referenceType": "Id",
+          "assetId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/models/regressor/versions/3"
+        },
+        "codeConfiguration": {
+          "codeId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/codes/d85b0d5c-754a-4244-9ad6-51cbca2a93b8/versions/1",
+          "scoringScript": "handler.py"
+        },
+        "environmentId": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>/environments/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference/versions/14",
+        "environmentVariables": {
+          "SCORING_TIMEOUT_MS": "60000"
+        },
+        "scaleSettings": {
+          "minInstances": 1,
+          "maxInstances": 1,
+          "scaleType": "Manual",
+          "instanceCount": 1
+        },
+        "requestSettings": {
+          "maxQueueWait": "None",
+          "requestTimeout": "PT1M",
+          "maxConcurrentRequestsPerInstance": 1
+        },
+        "appInsightsEnabled": false,
+        "livenessProbe": {
+          "failureThreshold": 30,
+          "successThreshold": 1,
+          "timeout": "PT2S",
+          "period": "PT10S",
+          "initialDelay": "PT10S"
+        },
+        "provisioningState": "Succeeded",
+        "endpointComputeType": "Managed",
+        "instanceType": "Standard_F4s_v2",
+        "readinessProbe": {
+          "failureThreshold": 30,
+          "successThreshold": 1,
+          "timeout": "PT2S",
+          "period": "PT10S",
+          "initialDelay": "PT10S"
+        }
+      },
+      "systemData": {
+        "createdAt": "2021-09-24T17:36:20.6144426Z",
+        "createdBy": "Name Lastname",
+        "lastModifiedAt": "2021-09-24T17:36:20.6144426Z"
+      },
+      "tags": {},
+      "location": "canadacentral",
+      "kind": "Managed"
+    }
+  ]
+}

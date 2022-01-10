@@ -1,0 +1,74 @@
+{
+  "id": "regressor:3",
+  "name": "regressor",
+  "framework": "ScikitLearn",
+  "frameworkVersion": "0.24.2",
+  "version": 3,
+  "tags": [],
+  "datasets": [
+    {
+      "name": "training_inputs",
+      "id": "6f1d5b2b-4829-4b51-ad1b-fab4ba110365"
+    },
+    {
+      "name": "training_target",
+      "id": "c50d1a29-b38b-4eea-b979-aae030f90400"
+    },
+    {
+      "name": "test_inputs",
+      "id": "b7642007-2963-4320-b90e-588091756b14"
+    },
+    {
+      "name": "test_target",
+      "id": "014b9f4a-a903-4404-8cfb-3de41fc93d7a"
+    }
+  ],
+  "url": "aml://asset/e1d655ae7a33476f874cf6f7dd907c87",
+  "mimeType": "application/json",
+  "description": "Seeq Azure integration demo model",
+  "createdTime": "2021-09-22T18:28:37.7576065Z",
+  "modifiedTime": "2021-10-26T20:49:29.8729185Z",
+  "unpack": false,
+  "parentModelId": "None",
+  "runId": "c2f18252-6130-4ef1-b65e-605088261ad6",
+  "experimentName": "Seeq_Integration_Demo",
+  "kvTags": {
+    "SampleRate": "2min",
+    "input2": "62E6F850-E523-408D-AD10-0C87E65F996B",
+    "input4": "F8E053D1-A4D5-4671-9969-1D5D7D4F27DD",
+    "input 1": "4E9416E8-9C75-426A-8E0A-4D07432CAC5D",
+    "input3": "CD732D0B-C3BA-496F-B69E-55543944B5F1"
+  },
+  "properties": {},
+  "derivedModelIds": [],
+  "inputsSchema": [],
+  "outputsSchema": [],
+  "sampleInputData": "None",
+  "sampleOutputData": "None",
+  "resourceRequirements": "None",
+  "createdBy": {
+    "userObjectId": "22944b10-92b0-4ad0-b704-b7aae135462b",
+    "userPuId": "10037FFEAE5C2019",
+    "userIdp": "None",
+    "userAltSecId": "None",
+    "userIss": "https://sts.windows.net/<TENANT_ID>/",
+    "userTenantId": "<TENANT_ID>",
+    "userName": "Name Lastname",
+    "upn": "user@seeq.com"
+  },
+  "modifiedBy": {
+    "userObjectId": "d38942a6-be8e-4576-bdb1-c810382010ec",
+    "userPuId": "10030000AD81E1D5",
+    "userIdp": "None",
+    "userAltSecId": "None",
+    "userIss": "https://sts.windows.net/<TENANT_ID>/",
+    "userTenantId": "<TENANT_ID>",
+    "userName": "Name Lastname",
+    "upn": "user@seeq.com"
+  },
+  "flavors": {},
+  "modelFormat": "CUSTOM",
+  "stage": "None",
+  "modelContainerId": "137038c415b74e74a3b308dba5c63ccb",
+  "mmsId": "725b8c030f1146ca8bd15da95b90742e"
+}

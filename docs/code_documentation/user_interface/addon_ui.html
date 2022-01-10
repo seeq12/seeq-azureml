@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Seeq Add-on User Interface &mdash; seeq-azureml 0.1.0 documentation</title>
+  <title>Seeq Add-on User Interface &mdash; seeq-azureml 0.1.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/seeq-favicon.ico"/>
@@ -32,7 +32,7 @@
             <img src="../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.1.0
+                0.1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -144,13 +144,13 @@ Azure ML service. By default, the file is located in ~/.seeq/aml_config.ini</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="seeq.addons.azureml._add_on_main.MlOperate.user_selections">
-<span class="sig-name descname"><span class="pre">user_selections</span></span><a class="headerlink" href="#seeq.addons.azureml._add_on_main.MlOperate.user_selections" title="Permalink to this definition"></a></dt>
-<dd><p>An instance of the UserSelections object that serves as an interface
-between the UI and the backend integration between Seeq and Azure ML.</p>
+<dt class="sig sig-object py" id="seeq.addons.azureml._add_on_main.MlOperate.inputs_provider">
+<span class="sig-name descname"><span class="pre">inputs_provider</span></span><a class="headerlink" href="#seeq.addons.azureml._add_on_main.MlOperate.inputs_provider" title="Permalink to this definition"></a></dt>
+<dd><p>An instance of the ModelInputsProvider object that gets the input signal
+IDs from Seeq that are required by the Azure ML model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>seeq.addons.azureml.UserSelections</p>
+<dd class="field-odd"><p>seeq.addons.azureml.backend.ModelInputsProvider</p>
 </dd>
 </dl>
 </dd></dl>
@@ -168,14 +168,15 @@ between the UI and the backend integration between Seeq and Azure ML.</p>
 
 </dd></dl>
 
-<span class="target" id="module-seeq.addons.azureml._ui_selections"></span><dl class="py class">
-<dt class="sig sig-object py" id="seeq.addons.azureml._ui_selections.UserSelections">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml._ui_selections.</span></span><span class="sig-name descname"><span class="pre">UserSelections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/_ui_selections.html#UserSelections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml._ui_selections.UserSelections" title="Permalink to this definition"></a></dt>
+<span class="target" id="module-seeq.addons.azureml.backend._seeq_inputs_provider"></span><dl class="py class">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml.backend._seeq_inputs_provider.</span></span><span class="sig-name descname"><span class="pre">ModelInputsProvider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_seeq_inputs_provider.html#ModelInputsProvider"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Interface between the UI selections and the AmlOnlineEndpointService</p>
+<p>Provides the Seeq and AmlOnlineEndpointService inputs to the Azure ML model
+based upon user selections</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="seeq.addons.azureml._ui_selections.UserSelections.endpoint_svc">
-<span class="sig-name descname"><span class="pre">endpoint_svc</span></span><a class="headerlink" href="#seeq.addons.azureml._ui_selections.UserSelections.endpoint_svc" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.endpoint_svc">
+<span class="sig-name descname"><span class="pre">endpoint_svc</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.endpoint_svc" title="Permalink to this definition"></a></dt>
 <dd><p>An instance of the AmlOnlineEndpointService to make the necessary calls
 to Azure ML services.</p>
 <dl class="field-list simple">
@@ -186,8 +187,8 @@ to Azure ML services.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="seeq.addons.azureml._ui_selections.UserSelections.endpoints">
-<span class="sig-name descname"><span class="pre">endpoints</span></span><a class="headerlink" href="#seeq.addons.azureml._ui_selections.UserSelections.endpoints" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.endpoints">
+<span class="sig-name descname"><span class="pre">endpoints</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.endpoints" title="Permalink to this definition"></a></dt>
 <dd><p>Dictionary with endpoint names as keys and OnlineEndpoint(s) as values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -197,8 +198,8 @@ to Azure ML services.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="seeq.addons.azureml._ui_selections.UserSelections.deployment">
-<span class="sig-name descname"><span class="pre">deployment</span></span><a class="headerlink" href="#seeq.addons.azureml._ui_selections.UserSelections.deployment" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.deployment">
+<span class="sig-name descname"><span class="pre">deployment</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.deployment" title="Permalink to this definition"></a></dt>
 <dd><p>Deployment associated with the selected OnlineEndpoint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -208,8 +209,8 @@ to Azure ML services.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="seeq.addons.azureml._ui_selections.UserSelections.asset_paths">
-<span class="sig-name descname"><span class="pre">asset_paths</span></span><a class="headerlink" href="#seeq.addons.azureml._ui_selections.UserSelections.asset_paths" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.asset_paths">
+<span class="sig-name descname"><span class="pre">asset_paths</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.asset_paths" title="Permalink to this definition"></a></dt>
 <dd><p>Dictionary containing the valid Seeq asset trees on which the model may
 be applied. The name of the asset trees are the keys and asset tree IDs
 are the values.</p>
@@ -221,8 +222,8 @@ are the values.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="seeq.addons.azureml._ui_selections.UserSelections.model_name">
-<span class="sig-name descname"><span class="pre">model_name</span></span><a class="headerlink" href="#seeq.addons.azureml._ui_selections.UserSelections.model_name" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.model_name" title="Permalink to this definition"></a></dt>
 <dd><p>Name of the Azure ML model for the selected OnlineDeployment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -232,8 +233,8 @@ are the values.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="seeq.addons.azureml._ui_selections.UserSelections.model_version">
-<span class="sig-name descname"><span class="pre">model_version</span></span><a class="headerlink" href="#seeq.addons.azureml._ui_selections.UserSelections.model_version" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.model_version">
+<span class="sig-name descname"><span class="pre">model_version</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.model_version" title="Permalink to this definition"></a></dt>
 <dd><p>Version of the Azure ML model for the selected OnlineDeployment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -243,8 +244,8 @@ are the values.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="seeq.addons.azureml._ui_selections.UserSelections.model_signal_inputs">
-<span class="sig-name descname"><span class="pre">model_signal_inputs</span></span><a class="headerlink" href="#seeq.addons.azureml._ui_selections.UserSelections.model_signal_inputs" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.model_signal_inputs">
+<span class="sig-name descname"><span class="pre">model_signal_inputs</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.model_signal_inputs" title="Permalink to this definition"></a></dt>
 <dd><p>Dictionary with the input signals for the Azure ML model which are
 pulled from Seeq. The name of the signals are the keys of the
 dict and the IDs of the signals are the values.</p>
@@ -256,8 +257,8 @@ dict and the IDs of the signals are the values.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="seeq.addons.azureml._ui_selections.UserSelections.model_sample_rate">
-<span class="sig-name descname"><span class="pre">model_sample_rate</span></span><a class="headerlink" href="#seeq.addons.azureml._ui_selections.UserSelections.model_sample_rate" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.model_sample_rate">
+<span class="sig-name descname"><span class="pre">model_sample_rate</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.model_sample_rate" title="Permalink to this definition"></a></dt>
 <dd><p>The sampling rate required by the Azure ML model for the input signals.
 For example, ‘2 min’.</p>
 <dl class="field-list simple">
@@ -268,8 +269,8 @@ For example, ‘2 min’.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="seeq.addons.azureml._ui_selections.UserSelections.model_endpoint_uri">
-<span class="sig-name descname"><span class="pre">model_endpoint_uri</span></span><a class="headerlink" href="#seeq.addons.azureml._ui_selections.UserSelections.model_endpoint_uri" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.model_endpoint_uri">
+<span class="sig-name descname"><span class="pre">model_endpoint_uri</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.model_endpoint_uri" title="Permalink to this definition"></a></dt>
 <dd><p>The endpoint identifier of the AzureML model used to compute the result
 signal.</p>
 <dl class="field-list simple">
@@ -280,8 +281,8 @@ signal.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="seeq.addons.azureml._ui_selections.UserSelections.asset_path_from_signals">
-<span class="sig-name descname"><span class="pre">asset_path_from_signals</span></span><a class="headerlink" href="#seeq.addons.azureml._ui_selections.UserSelections.asset_path_from_signals" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.asset_path_from_signals">
+<span class="sig-name descname"><span class="pre">asset_path_from_signals</span></span><a class="headerlink" href="#seeq.addons.azureml.backend._seeq_inputs_provider.ModelInputsProvider.asset_path_from_signals" title="Permalink to this definition"></a></dt>
 <dd><p>This attribute is determined when the Azure ML model specifies signal
 IDs as inputs rather than asset path IDs. If the input signals belong
 to the same asset tree, then the name and ID of the asset tree are

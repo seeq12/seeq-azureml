@@ -1,0 +1,38 @@
+{
+  "id": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>",
+  "name": "<WORKSPACE_NAME>",
+  "type": "Microsoft.MachineLearningServices/workspaces",
+  "location": "canadacentral",
+  "tags": {},
+  "properties": {
+    "friendlyName": "<WORKSPACE_NAME>",
+    "description": "",
+    "storageAccount": "/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.storage/storageaccounts/aebearingdemo2284898343",
+    "keyVault": "/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.keyvault/vaults/aebearingdemo8348856411",
+    "applicationInsights": "/subscriptions/<SUBSCRIPTION_ID>/resourcegroups/<RESOURCE_GROUP>/providers/microsoft.insights/components/aebearingdemo3573048790",
+    "hbiWorkspace": false,
+    "tenantId": "<TENANT_ID>",
+    "provisioningState": "Succeeded",
+    "containerRegistry": "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.ContainerRegistry/registries/35965b03a27943b9b7b2951a3da7a672",
+    "notebookInfo": {
+      "resourceId": "<resourceId>",
+      "fqdn": "ml-aebearing-canadacentral-35965b03-a279-43b9-b7b2-951a3da7a672.notebooks.azure.net",
+      "isPrivateLinkEnabled": false
+    },
+    "workspaceId": "<workspaceId>",
+    "privateLinkCount": 0,
+    "allowPublicAccessWhenBehindVnet": false,
+    "discoveryUrl": "https://canadacentral.api.azureml.ms/discovery",
+    "mlFlowTrackingUri": "azureml://canadacentral.api.azureml.ms/mlflow/v1.0/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>/providers/Microsoft.MachineLearningServices/workspaces/<WORKSPACE_NAME>",
+    "sdkTelemetryAppInsightsKey": "<sdkTelemetryAppInsightsKey>"
+  },
+  "identity": {
+    "type": "SystemAssigned",
+    "principalId": "<principalId>",
+    "tenantId": "<TENANT_ID>"
+  },
+  "sku": {
+    "name": "Basic",
+    "tier": "Basic"
+  }
+}

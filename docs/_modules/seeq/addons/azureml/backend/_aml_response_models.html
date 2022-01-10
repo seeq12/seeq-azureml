@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>seeq.addons.azureml.backend._aml_response_models &mdash; seeq-azureml 0.1.0 documentation</title>
+  <title>seeq.addons.azureml.backend._aml_response_models &mdash; seeq-azureml 0.1.1 documentation</title>
       <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../../../../_static/seeq-favicon.ico"/>
@@ -29,7 +29,7 @@
             <img src="../../../../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.1.0
+                0.1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
@@ -195,24 +195,26 @@
 <span class="sd">        Deserializes the Azure ML response from the deployment endpoint</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">idd</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">idd</span><span class="p">,</span> <span class="n">computeType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        name : str</span>
 <span class="sd">            Name of the Azure ML deployment</span>
-<span class="sd">        idd : str</span>
+<span class="sd">        idd : str or None</span>
 <span class="sd">            ID of the Azure ML deployment</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">idd</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">computeType</span> <span class="o">=</span> <span class="n">computeType</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">modelId</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">traffic</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_version</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="OnlineDeployment.deserialize_aml_deployment_response"><a class="viewcode-back" href="../../../../../code_documentation/seeq_azureml_integration/aml_interaction.html#seeq.addons.azureml.backend._aml_response_models.OnlineDeployment.deserialize_aml_deployment_response">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_aml_deployment_response</span><span class="p">(</span><span class="n">json</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">deserialize_aml_deployment_response</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">computeType</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets a serialized response from a given online endpoint in Azure ML and</span>
 <span class="sd">        deserializes each deployment associated with the endpoint.</span>
@@ -221,6 +223,8 @@
 <span class="sd">        ----------</span>
 <span class="sd">        json: dict</span>
 <span class="sd">            Serialized response of the Azure ML deployment endpoint</span>
+<span class="sd">        computeType: str</span>
+<span class="sd">            The type of compute: Managed, ACI, K8S</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -230,7 +234,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ods</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">json</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]:</span>
-            <span class="n">od</span> <span class="o">=</span> <span class="n">OnlineDeployment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">idd</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+            <span class="n">od</span> <span class="o">=</span> <span class="n">OnlineDeployment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">idd</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">computeType</span><span class="o">=</span><span class="n">computeType</span><span class="p">)</span>
             <span class="n">od</span><span class="o">.</span><span class="n">modelId</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;model&#39;</span><span class="p">][</span><span class="s1">&#39;assetId&#39;</span><span class="p">]</span>
             <span class="n">od</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span>
             <span class="n">ods</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">od</span><span class="p">)</span>
@@ -281,8 +285,11 @@
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
-<span class="sd">    deserialize_aml_endpoint_response(json)</span>
-<span class="sd">        Deserializes the Azure ML response from the online endpoints endpoint</span>
+<span class="sd">    deserialize_unmanaged_endpoint_response(json)</span>
+<span class="sd">        Deserializes the Azure ML response from the unmanaged online endpoints endpoint</span>
+
+<span class="sd">    deserialize_managed_endpoint_response</span>
+<span class="sd">        Deserializes the Azure ML response from the managed online endpoints endpoint</span>
 
 <span class="sd">    add_deployment(seeq.addons.azureml.backend.OnlineDeployment)</span>
 <span class="sd">        Adds an OnlineDeployment to the endpoint only if the traffic split</span>
@@ -315,8 +322,48 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">primaryKey</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">secondaryKey</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="OnlineEndpoint.deserialize_aml_endpoint_response"><a class="viewcode-back" href="../../../../../code_documentation/seeq_azureml_integration/aml_interaction.html#seeq.addons.azureml.backend._aml_response_models.OnlineEndpoint.deserialize_aml_endpoint_response">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_aml_endpoint_response</span><span class="p">(</span><span class="n">json</span><span class="p">):</span>
+<div class="viewcode-block" id="OnlineEndpoint.deserialize_unmanaged_endpoint_response"><a class="viewcode-back" href="../../../../../code_documentation/seeq_azureml_integration/aml_interaction.html#seeq.addons.azureml.backend._aml_response_models.OnlineEndpoint.deserialize_unmanaged_endpoint_response">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">deserialize_unmanaged_endpoint_response</span><span class="p">(</span><span class="n">json</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deserializes the Azure ML response services response for ACI models</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        json: dict</span>
+<span class="sd">            Serialized response of the Azure ML online endpoints</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        oes: list</span>
+<span class="sd">            List of endpoints with `{&#39;Seeq&#39;: true}` tag</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">oes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">json</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="s1">&#39;Seeq&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;kvTags&#39;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="n">oe</span> <span class="o">=</span> <span class="n">OnlineEndpoint</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">idd</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">tags</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;kvTags&#39;</span><span class="p">]</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;Microsoft.MachineLearningServices/workspaces/onlineEndpoints&quot;</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">scoringUri</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;scoringUri&#39;</span><span class="p">]</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">authMode</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;authEnabled&#39;</span><span class="p">]</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;ACI&#39;</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">createdBy</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;createdBy&#39;</span><span class="p">][</span><span class="s1">&#39;userName&#39;</span><span class="p">]</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">lastModifiedAt</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;updatedTime&#39;</span><span class="p">]</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span>
+            <span class="n">od</span> <span class="o">=</span> <span class="n">OnlineDeployment</span><span class="p">(</span><span class="n">oe</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">oe</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+            <span class="n">od</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">oe</span><span class="o">.</span><span class="n">location</span>
+            <span class="n">od</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;environmentImageRequest&#39;</span><span class="p">][</span><span class="s1">&#39;modelIds&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">od</span><span class="o">.</span><span class="n">model_version</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;environmentImageRequest&#39;</span><span class="p">][</span><span class="s1">&#39;modelIds&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">od</span><span class="o">.</span><span class="n">traffic</span> <span class="o">=</span> <span class="mi">100</span>
+            <span class="n">oe</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">od</span><span class="p">)</span>
+            <span class="n">oes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">oe</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">oes</span></div>
+
+
+<div class="viewcode-block" id="OnlineEndpoint.deserialize_managed_endpoint_response"><a class="viewcode-back" href="../../../../../code_documentation/seeq_azureml_integration/aml_interaction.html#seeq.addons.azureml.backend._aml_response_models.OnlineEndpoint.deserialize_managed_endpoint_response">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">deserialize_managed_endpoint_response</span><span class="p">(</span><span class="n">json</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Deserializes the Azure ML response from the online endpoints endpoint</span>
 
@@ -363,7 +410,7 @@
 <span class="sd">        -: None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">deployment</span><span class="o">.</span><span class="n">traffic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traffic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">deployment</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="p">)</span>
+        <span class="n">deployment</span><span class="o">.</span><span class="n">traffic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traffic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">deployment</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">deployment</span><span class="o">.</span><span class="n">traffic</span> <span class="o">==</span> <span class="n">TRAFFIC_SPLIT</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">deployment</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deployment</span><span class="p">)</span></div></div>
 </pre></div>

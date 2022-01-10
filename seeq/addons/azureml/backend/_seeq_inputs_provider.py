@@ -6,9 +6,10 @@ from seeq.addons.azureml.utils import AzureMLException
 from seeq.addons.azureml import _config
 
 
-class UserSelections:
+class ModelInputsProvider:
     """
-    Interface between the UI selections and the AmlOnlineEndpointService
+    Provides the Seeq and AmlOnlineEndpointService inputs to the Azure ML model
+    based upon user selections
 
     Attributes
     ----------
@@ -67,10 +68,10 @@ class UserSelections:
 
     def get_endpoints(self):
         names = [x.name for x in self.endpoint_svc.list_online_endpoints()]
-        renames = rename_duplicates(names)
+        renames = _rename_duplicates(names)
         return dict(zip(renames, self.endpoint_svc.list_online_endpoints()))
 
-    def get_deployment(self, endpoint: OnlineEndpoint):
+    def update_deployment_from_endpoint(self, endpoint: OnlineEndpoint):
         deployments = [x for x in endpoint.deployment]
         if len(deployments) > 1:
             raise AzureMLException(code=None, reason=None,
@@ -86,10 +87,10 @@ class UserSelections:
             self.model_endpoint_uri = endpoint.scoringUri
             self._model_primary_key = endpoint.primaryKey
 
-    def get_assets(self, endpoint: OnlineEndpoint):
+    def update_assets_from_endpoint(self, endpoint: OnlineEndpoint):
         self.asset_paths = None
         trees_api = TreesApi(spy.client)
-        self.get_deployment(endpoint)
+        self.update_deployment_from_endpoint(endpoint)
         if self.deployment.model is None:
             return
         if len(self.deployment.model.asset_path_ids) > 0:
@@ -102,13 +103,13 @@ class UserSelections:
                 tree = trees_api.get_tree(id=idd)
                 asset_path_names.append(f"{' >> '.join([x.name for x in tree.item.ancestors if x.type == 'Asset'])} >> "
                                         f"{tree.item.name}")
-            asset_path_names = rename_duplicates(asset_path_names)
+            asset_path_names = _rename_duplicates(asset_path_names)
             self.asset_paths = dict(zip(asset_path_names, self.deployment.model.asset_path_ids))
 
-    def get_signal_inputs(self, endpoint, asset_path_id=None):
+    def update_signal_inputs_from_endpoint(self, endpoint, asset_path_id=None):
         trees_api = TreesApi(spy.client)
         signals_api = SignalsApi(spy.client)
-        self.get_deployment(endpoint)
+        self.update_deployment_from_endpoint(endpoint)
         if self.deployment.model is None:
             return
         if len(self.deployment.model.input_ids) > 0:  # if there are signals IDs for the model, then disregard assets
@@ -117,7 +118,7 @@ class UserSelections:
             asset_paths = list()
             path_ids = list()
             signal_names = list()
-            ordered_input_ids = order_inputs(self.deployment.model.input_ids)
+            ordered_input_ids = _order_inputs(self.deployment.model.input_ids)
 
             for idd in ordered_input_ids:
                 tree = trees_api.get_tree(id=idd)
@@ -129,12 +130,12 @@ class UserSelections:
                 self.asset_path_from_signals = {asset_paths[0]: path_ids[0]}
             else:
                 self.asset_path_from_signals = None
-            signal_names = rename_duplicates(signal_names)
+            signal_names = _rename_duplicates(signal_names)
             self.model_signal_inputs = dict(zip(signal_names, ordered_input_ids))
             return
 
         elif asset_path_id is not None:
-            ordered_input_names = order_inputs(self.deployment.model.asset_input_names)
+            ordered_input_names = _order_inputs(self.deployment.model.asset_input_names)
             tree = trees_api.get_tree(id=asset_path_id)
             signal_names = []
             signal_ids = []
@@ -142,23 +143,23 @@ class UserSelections:
                 if child.name in ordered_input_names:
                     signal_names.append(child.name)
                     signal_ids.append(child.id)
-            signal_names = rename_duplicates(signal_names)
+            signal_names = _rename_duplicates(signal_names)
             model_signal_inputs = dict(zip(signal_names, signal_ids))
 
             # AD-1076
             self.model_signal_inputs = {k: model_signal_inputs[k] for k in ordered_input_names}
 
-    def _serialize(self, filename='ui_selections.pk'):
+    def _serialize(self, filename='model_inputs.pk'):
         with open(filename, 'wb') as f:
             pickle.dump(self, f)
 
 
-def rename_duplicates(names: list) -> list:
+def _rename_duplicates(names: list) -> list:
     return [f"{name}{str(names[:i].count(name) + 1)}" if names.count(name) > 1 else name for i, name in
             enumerate(names)]
 
 
-def order_inputs(inputs: dict):
+def _order_inputs(inputs: dict) -> list:
     input_numbers = list(map(str, range(1, len(inputs) + 1)))
     if not all(item in inputs.keys() for item in input_numbers):
         message = f'This model has an incomplete input signal specification. Expected {len(inputs)} input signals ' \

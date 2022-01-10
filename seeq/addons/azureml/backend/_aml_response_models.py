@@ -117,24 +117,26 @@ class OnlineDeployment:
         Deserializes the Azure ML response from the deployment endpoint
     """
 
-    def __init__(self, name, idd) -> None:
+    def __init__(self, name, idd, computeType) -> None:
         """
         Parameters
         ----------
         name : str
             Name of the Azure ML deployment
-        idd : str
+        idd : str or None
             ID of the Azure ML deployment
         """
         self.id = idd
         self.name = name
+        self.computeType = computeType
         self.modelId = None
         self.traffic = None
         self.model = None
+        self.model_version = None
         self.location = None
 
     @staticmethod
-    def deserialize_aml_deployment_response(json):
+    def deserialize_aml_deployment_response(json, computeType):
         """
         Gets a serialized response from a given online endpoint in Azure ML and
         deserializes each deployment associated with the endpoint.
@@ -143,6 +145,8 @@ class OnlineDeployment:
         ----------
         json: dict
             Serialized response of the Azure ML deployment endpoint
+        computeType: str
+            The type of compute: Managed, ACI, K8S
 
         Returns
         -------
@@ -152,7 +156,7 @@ class OnlineDeployment:
         """
         ods = list()
         for v in json['value']:
-            od = OnlineDeployment(name=v['name'], idd=v['id'])
+            od = OnlineDeployment(name=v['name'], idd=v['id'], computeType=computeType)
             od.modelId = v['properties']['model']['assetId']
             od.location = v['location']
             ods.append(od)
@@ -203,8 +207,11 @@ class OnlineEndpoint:
 
     Methods
     -------
-    deserialize_aml_endpoint_response(json)
-        Deserializes the Azure ML response from the online endpoints endpoint
+    deserialize_unmanaged_endpoint_response(json)
+        Deserializes the Azure ML response from the unmanaged online endpoints endpoint
+
+    deserialize_managed_endpoint_response
+        Deserializes the Azure ML response from the managed online endpoints endpoint
 
     add_deployment(seeq.addons.azureml.backend.OnlineDeployment)
         Adds an OnlineDeployment to the endpoint only if the traffic split
@@ -238,7 +245,47 @@ class OnlineEndpoint:
         self.secondaryKey = None
 
     @staticmethod
-    def deserialize_aml_endpoint_response(json):
+    def deserialize_unmanaged_endpoint_response(json):
+        """
+        Deserializes the Azure ML response services response for ACI models
+
+        Parameters
+        ----------
+        json: dict
+            Serialized response of the Azure ML online endpoints
+
+        Returns
+        -------
+        oes: list
+            List of endpoints with `{'Seeq': true}` tag
+
+        """
+        oes = list()
+        for v in json['value']:
+            if 'Seeq' not in v['kvTags']:
+                continue
+            oe = OnlineEndpoint(name=v['name'], idd=v['id'])
+            oe.tags = v['kvTags']
+            oe.type = "Microsoft.MachineLearningServices/workspaces/onlineEndpoints"
+            oe.description = v['description']
+            oe.scoringUri = v['scoringUri']
+            oe.authMode = v['authEnabled']
+            oe.kind = 'ACI'
+            oe.createdBy = v['createdBy']['userName']
+            oe.lastModifiedAt = v['updatedTime']
+            oe.location = v['location']
+            od = OnlineDeployment(oe.name, None, oe.type)
+            od.location = oe.location
+            od.model = (v['environmentImageRequest']['modelIds'][0]).split(':')[0]
+            od.model_version = (v['environmentImageRequest']['modelIds'][0]).split(':')[1]
+            od.traffic = 100
+            oe.deployment.append(od)
+            oes.append(oe)
+        return oes
+
+
+    @staticmethod
+    def deserialize_managed_endpoint_response(json):
         """
         Deserializes the Azure ML response from the online endpoints endpoint
 
@@ -285,6 +332,6 @@ class OnlineEndpoint:
         -: None
 
         """
-        deployment.traffic = self.traffic.get(deployment.name, )
+        deployment.traffic = self.traffic.get(deployment.name)
         if deployment.traffic == TRAFFIC_SPLIT:
             self.deployment.append(deployment)

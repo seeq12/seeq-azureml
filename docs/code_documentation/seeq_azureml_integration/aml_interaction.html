@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interaction with Azure ML &mdash; seeq-azureml 0.1.0 documentation</title>
+  <title>Interaction with Azure ML &mdash; seeq-azureml 0.1.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/seeq-favicon.ico"/>
@@ -32,7 +32,7 @@
             <img src="../../_static/Seeq_logo_darkBlue_sm.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.1.0
+                0.1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -229,7 +229,7 @@ asset_path_ids</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="seeq.addons.azureml.backend._aml_response_models.OnlineDeployment">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml.backend._aml_response_models.</span></span><span class="sig-name descname"><span class="pre">OnlineDeployment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_response_models.html#OnlineDeployment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._aml_response_models.OnlineDeployment" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">seeq.addons.azureml.backend._aml_response_models.</span></span><span class="sig-name descname"><span class="pre">OnlineDeployment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">computeType</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_response_models.html#OnlineDeployment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._aml_response_models.OnlineDeployment" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Gets the serialized response from the Azure ML deployments endpoint and
 deserializes it</p>
@@ -307,12 +307,15 @@ deserializes it</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id1">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">deserialize_aml_deployment_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_response_models.html#OnlineDeployment.deserialize_aml_deployment_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">deserialize_aml_deployment_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">computeType</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_response_models.html#OnlineDeployment.deserialize_aml_deployment_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
 <dd><p>Gets a serialized response from a given online endpoint in Azure ML and
 deserializes each deployment associated with the endpoint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>json</strong> (<em>dict</em>) – Serialized response of the Azure ML deployment endpoint</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json</strong> (<em>dict</em>) – Serialized response of the Azure ML deployment endpoint</p></li>
+<li><p><strong>computeType</strong> (<em>str</em>) – The type of compute: Managed, ACI, K8S</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>ods</strong> – List of deployments associated with the endpoint</p>
@@ -510,9 +513,15 @@ will be disregarded as a Seeq compatible endpoint.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="seeq.addons.azureml.backend._aml_response_models.OnlineEndpoint.deserialize_aml_endpoint_response">
-<span class="sig-name descname"><span class="pre">deserialize_aml_endpoint_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_response_models.html#OnlineEndpoint.deserialize_aml_endpoint_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._aml_response_models.OnlineEndpoint.deserialize_aml_endpoint_response" title="Permalink to this definition"></a></dt>
-<dd><p>Deserializes the Azure ML response from the online endpoints endpoint</p>
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._aml_response_models.OnlineEndpoint.deserialize_unmanaged_endpoint_response">
+<span class="sig-name descname"><span class="pre">deserialize_unmanaged_endpoint_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_response_models.html#OnlineEndpoint.deserialize_unmanaged_endpoint_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._aml_response_models.OnlineEndpoint.deserialize_unmanaged_endpoint_response" title="Permalink to this definition"></a></dt>
+<dd><p>Deserializes the Azure ML response from the unmanaged online endpoints endpoint</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="seeq.addons.azureml.backend._aml_response_models.OnlineEndpoint.deserialize_managed_endpoint_response">
+<span class="sig-name descname"><span class="pre">deserialize_managed_endpoint_response</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_response_models.html#OnlineEndpoint.deserialize_managed_endpoint_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seeq.addons.azureml.backend._aml_response_models.OnlineEndpoint.deserialize_managed_endpoint_response" title="Permalink to this definition"></a></dt>
+<dd><p>Deserializes the Azure ML response from the managed online endpoints endpoint</p>
 </dd></dl>
 
 <dl class="py method">
@@ -540,8 +549,25 @@ requirement is met.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id3">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">deserialize_aml_endpoint_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_response_models.html#OnlineEndpoint.deserialize_aml_endpoint_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">deserialize_managed_endpoint_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_response_models.html#OnlineEndpoint.deserialize_managed_endpoint_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Permalink to this definition"></a></dt>
 <dd><p>Deserializes the Azure ML response from the online endpoints endpoint</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>json</strong> (<em>dict</em>) – Serialized response of the Azure ML online endpoints</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>oes</strong> – List of endpoints with <cite>{‘Seeq’: true}</cite> tag</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">deserialize_unmanaged_endpoint_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_response_models.html#OnlineEndpoint.deserialize_unmanaged_endpoint_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Permalink to this definition"></a></dt>
+<dd><p>Deserializes the Azure ML response services response for ACI models</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>json</strong> (<em>dict</em>) – Serialized response of the Azure ML online endpoints</p>
@@ -570,8 +596,8 @@ tagged with <cite>{Seeq: true}</cite> and their associated deployments and model
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">list_online_endpoints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_online_endpoint_service.html#AmlOnlineEndpointService.list_online_endpoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">list_online_endpoints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/seeq/addons/azureml/backend/_aml_online_endpoint_service.html#AmlOnlineEndpointService.list_online_endpoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id5" title="Permalink to this definition"></a></dt>
 <dd><p>Public method to get a list of endpoints tagged with <cite>{Seeq: true}</cite> in
 Azure ML Studio and attach the associated deployments and models in
 the endpoint to each OnlineEndpoint object.</p>
