@@ -279,7 +279,7 @@ class MlOperate:
         self.set_error_message(disabled_submit=False)
         self.validate_forms()
         if self.app.model_summary.button_disabled:
-            self.set_error_message(title="Incomplete form: ", message=f'Complete all required fields')
+            self.set_error_message(title="Incomplete form: ", message='Complete all required fields')
             return
         if not self.inputs_provider.model_signal_inputs:
             self.set_error_message(title="Wrong input: ", message=f'Could not find input signals for model endpoint "'

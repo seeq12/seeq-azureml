@@ -283,7 +283,6 @@ class OnlineEndpoint:
             oes.append(oe)
         return oes
 
-
     @staticmethod
     def deserialize_managed_endpoint_response(json):
         """

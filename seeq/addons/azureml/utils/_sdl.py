@@ -20,11 +20,3 @@ def get_workbook_worksheet_workstep_ids(url):
         workstep_id = params['workstepId'][0]
     return workbook_id, worksheet_id, workstep_id
 
-
-
-
-
-
-
-
-
