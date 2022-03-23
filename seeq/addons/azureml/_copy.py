@@ -8,7 +8,7 @@ DESTINATION_DIR = 'deployment'
 SRC_DIR_PATH = 'deployment_notebook'
 
 
-def copy(des_folder=None, src_folder=None, *, overwrite_folder=False, overwrite_contents=False):
+def copy_notebook(des_folder=None, src_folder=None, *, overwrite_folder=False, overwrite_contents=False):
     """
     Copies the files on the src_folder to a des_folder in the current working
     directory.

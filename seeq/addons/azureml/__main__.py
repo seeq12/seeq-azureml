@@ -9,7 +9,7 @@ from seeq import spy
 from seeq.spy._errors import *
 # noinspection PyProtectedMember
 from seeq.spy import _url
-from ._copy import copy
+from ._copy import copy_notebook
 
 NB_EXTENSIONS = ['widgetsnbextension', 'ipyvuetify', 'ipyvue', 'ipydatetime']
 DEPLOYMENT_FOLDER = 'deployment'
@@ -64,8 +64,8 @@ def install_app(sdl_url_, *, sort_key='a', permissions_group: list = None, permi
         "Users": permissions_users
     }
 
-    copy(des_folder=DEPLOYMENT_FOLDER, src_folder='deployment_notebook',
-         overwrite_folder=False, overwrite_contents=True)
+    copy_notebook(des_folder=DEPLOYMENT_FOLDER, src_folder='deployment_notebook',
+                  overwrite_folder=False, overwrite_contents=True)
     spy.addons.install(add_on_details, include_workbook_parameters=True, update_tool=True, update_permissions=True)
 
 
