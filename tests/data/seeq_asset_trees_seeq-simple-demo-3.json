@@ -3553,7 +3553,6 @@
         ],
         "created_by": null,
         "description": null,
-        "graph_limit": null,
         "item": {
           "ancestors": [
             {
@@ -3596,7 +3595,6 @@
         "children": [],
         "created_by": null,
         "description": null,
-        "graph_limit": null,
         "item": {
           "ancestors": [
             {
@@ -3647,7 +3645,6 @@
         "children": [],
         "created_by": null,
         "description": null,
-        "graph_limit": null,
         "item": {
           "ancestors": [
             {
@@ -3698,7 +3695,6 @@
         "children": [],
         "created_by": null,
         "description": null,
-        "graph_limit": null,
         "item": {
           "ancestors": [
             {
@@ -3749,7 +3745,6 @@
         "children": [],
         "created_by": null,
         "description": null,
-        "graph_limit": null,
         "item": {
           "ancestors": [
             {
