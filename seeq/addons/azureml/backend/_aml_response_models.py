@@ -262,7 +262,7 @@ class OnlineEndpoint:
         """
         oes = list()
         for v in json['value']:
-            if 'Seeq' not in v['kvTags']:
+            if 'Seeq' not in v['kvTags'] or 'scoringUri' not in v.keys():
                 continue
             oe = OnlineEndpoint(name=v['name'], idd=v['id'])
             oe.tags = v['kvTags']
@@ -302,7 +302,7 @@ class OnlineEndpoint:
         """
         oes = list()
         for v in json['value']:
-            if 'Seeq' not in v['tags']:
+            if 'Seeq' not in v['tags'] or 'scoringUri' not in v['properties']:
                 continue
             oe = OnlineEndpoint(name=v['name'], idd=v['id'])
             oe.tags = v['tags']
