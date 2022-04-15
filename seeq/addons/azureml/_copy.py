@@ -5,7 +5,7 @@ import shutil
 
 DIRECTORY = Path(__file__).resolve().parent
 DESTINATION_DIR = 'deployment'
-SRC_DIR_PATH = 'deployment_notebook'
+SRC_DIR_PATH = 'deployment'
 
 
 def copy_notebook(des_folder=None, src_folder=None, *, overwrite_folder=False, overwrite_contents=False):
@@ -17,11 +17,11 @@ def copy_notebook(des_folder=None, src_folder=None, *, overwrite_folder=False, o
     ----------
     des_folder : str
         The destination folder. If None, it will be copied to a
-        'deployment_notebook' folder in the current working directory.
+        'deployment' folder in the current working directory.
 
     src_folder : str
         Name of the folder that contains the documentation to be copied.
-        If None, it defaults to 'deployment_notebook' directory.
+        If None, it defaults to 'deployment' directory.
 
     overwrite_folder : bool
         If True, any existing files in the specified folder will be deleted
@@ -80,7 +80,7 @@ def copy_notebook(des_folder=None, src_folder=None, *, overwrite_folder=False, o
 
     else:
         dir_util.copy_tree(str(src_folder_path), str(des_folder_path))
-        print(f'Copied My Add-on notebook to {des_folder_path}')
+        print(f'Copied notebooks to {des_folder_path}')
 
 
 def validate_argument_types(expected_types):

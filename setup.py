@@ -46,7 +46,8 @@ setup_args = dict(
         'pandas~=1.2.5',
         'requests>=2.26.0',
         'traitlets>=5.1.0',
-        'ipydatetime>=1.2.0'
+        'ipydatetime>=1.2.0',
+        'tzlocal>=4.2'
     ],
     classifiers=[
         "Programming Language :: Python :: 3.7",

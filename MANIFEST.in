@@ -1,6 +1,6 @@
 include LICENSE
 global-exclude *.pyc
 global-exclude .ipynb_checkpoints
-graft seeq/addons/azureml/deployment_notebook
+graft seeq/addons/azureml/deployment
 graft seeq/addons/azureml/ui_components/templates
 prune tests

@@ -64,7 +64,7 @@ def install_app(sdl_url_, *, sort_key='a', permissions_group: list = None, permi
         "Users": permissions_users
     }
 
-    copy_notebook(des_folder=DEPLOYMENT_FOLDER, src_folder='deployment_notebook',
+    copy_notebook(des_folder=DEPLOYMENT_FOLDER, src_folder='deployment',
                   overwrite_folder=False, overwrite_contents=True)
     spy.addons.install(add_on_details, include_workbook_parameters=True, update_tool=True, update_permissions=True)
 
