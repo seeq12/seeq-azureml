@@ -195,7 +195,7 @@ class RunInvestigation:
                 raise TypeError(f"The {prop} argument must be of type str. Got {type(getattr(self, prop))}")
 
         if not isinstance(self.endpoint_uri, str):
-            raise TypeError(f"Argument 'endpoint_uri' must be a string")
+            raise TypeError("Argument 'endpoint_uri' must be a string")
 
         try:
             pd.Timedelta(self.grid)
@@ -284,8 +284,8 @@ class RunInvestigation:
         """
         if len(self.result_signal.columns) > 1:
             raise AzureMLException(code=None, reason=None,
-                                   message=f'This implementation assumes a single signal resulting from '
-                                           f'the Azure ML model')
+                                   message='This implementation assumes a single signal resulting from the Azure ML '
+                                           'model')
         s = self.result_name + self.az_model_name + self.az_model_version + str(set(self.input_signals.values()))
         hash_object = hashlib.sha1(s.encode())
         self.result_signal.columns = [hash_object.hexdigest()]  # Rename the name coming from Azure ML model
@@ -310,4 +310,4 @@ class RunInvestigation:
         metadata["Model Version"] = self.az_model_version,
         metadata["Input Signals"] = str(list(set(self.input_signals.values()))),
         metadata["Type"] = "Signal"
-        spy.push(metadata=metadata, quiet=self.quiet)
+        spy.push(metadata=metadata, workbook=self.workbook, quiet=self.quiet)

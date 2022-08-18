@@ -53,4 +53,3 @@ class InvestigateRange(v.VuetifyTemplate):
     @staticmethod
     def set_default(arg, default, **kwargs):
         return default if kwargs.get(arg) is None else kwargs.get(arg)
-
