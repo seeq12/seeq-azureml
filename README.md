@@ -30,6 +30,7 @@ The **seeq-azureml** add-on is distributed as an example of a collaborative work
 builders) and plant engineers/SMEs (model consumers). Users are encouraged to fork the repo and make the necessary
 modifications/enhancements that addresses the specific needs/workflows of their organization.
 
+----
 **Important Note:**
 
 The **seeq-azureml** add-on is meant to be used for proof-of-concept models only. There are four significant caveats
@@ -40,6 +41,8 @@ that users should be aware of when using this add-on:
 3. A secret needs to be generated and configured in an ini file as per the instructions on the Seeq Add-on Installation
    section of the documentation.
 4. This add-on has very limited capability for scalability to multiple assets.
+
+----
 
 [![N|Scheme](https://seeq12.github.io/seeq-azureml/_static/workflow_collabo.png)](https://seeq12.github.io/seeq-azureml/introduction/introduction.html)
 
