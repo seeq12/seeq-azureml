@@ -26,9 +26,25 @@ as a Seeq Add-on in Seeq Workbench. The plant engineer and/or SME interacts with
 from which they can accomplish critical activities such as ad hoc/historical evaluations, model deployment in real time,
 scaling to other assets, etc.
 
-The Seeq Add-on is distributed as an example of a collaborative workflow between data scientists (model builders) and
-plant engineers/SMEs (model consumers). Users are encouraged to fork the repo and make the necessary
+The **seeq-azureml** add-on is distributed as an example of a collaborative workflow between data scientists (model
+builders) and plant engineers/SMEs (model consumers). Users are encouraged to fork the repo and make the necessary
 modifications/enhancements that addresses the specific needs/workflows of their organization.
+
+<div style="background-color:#FFF8C5;" class="ma-5">
+    <p style="color: black">
+        <b>Important Note:</b>
+    </p>
+    <p style="color: black">
+        The seeq-azureml add-on is meant to be used for proof-of-concept models only. There are four significant caveats that users should be aware of when using this add-on:
+    </p>
+    <ol type="1" style="color: black">
+      <li>A new Azure app registration must be set up to provide the identity to Seeq via OIDC (Open ID Connect).</li>
+      <li>The Azure app registration needs contributor access to the AzureML Studio workspace.</li>
+      <li>A secret needs to be generated and configured in an ini file as per the instructions on the Seeq Add-on Installation section of the documentation.</li>
+      <li>This add-on has very limited capability for scalability to multiple assets.</li>
+    </ol>
+
+</div>
 
 [![N|Scheme](https://seeq12.github.io/seeq-azureml/_static/workflow_collabo.png)](https://seeq12.github.io/seeq-azureml/introduction/introduction.html)
 
