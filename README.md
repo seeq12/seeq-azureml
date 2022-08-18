@@ -30,21 +30,16 @@ The **seeq-azureml** add-on is distributed as an example of a collaborative work
 builders) and plant engineers/SMEs (model consumers). Users are encouraged to fork the repo and make the necessary
 modifications/enhancements that addresses the specific needs/workflows of their organization.
 
-<div>
-    <p style="color: darkred">
-        <b>Important Note:</b>
-    </p>
-    <p style="color: darkred">
-        The seeq-azureml add-on is meant to be used for proof-of-concept models only. There are four significant caveats that users should be aware of when using this add-on:
-    </p>
-    <ol type="1" style="color: darkred">
-      <li>A new Azure app registration must be set up to provide the identity to Seeq via OIDC (Open ID Connect).</li>
-      <li>The Azure app registration needs contributor access to the AzureML Studio workspace.</li>
-      <li>A secret needs to be generated and configured in an ini file as per the instructions on the Seeq Add-on Installation section of the documentation.</li>
-      <li>This add-on has very limited capability for scalability to multiple assets.</li>
-    </ol>
+**Important Note:**
 
-</div>
+The **seeq-azureml** add-on is meant to be used for proof-of-concept models only. There are four significant caveats
+that users should be aware of when using this add-on:
+
+1. A new Azure app registration must be set up to provide the identity to Seeq via OIDC (Open ID Connect).
+2. The Azure app registration needs contributor access to the AzureML Studio workspace.
+3. A secret needs to be generated and configured in an ini file as per the instructions on the Seeq Add-on Installation
+   section of the documentation.
+4. This add-on has very limited capability for scalability to multiple assets.
 
 [![N|Scheme](https://seeq12.github.io/seeq-azureml/_static/workflow_collabo.png)](https://seeq12.github.io/seeq-azureml/introduction/introduction.html)
 
