@@ -122,9 +122,10 @@ class ModelInputsProvider:
 
             for idd in ordered_input_ids:
                 tree = trees_api.get_tree(id=idd)
-                path = " >> ".join([x.name for x in tree.item.ancestors if x.type == "Asset"])
-                path_ids.append(tree.item.ancestors[-1].id)
-                asset_paths.append(path)
+                if tree.item.ancestors:
+                    path = " >> ".join([x.name for x in tree.item.ancestors if x.type == "Asset"])
+                    path_ids.append(tree.item.ancestors[-1].id)
+                    asset_paths.append(path)
                 signal_names.append(signals_api.get_signal(id=idd).name)
             if len(list(set(asset_paths))) == 1:
                 self.asset_path_from_signals = {asset_paths[0]: path_ids[0]}
