@@ -310,4 +310,4 @@ class RunInvestigation:
         metadata["Model Version"] = self.az_model_version,
         metadata["Input Signals"] = str(list(set(self.input_signals.values()))),
         metadata["Type"] = "Signal"
-        spy.push(metadata=metadata, workbook=self.workbook, quiet=self.quiet)
+        spy.push(metadata=metadata, quiet=self.quiet)
