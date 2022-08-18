@@ -30,7 +30,7 @@ The **seeq-azureml** add-on is distributed as an example of a collaborative work
 builders) and plant engineers/SMEs (model consumers). Users are encouraged to fork the repo and make the necessary
 modifications/enhancements that addresses the specific needs/workflows of their organization.
 
-<div style="background-color:#FFF8C5;" class="ma-5">
+<div style="background-color:#FFF8C5;">
     <p style="color: black">
         <b>Important Note:</b>
     </p>
