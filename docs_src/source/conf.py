@@ -20,7 +20,7 @@ from seeq.addons import azureml
 from docs_src.source import parse_readme
 
 # Create documentation file from README
-parse_readme.write_readme_sections_to_files({"Installation": "installation/installation.md"})
+# parse_readme.write_readme_sections_to_files({"Installation": "installation/installation.md"})
 
 # -- Project information -----------------------------------------------------
 

@@ -2,6 +2,7 @@ import pandas as pd
 import tzlocal
 import ipyvuetify as v
 from seeq import spy
+from seeq.spy._errors import *
 from seeq.sdk.rest import ApiException
 from IPython.display import display, Javascript, clear_output, HTML
 from seeq.addons.azureml.utils import get_workbook_worksheet_workstep_ids, AzureMLException
@@ -279,7 +280,7 @@ class MlOperate:
         self.set_error_message(disabled_submit=False)
         self.validate_forms()
         if self.app.model_summary.button_disabled:
-            self.set_error_message(title="Incomplete form: ", message=f'Complete all required fields')
+            self.set_error_message(title="Incomplete form: ", message='Complete all required fields')
             return
         if not self.inputs_provider.model_signal_inputs:
             self.set_error_message(title="Wrong input: ", message=f'Could not find input signals for model endpoint "'
@@ -352,13 +353,19 @@ class MlOperate:
                 'aml_primary_key': self.inputs_provider._model_primary_key,
                 'User': f'{spy.user.first_name} {spy.user.last_name}',
                 'Job Name': "job name"
-                }
+            }
             url = f"{spy.utils.get_data_lab_project_url()}/notebooks/deployment/azureml_integration_deploy_model.ipynb"
 
             jobs = pd.DataFrame([job_parameters])
-            spy.jobs.push(jobs, datalab_notebook_url=url, quiet=True)
-            self.app.model_summary.button_loading = False
-            self.set_error_message(title='SUCCESS: ', message='Job has been scheduled', status='SUCCESS')
+
+            try:
+                spy.jobs.push(jobs, datalab_notebook_url=url, quiet=True)
+                self.app.model_summary.button_loading = False
+                self.set_error_message(title='SUCCESS: ', message='Job has been scheduled', status='SUCCESS')
+            except SPyRuntimeError as e:
+                self.set_error_message(title="SPyRuntimeError: ", message=str(e))
+                self.app.model_summary.button_loading = False
+                return
 
 
 def validate_model_summary_properties(props):
