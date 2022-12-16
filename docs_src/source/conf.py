@@ -24,7 +24,7 @@ from docs_src.source import parse_readme
 
 # -- Project information -----------------------------------------------------
 
-project = 'seeq-azureml'
+project = 'seeq-azureml (DEPRECATED)'
 copyright = '2021, Seeq Corporation'
 authors = ['Alberto Rivas', 'Joseph Disantis', 'Chris Herrera']
 

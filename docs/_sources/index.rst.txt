@@ -3,11 +3,14 @@
     You can adapt this file completely to your liking, but it should at least
     contain the root `toctree` directive.
 
-Welcome to seeq-azureml's documentation
+Seeq-azureml's documentation (DEPRECATED)
 ============================================
 
 .. raw:: html
 
+    <hr style="width:100%", size="2", color=black>
+    <div><strong>This add-on has been deprecated</strong></div>
+    <hr style="width:100%", size="2", color=black>
     <div style="background-color: #FFF8C5; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); padding: 10px">
         <div style="color: black; margin: 10px 10px 10px 10px">
             <b>Important Note:</b>

@@ -1,3 +1,6 @@
+<div><strong>This add-on has been deprecated</strong></div>
+<hr style="width:100%", size="2", color=black>
+
 # Introduction
 
 **seeq-azureml** provides an example framework that allows a data scientist working in Azure ML Studio and a plant
