@@ -1,3 +1,21 @@
+**This add-on has been deprecated**
+
+----
+
+**Important Note:**
+
+The **seeq-azureml** add-on is meant to be used for proof-of-concept models only. There are four significant caveats
+that users should be aware of when using this add-on:
+
+1. A new Azure app registration must be set up to provide the identity to Seeq via OIDC (Open ID Connect).
+2. The Azure app registration needs contributor access to the AzureML Studio workspace.
+3. A secret needs to be generated and configured in an ini file as per the instructions on the Seeq Add-on Installation
+   section of the documentation.
+4. This add-on has very limited capability for scalability to multiple assets.
+
+----
+
+
 <p align="center">
   <a href="https://www.seeq.com" rel="nofollow">
     <img src="https://seeq12.github.io/seeq-azureml/_static/logos_handshake.png" alt="N|Scheme" width="80%">
@@ -27,18 +45,6 @@ scaling to other assets, etc.
 The Seeq Add-on is distributed as an example of a collaborative workflow between data scientists (model builders) and
 plant engineers/SMEs (model consumers). Users are encouraged to fork the repo and make the necessary
 modifications/enhancements that addresses the specific needs/workflows of their organization.
-
-----
-**Important Note:**
-
-The **seeq-azureml** add-on is meant to be used for proof-of-concept models only. There are four significant caveats
-that users should be aware of when using this add-on:
-
-1. A new Azure app registration must be set up to provide the identity to Seeq via OIDC (Open ID Connect).
-2. The Azure app registration needs contributor access to the AzureML Studio workspace.
-3. A secret needs to be generated and configured in an ini file as per the instructions on the Seeq Add-on Installation
-   section of the documentation.
-4. This add-on has very limited capability for scalability to multiple assets.
 
 ----
 
@@ -113,24 +119,20 @@ Add-on:
 4. Create an `aml_config.ini` file in the `~/.seeq` folder of the Seeq Data Lab Project with the information required to
    connect to the Azure ML services. The following steps summarized how to create the `aml_config.ini` file in the
    correct Seeq Data Lab location and where to get the values required for the configuration.
-   1. Download the `aml_config.ini` configuration file
-      from [here](https://github.com/seeq12/seeq-azureml/tree/master/aml_config.ini)
+   1. Download the `aml_config.ini` configuration file from [here](https://github.com/seeq12/seeq-azureml/tree/master/aml_config.ini)
    2. Upload the file to the Seeq Data Lab project using the `Upload` button located in the top-right corner of the home
       page of the project.
    3. From the Seeq Data Lab project home page, open the uploaded file and modify the fields appropriately:
       1. The `SUBSCRIPTION_ID`, `RESOURCE_GROUP`, and `WORKSPACE_NAME` can be obtained by logging into the Azure portal
-         and clicking on
-         the [Machine Learning service](https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.MachineLearningServices%2Fworkspaces)
+         and clicking on the [Machine Learning service](https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.MachineLearningServices%2Fworkspaces)
          . Once in the Machine Learning service, click on the desired `WORKSPACE_NAME` from the list. The `Overview`
          tab will show a list of `Essentials` from which you can take the values for `SUBSCRIPTION_ID`
          and `RESOURCE_GROUP`.
-      2. The `TENANT_ID`, `APP_ID`, and `APP_SECRET` are obtained when creating the Azure application in the
-         section [Get tenant and app ID values for signing in](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in)
+      2. The `TENANT_ID`, `APP_ID`, and `APP_SECRET` are obtained when creating the Azure application in the section [Get tenant and app ID values for signing in](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in)
          , [Option 2](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret)
          .
       3. Save the `aml_config.ini` file.
-   4. Back to the **Terminal** window from Steps 1 and 2, run the command `mv aml_config.ini .seeq/` to move
-      the `aml_config.ini` file to the appropriate folder.
+   4. Back to the **Terminal** window from Steps 1 and 2, run the command `mv aml_config.ini .seeq/` to move the `aml_config.ini` file to the appropriate folder.
 
 Note: If Step 3 gives an error make sure that the seeq module is >= a.b.c.182.**25** where a.b.c are explained
 [here](https://pypi.org/project/seeq/#description)

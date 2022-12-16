@@ -1,6 +1,12 @@
 Code Documentation
 ====================
 
+.. raw:: html
+
+    <hr style="width:100%", size="2", color=black>
+    <div><strong>This add-on has been deprecated</strong></div>
+    <hr style="width:100%", size="2", color=black>
+
 The seeq-azureml code is divided into four main parts
 
 .. toctree::
